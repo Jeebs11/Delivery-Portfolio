@@ -258,8 +258,8 @@ const InspectableFrame = ({ frame, wallX, frameTexture, framePaintedTexture, CAB
                 <meshBasicMaterial color="#e0e0e0" transparent opacity={0} depthWrite={false} />
             </mesh>
 
-            {/* RAMKA PAINTED (behind sketch) */}
-            {!isTouch && (
+            {/* RAMKA PAINTED (behind sketch) — skipped for photo frames */}
+            {!isTouch && !frame.photoFrame && (
                 <mesh ref={framePaintedRef} position={[0, 0, -0.001]} scale={[0.98, 0.98, 1]}>
                     <planeGeometry args={[frame.width, frame.height]} />
                     <meshBasicMaterial color="#e0e0e0"
@@ -272,7 +272,8 @@ const InspectableFrame = ({ frame, wallX, frameTexture, framePaintedTexture, CAB
                 </mesh>
             )}
 
-            {/* RAMKA SKETCH OVERLAY (front) */}
+            {/* RAMKA SKETCH OVERLAY (front) — skipped for photo frames (clean framed print instead) */}
+            {!frame.photoFrame && (
             <mesh position={[0, 0, 0]}>
                 <planeGeometry args={[frame.width, frame.height]} />
                 <revealMaterial color="#e0e0e0"
@@ -285,6 +286,7 @@ const InspectableFrame = ({ frame, wallX, frameTexture, framePaintedTexture, CAB
                     uProgress={0.0}
                 />
             </mesh>
+            )}
 
             {/* OBRAZEK WEWNĄTRZ */}
             {frame.image && (
@@ -372,56 +374,37 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
     // - width/height: rozmiar ramki
     // - y: pozycja Y (wysokość na ścianie, 0 = środek)
     const frames = useMemo(() => [
+        // Personal photos as clean framed prints (grayscale by default, bloom to
+        // colour on hover). photoFrame:true skips the hand-drawn landscape ramka.
         {
-            z: zOffset - 10,         // Między startem a Gallery (relZ -5 do -15)
-            side: 'right',
-            width: 2.5,              // Szerokość ramki
-            height: 2.5 / 1.785,     // Legacy ratio 3200x1792
-            y: 0.3,                  // Wysokość na ścianie
-            id: 'frame-1',
-            // Custom setup for "rysuneknaobraz1.png"
-            image: '/textures/corridor/rysuneknaobraz1.webp',
-            imageWidth: 1.1,
-            imageHeight: 1.1,
-            offsetFromWall: 0.1, // Przesunięcie bliżej środka korytarza (0.1 unit)
+            z: zOffset - 10, side: 'right', id: 'frame-1',
+            photoFrame: true, width: 1.13, height: 1.5, y: 0.15,
+            image: '/textures/wall/medal_bw.webp', imagePainted: '/textures/wall/medal.webp',
+            imageWidth: 1.13, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 25,         // Między Gallery a Studio (relZ -20 do -30)
-            side: 'left',
-            width: 2.5,
-            height: 2.5 / 1.785,
-            y: 0.2,
-            id: 'frame-2',
-            image: '/textures/corridor/rysuneknaobrazek3.webp',
-            imageWidth: 1.7,
-            imageHeight: 1,
-            offsetFromWall: 0.1
+            z: zOffset - 25, side: 'left', id: 'frame-2',
+            photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
+            image: '/textures/wall/cycling_bw.webp', imagePainted: '/textures/wall/cycling.webp',
+            imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 40,         // Między Studio a About (relZ -34 do -46)
-            side: 'right',
-            width: 2.5,
-            height: 2.5 / 1.785,
-            y: 0.25,
-            id: 'frame-3',
-            signature: "Empty canvas!\nWant your art here?\nContact me!",
-            signatureX: 0,
-            signatureY: 0,
-            signatureSize: 0.12,
-            signatureColor: '#333333'
+            z: zOffset - 40, side: 'right', id: 'frame-3',
+            photoFrame: true, width: 1.5, height: 1.47, y: 0.2,
+            image: '/textures/wall/football_bw.webp', imagePainted: '/textures/wall/football.webp',
+            imageWidth: 1.5, imageHeight: 1.47, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 55,         // Między About a Connect (relZ -50 do -60)
-            side: 'left',
-            width: 2.5,
-            height: 2.5 / 1.785,
-            y: 0.35,
-            id: 'frame-4',
-            signature: "Empty canvas!\nWant your art here?\nContact me!",
-            signatureX: 0,
-            signatureY: 0,
-            signatureSize: 0.12,
-            signatureColor: '#333333'
+            z: zOffset - 55, side: 'left', id: 'frame-4',
+            photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
+            image: '/textures/wall/golf_bw.webp', imagePainted: '/textures/wall/golf.webp',
+            imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
+        },
+        {
+            z: zOffset - 70, side: 'right', id: 'frame-5',
+            photoFrame: true, width: 1.48, height: 1.49, y: 0.2,
+            image: '/textures/wall/shooting_bw.webp', imagePainted: '/textures/wall/shooting.webp',
+            imageWidth: 1.48, imageHeight: 1.49, offsetFromWall: 0.1,
         },
     ], [zOffset]);
 
