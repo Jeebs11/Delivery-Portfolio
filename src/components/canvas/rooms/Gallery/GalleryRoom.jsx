@@ -363,12 +363,6 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const cityTexture = useTexture('/textures/gallery/miastotlo.webp');
     const birdTexture = useTexture('/textures/gallery/bird_gray.webp');
     const clothespinTexture = useTexture('/textures/gallery/klamerka.webp');
-    // Little Ghibli-inspired spirits that perch on the career-card pegs (cycled).
-    const spiritTextures = useTexture([
-        '/textures/gallery/spirits/moss.webp',
-        '/textures/gallery/spirits/lantern.webp',
-        '/textures/gallery/spirits/pebble.webp',
-    ]);
 
     useEffect(() => {
         if (floorTexture) {
@@ -516,7 +510,6 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                             ref={el => cardRefs.current[i] = el}
                             project={project}
                             clothespinTexture={clothespinTexture}
-                            spiritTexture={spiritTextures[i % spiritTextures.length]}
                             total={PROJECT_COUNT}
                             currentScroll={currentScroll}
                             materials={materials}
@@ -691,7 +684,7 @@ const FlyingBird = ({ texture }) => {
 };
 
 // Sub-component for individual project cards
-const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, spiritTexture, currentScroll, materials, curve, isSelected, scrollToIndex, onClick, isMobile, isTransitioning, paintProgress, roomOrigin }, ref) => {
+const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, currentScroll, materials, curve, isSelected, scrollToIndex, onClick, isMobile, isTransitioning, paintProgress, roomOrigin }, ref) => {
     const cardRef = useRef();
     const paperRef = useRef(); // Ref for the moving part (Paper)
     const materialRef = useRef();
@@ -1131,15 +1124,6 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, spirit
                     side={THREE.DoubleSide}
                 />
             </mesh>
-
-            {/* Little spirit companion perched on a top corner of the card.
-                Decorative only — raycast disabled so it never intercepts clicks. */}
-            {spiritTexture && (
-                <mesh position={[index % 2 === 0 ? 0.46 : -0.46, 0.02, 0.16]} scale={[0.4, 0.44, 1]} raycast={() => null}>
-                    <planeGeometry args={[1, 1]} />
-                    <meshBasicMaterial map={spiritTexture} transparent={true} alphaTest={0.05} depthWrite={false} side={THREE.DoubleSide} />
-                </mesh>
-            )}
 
             {/* Year label on the peg — turns the row of cards into a timeline */}
             {project.pegYear && (
