@@ -44,7 +44,7 @@ const ScreenReaderOverlay = () => {
                             </li>
                             <li>
                                 <button onClick={() => teleportTo('gallery')} type="button">
-                                    Programmes — My key programmes and achievements
+                                    Career — My 17-year career timeline
                                 </button>
                             </li>
                             <li>
@@ -54,7 +54,7 @@ const ScreenReaderOverlay = () => {
                             </li>
                             <li>
                                 <button onClick={() => teleportTo('studio')} type="button">
-                                    Insights — Thought leadership and case studies
+                                    Portfolio — Projects I've built
                                 </button>
                             </li>
                         </ul>
@@ -99,8 +99,8 @@ const ScreenReaderOverlay = () => {
                         )}
                         {currentRoom === 'gallery' && (
                             <div aria-label="Gallery room content">
-                                <h3>My Programmes & Projects</h3>
-                                <p>Browse through my key programmes and delivery achievements displayed on paper cards. Click on a card to see details.</p>
+                                <h3>Career Timeline</h3>
+                                <p>Browse my 17-year career (2008–2026) as hanging cards. Each shows the job title, company and industry; click to see the description, key impacts and employment type.</p>
                                 
                                 {projects && projects.length > 0 && (
                                     <ul>
@@ -123,8 +123,8 @@ const ScreenReaderOverlay = () => {
                         )}
                         {currentRoom === 'studio' && (
                             <div aria-label="Studio room content">
-                                <h3>Insights & Thought Leadership</h3>
-                                <p>Explore my insights and case studies on rotating monitors. Click a monitor to read detailed information.</p>
+                                <h3>Portfolio</h3>
+                                <p>Explore the projects I've built on rotating monitors. Click a monitor to read the description and open the live project.</p>
 
                                 {studio && studio.length > 0 && (
                                     <ul>

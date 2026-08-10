@@ -1079,7 +1079,7 @@ const DoorSection = ({
                                     anchorY="bottom"
                                     position={[0, -0.02, 0]}
                                 >
-                                    THE
+                                    MY
                                 </Text>
                                 <Text
                                     font="/fonts/CabinSketch-Bold.ttf"
@@ -1089,7 +1089,7 @@ const DoorSection = ({
                                     anchorY="top"
                                     position={[0, +0.02, 0]}
                                 >
-                                    GALLERY
+                                    CAREER
                                 </Text>
                             </group>
                         )}
@@ -1107,13 +1107,13 @@ const DoorSection = ({
                                 </Text>
                                 <Text
                                     font="/fonts/CabinSketch-Bold.ttf"
-                                    fontSize={0.25}
+                                    fontSize={0.18}
                                     color="#111111"
                                     anchorX="center"
                                     anchorY="top"
                                     position={[0, +0.03, 0]}
                                 >
-                                    STUDIO
+                                    PORTFOLIO
                                 </Text>
                             </group>
                         )}

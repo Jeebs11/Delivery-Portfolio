@@ -20,10 +20,16 @@ const ROOM_CONFIG = {
 };
 
 const SUBTITLES = {
-    'THE GALLERY': 'Explore my creative projects',
-    'THE STUDIO': 'Watch behind the scenes',
+    'THE GALLERY': 'My 17-year career timeline',
+    'THE STUDIO': 'Projects I have built',
     'DEV DIARY': 'My development journey',
     "LET'S CONNECT": 'Get in touch with me'
+};
+
+// Visitor-facing room titles (the label keys stay as internal routing ids).
+const DISPLAY_TITLES = {
+    'THE GALLERY': 'MY CAREER',
+    'THE STUDIO': 'PORTFOLIO',
 };
 
 // Naturalny kafelek listwy: 1582x94px przy wysokości 0.15 → ~2.524 units szerokości
@@ -278,7 +284,7 @@ const RoomInterior = memo(({ label, showRoom, onReady, isExiting }) => {
                                 maxWidth={roomWidth * 0.8}
                                 textAlign="center"
                             >
-                                {label}
+                                {DISPLAY_TITLES[label] || label}
                             </Text>
 
                             {/* Subtitle */}

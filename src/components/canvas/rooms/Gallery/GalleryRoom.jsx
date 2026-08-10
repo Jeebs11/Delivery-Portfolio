@@ -73,7 +73,7 @@ const FALLBACK_PROJECTS = [
     },
 ];
 
-const PROJECT_COUNT = 10; // Keep the count for the infinite scroll feel
+const PROJECT_COUNT = 13; // One hanging card per career role (chronological timeline)
 const GAP = 2.5;
 
 // Zmień te wartości aby dopasować proporcje ptaka (legacy ratio 1.41)
@@ -699,6 +699,9 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
     const detailsTextRef2 = useRef();
     const techTextRef = useRef();
     const openTextRef = useRef();
+    const impactsTextRef = useRef(); // Ref for the key-impacts body text (career mode)
+    const companyRef = useRef();     // Front-of-card company line (career mode)
+    const industryRef = useRef();    // Front-of-card industry line (career mode)
     const [hovered, setHovered] = useState(false);
     const [btnHovered, setBtnHovered] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);  // True ONLY during flip animation
@@ -967,6 +970,9 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 applyOpacity(detailsTextRef2);
                 applyOpacity(techTextRef);
                 applyOpacity(openTextRef);
+                applyOpacity(impactsTextRef);
+                applyOpacity(companyRef);
+                applyOpacity(industryRef);
             }
         }
 
@@ -1122,6 +1128,22 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 />
             </mesh>
 
+            {/* Year label on the peg — turns the row of cards into a timeline */}
+            {project.pegYear && (
+                <Text
+                    position={[0, 0.16, 0.18]}
+                    fontSize={0.15}
+                    color="#2b2b28"
+                    font="/fonts/CabinSketch-Bold.ttf"
+                    anchorX="center"
+                    anchorY="middle"
+                    outlineWidth={0.004}
+                    outlineColor="#ffffff"
+                >
+                    {String(project.pegYear).replace(/–/g, '-')}
+                </Text>
+            )}
+
             {/* The Paper / Card hanging down - This moves independently now */}
             <group
                 ref={paperRef}
@@ -1169,14 +1191,14 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        OPEN PROJECT
+                        {(project.employmentType || 'OPEN').toUpperCase()}
                     </Text>
 
                     {/* Warstwa 3: Niewidoczny hit-area pokrywający cały przycisk - łapie WSZYSTKIE eventy */}
                     <mesh
                         position={[0, 0, 0.02]}
                         onClick={(e) => {
-                            if (isSelected && !isTransitioning) {
+                            if (isSelected && !isTransitioning && project.url) {
                                 e.stopPropagation();
                                 window.open(project.url, '_blank');
                             }
@@ -1215,7 +1237,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        PROJECT DETAILS:
+                        ABOUT THE ROLE
                     </Text>
 
                     <Text
@@ -1251,22 +1273,27 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        TECH STACK
+                        KEY IMPACTS
                     </Text>
 
-                    {/* Kontener na loga układane poziomo */}
-                    <group position={[0, -0.05, 0.01]}>
-                        {project.techStack && project.techStack.map((logoPath, idx) => {
-                            // Rozstawienie kwadracików (4 sztuki wyśrodkowane)
-                            const spacing = 0.30;
-                            const startX = -((project.techStack.length - 1) * spacing) / 2;
-                            const xPos = startX + (idx * spacing);
-
-                            return (
-                                <TechStackLogo key={idx} path={logoPath} position={[xPos, 0, 0]} />
-                            );
-                        })}
-                    </group>
+                    {/* Key impacts as a bulleted text block (career mode) */}
+                    <Text
+                        ref={impactsTextRef}
+                        position={[0, 0.03, 0.01]}
+                        fontSize={0.052}
+                        color="#333333"
+                        font="/fonts/CabinSketch-Bold.ttf"
+                        anchorX="center"
+                        anchorY="top"
+                        maxWidth={1.15}
+                        lineHeight={1.35}
+                        textAlign="left"
+                        fillOpacity={0} // Start hidden
+                    >
+                        {(project.keyImpacts && project.keyImpacts.length
+                            ? project.keyImpacts.map((k) => `•  ${k}`).join('\n')
+                            : '')}
+                    </Text>
                 </group>
 
                 {/* 
@@ -1282,17 +1309,51 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                   color: kolor napisu
                   font: opcjonalnie dajesz tu inną czcionkę z folderu /public/fonts/
                 */}
+                {/* FRONT OF CARD (career): job title (bold) + company + industry */}
                 <Text
                     ref={textRef}
-                    position={[0, 0.7, 0]} // Tylko dwa pierwsze parametry [X, Y] mają tutaj znaczenie
-                    fontSize={0.20}
+                    position={[0, 0.5, 0.06]}
+                    fontSize={0.135}
                     color="#1c1c1c"
                     font="/fonts/CabinSketch-Bold.ttf"
                     anchorX="center"
                     anchorY="middle"
+                    maxWidth={1.25}
+                    lineHeight={1.05}
+                    textAlign="center"
                     fillOpacity={0} // Start hidden
                 >
                     {project.title}
+                </Text>
+
+                <Text
+                    ref={companyRef}
+                    position={[0, -0.05, 0.06]}
+                    fontSize={0.085}
+                    color="#3a3a3a"
+                    font="/fonts/CabinSketch-Bold.ttf"
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={1.25}
+                    lineHeight={1.1}
+                    textAlign="center"
+                    fillOpacity={0}
+                >
+                    {project.company || ''}
+                </Text>
+
+                <Text
+                    ref={industryRef}
+                    position={[0, -0.32, 0.06]}
+                    fontSize={0.06}
+                    color="#7a746a"
+                    font="/fonts/CabinSketch-Bold.ttf"
+                    anchorX="center"
+                    anchorY="middle"
+                    letterSpacing={0.06}
+                    fillOpacity={0}
+                >
+                    {(project.industry || '').toUpperCase()}
                 </Text>
 
                 <PositionalAudio

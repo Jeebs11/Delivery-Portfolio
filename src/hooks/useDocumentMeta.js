@@ -25,13 +25,13 @@ const ROOM_META = {
     },
     gallery: {
         path: '/gallery',
-        title: 'Programmes & Projects — Mujeeb Lawal',
-        description: 'Walk through Mujeeb Lawal\'s most significant programmes and delivery achievements, each displayed as an interactive hand-drawn card in the 3D gallery.',
+        title: 'Career — Mujeeb Lawal',
+        description: 'Walk Mujeeb Lawal\'s 17-year career timeline (2008–2026): each role hangs as a card showing title, company and industry, with description, key impacts and employment type on click.',
     },
     studio: {
         path: '/studio',
-        title: 'Insights & Thought Leadership — Mujeeb Lawal',
-        description: 'Explore Mujeeb Lawal\'s insights and thought leadership on delivery, PMO governance and transformation, displayed on floating screens in an immersive 3D space.',
+        title: 'Portfolio — Mujeeb Lawal',
+        description: 'Explore the projects Mujeeb Lawal has built — programme dashboards, AI risk tooling and delivery platforms — displayed on screens in an immersive 3D space.',
     },
     contact: {
         path: '/contact',

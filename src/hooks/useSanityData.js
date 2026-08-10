@@ -3,7 +3,7 @@ import { sanityClient, urlFor, getProxyUrl } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
-import { PROGRAMMES, INSIGHTS, CERTIFICATIONS } from '../config/content';
+import { CAREER, PROGRAMMES, CERTIFICATIONS } from '../config/content';
 
 // ---------------------------------------------------------------------------
 // LOCAL CONTENT ADAPTER (Stage 2)
@@ -12,68 +12,54 @@ import { PROGRAMMES, INSIGHTS, CERTIFICATIONS } from '../config/content';
 // until the real screenshots are added in the imagery pass (Stage 3).
 // ---------------------------------------------------------------------------
 
-// Placeholder [front, painted] image pairs cycled across programmes.
-const PLACEHOLDER_ART = [
-    ['/textures/gallery/monetuneprzod.webp', '/textures/gallery/monetuneprzod_painted.webp'],
-    ['/textures/gallery/timberkittyprzod.webp', '/textures/gallery/timberkittyprzod_painted.webp'],
-    ['/textures/gallery/youngmultiprzod.webp', '/textures/gallery/youngmultiprzod_painted.webp'],
-    ['/textures/gallery/bioprzod.webp', '/textures/gallery/bioprzod_painted.webp'],
-];
-
-// Map a tech-stack label onto one of the logo textures that ship in the repo.
-// Unmatched techs (Node, Drizzle, Postgres, OpenAI, Replit…) have no logo yet
-// and are dropped for now — added in Stage 3.
-const TECH_LOGO = {
-    react: 'reactlogo', typescript: 'jslogo', javascript: 'jslogo', js: 'jslogo',
-    tailwind: 'tailwindlogo', 'tailwind css': 'tailwindlogo', html: 'htmllogo',
-    css: 'csslogo', php: 'phplogo', wordpress: 'wordpresslogo',
-    elementor: 'elementorlogo', firebase: 'firebaselogo', netlify: 'netlifylogo',
-    'chart.js': 'jslogo', vite: 'jslogo', 'html / css / javascript': 'htmllogo',
-};
-
-function mapTechStack(stack) {
-    const paths = [];
-    const seen = new Set();
-    for (const raw of stack || []) {
-        const key = String(raw).toLowerCase();
-        // try full label, then first token (e.g. "Node.js / Express" -> "node.js")
-        const logo = TECH_LOGO[key] || TECH_LOGO[key.split(/[\s/]+/)[0]];
-        if (logo && !seen.has(logo)) { seen.add(logo); paths.push(`/textures/gallery/${logo}.webp`); }
-        if (paths.length >= 4) break;
-    }
-    if (paths.length === 0) paths.push('/textures/gallery/reactlogo.webp', '/textures/gallery/jslogo.webp');
-    return paths;
+// Slug used for the pre-composited career card filenames (must match
+// scripts/compose-career-cards.mjs).
+function careerSlug(company, i) {
+    const c = company.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return `${String(i).padStart(2, '0')}-${c}`;
 }
 
-const GALLERY_PROJECTS = PROGRAMMES.map((p, i) => {
-    // Real composited screenshot card (Stage 3); fall back to placeholder art.
-    const [phFront, phPainted] = PLACEHOLDER_ART[i % PLACEHOLDER_ART.length];
-    const front = p.image || phFront;
-    const painted = p.image || phPainted;
+// GALLERY room = Career timeline. Each hanging card is a role (oldest -> newest).
+// The card front is a text-only paper card (title / company / industry); the
+// back and overlay show the description, key impacts and employment type.
+const CAREER_CARD_PAPER = '/textures/paper-texture.webp'; // blank paper; text is drawn as crisp 3D text
+const GALLERY_PROJECTS = CAREER.map((r, i) => {
     return {
-        id: `programme-${i}`,
-        title: p.title.toUpperCase(),
-        front,
-        painted,
-        url: p.url || null,
-        description: p.description,
-        techStack: mapTechStack(p.techStack),
+        id: `role-${i}`,
+        title: r.role,
+        front: CAREER_CARD_PAPER,
+        painted: CAREER_CARD_PAPER, // text card — no separate painted/colour-reveal variant
+        url: null,
+        description: r.description,
+        techStack: [],
+        // role-specific fields consumed by the career card back + peg label
+        isRole: true,
+        company: r.company,
+        industry: r.industry,
+        period: r.period,
+        pegYear: r.pegYear,
+        employmentType: r.employmentType,
+        keyImpacts: r.keyAchievements || [],
     };
 });
 
-// Studio monitors: text-driven, no custom texture (StudioRoom falls back to a
-// default monitor/tv screen when frontTexture is absent). Platforms must exist
-// in PLATFORM_CONFIG (linkedin/blog do).
-const STUDIO_CONTENT = INSIGHTS.map((s, i) => ({
-    id: `insight-${i}`,
-    platform: s.platform,
-    device: 'monitor',
-    title: s.title,
-    description: s.description,
-    url: s.url || null,
-    date: s.date || '',
-    readTime: s.readTime || '',
-}));
+// STUDIO room = Portfolio. Each monitor shows a project screenshot (2:1) with
+// its title/description; clicking opens the detail (and the live URL if any).
+const STUDIO_SLUGS = ['pm-dashboard', 'risk-radar', 'exec-dashboard', 'energy-benchmark', 'portfolio', 'ecommerce'];
+const STUDIO_CONTENT = PROGRAMMES.map((p, i) => {
+    const screen = `/textures/studio/mujeeb/${STUDIO_SLUGS[i]}.webp`;
+    return {
+        id: `project-${i}`,
+        platform: 'blog',
+        device: 'monitor',
+        title: p.title,
+        description: p.description,
+        url: p.url || null,
+        frontTexture: screen,
+        paintedFrontTexture: screen,
+        date: '',
+    };
+});
 
 // Awards / recognition shown in the About room. Shape matches what the original
 // CMS produced: { sotd, sotm, other } each with items[] of {label,date,image,url}.
