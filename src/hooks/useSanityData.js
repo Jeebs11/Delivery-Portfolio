@@ -3,6 +3,89 @@ import { sanityClient, urlFor, getProxyUrl } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
+import { PROGRAMMES, INSIGHTS, CERTIFICATIONS } from '../config/content';
+
+// ---------------------------------------------------------------------------
+// LOCAL CONTENT ADAPTER (Stage 2)
+// Maps src/config/content.js onto the exact shapes the 3D rooms expect.
+// Images reuse textures already shipped in /public/textures as placeholders
+// until the real screenshots are added in the imagery pass (Stage 3).
+// ---------------------------------------------------------------------------
+
+// Placeholder [front, painted] image pairs cycled across programmes.
+const PLACEHOLDER_ART = [
+    ['/textures/gallery/monetuneprzod.webp', '/textures/gallery/monetuneprzod_painted.webp'],
+    ['/textures/gallery/timberkittyprzod.webp', '/textures/gallery/timberkittyprzod_painted.webp'],
+    ['/textures/gallery/youngmultiprzod.webp', '/textures/gallery/youngmultiprzod_painted.webp'],
+    ['/textures/gallery/bioprzod.webp', '/textures/gallery/bioprzod_painted.webp'],
+];
+
+// Map a tech-stack label onto one of the logo textures that ship in the repo.
+// Unmatched techs (Node, Drizzle, Postgres, OpenAI, Replit…) have no logo yet
+// and are dropped for now — added in Stage 3.
+const TECH_LOGO = {
+    react: 'reactlogo', typescript: 'jslogo', javascript: 'jslogo', js: 'jslogo',
+    tailwind: 'tailwindlogo', 'tailwind css': 'tailwindlogo', html: 'htmllogo',
+    css: 'csslogo', php: 'phplogo', wordpress: 'wordpresslogo',
+    elementor: 'elementorlogo', firebase: 'firebaselogo', netlify: 'netlifylogo',
+    'chart.js': 'jslogo', vite: 'jslogo', 'html / css / javascript': 'htmllogo',
+};
+
+function mapTechStack(stack) {
+    const paths = [];
+    const seen = new Set();
+    for (const raw of stack || []) {
+        const key = String(raw).toLowerCase();
+        // try full label, then first token (e.g. "Node.js / Express" -> "node.js")
+        const logo = TECH_LOGO[key] || TECH_LOGO[key.split(/[\s/]+/)[0]];
+        if (logo && !seen.has(logo)) { seen.add(logo); paths.push(`/textures/gallery/${logo}.webp`); }
+        if (paths.length >= 4) break;
+    }
+    if (paths.length === 0) paths.push('/textures/gallery/reactlogo.webp', '/textures/gallery/jslogo.webp');
+    return paths;
+}
+
+const GALLERY_PROJECTS = PROGRAMMES.map((p, i) => {
+    const [front, painted] = PLACEHOLDER_ART[i % PLACEHOLDER_ART.length];
+    return {
+        id: `programme-${i}`,
+        title: p.title.toUpperCase(),
+        front,
+        painted,
+        url: p.url || null,
+        description: p.description,
+        techStack: mapTechStack(p.techStack),
+    };
+});
+
+// Studio monitors: text-driven, no custom texture (StudioRoom falls back to a
+// default monitor/tv screen when frontTexture is absent). Platforms must exist
+// in PLATFORM_CONFIG (linkedin/blog do).
+const STUDIO_CONTENT = INSIGHTS.map((s, i) => ({
+    id: `insight-${i}`,
+    platform: s.platform,
+    device: 'monitor',
+    title: s.title,
+    description: s.description,
+    url: s.url || null,
+    date: s.date || '',
+    readTime: s.readTime || '',
+}));
+
+// Awards / recognition shown in the About room. Shape matches what the original
+// CMS produced: { sotd, sotm, other } each with items[] of {label,date,image,url}.
+// image is null (no certificate scans yet) — the sky renderer guards on it.
+const AWARDS = {
+    sotd: {
+        id: 'award-sotd',
+        layout: 'certificate_grid',
+        title: 'Certifications',
+        items: CERTIFICATIONS.map((c) => ({ label: c.label, date: c.date, image: null, url: null })),
+        platformConfig: { label: 'CERTIFIED', color: '#1a1a1a', icon: '🎓' },
+    },
+    sotm: { id: 'award-sotm', layout: 'certificate_grid', title: '', items: [], platformConfig: { label: 'AWARD', color: '#1a1a1a', icon: '📅' } },
+    other: { id: 'award-other', layout: 'certificate_grid', title: '', items: [], platformConfig: { label: 'RECOGNITION', color: '#1a1a1a', icon: '🏆' } },
+};
 
 // External Sanity CMS is permanently disabled for this build (see sanity.js and
 // src/config/content.js). Forcing this false makes loadSanityData() short-circuit,
@@ -228,66 +311,18 @@ export function isSanityDataLoaded() {
 }
 
 export function useGalleryProjects() {
-    const [projects, setProjects] = useState(cache.projects);
-
-    useEffect(() => {
-        loadSanityData();
-
-        if (cache.loaded) {
-            setProjects(cache.projects);
-            return;
-        }
-
-        const handleUpdate = () => {
-            setProjects(cache.projects);
-        };
-
-        return subscribe(handleUpdate);
-    }, []);
-
-    return projects;
+    // Local content (Stage 2) — the external CMS path is disabled.
+    return GALLERY_PROJECTS;
 }
 
 export function useStudioContent() {
-    const [content, setContent] = useState(cache.content);
-
-    useEffect(() => {
-        loadSanityData();
-
-        if (cache.loaded) {
-            setContent(cache.content);
-            return;
-        }
-
-        const handleUpdate = () => {
-            setContent(cache.content);
-        };
-
-        return subscribe(handleUpdate);
-    }, []);
-
-    return content;
+    // Local content (Stage 2) — the external CMS path is disabled.
+    return STUDIO_CONTENT;
 }
 
 export function useAwards() {
-    const [awardsData, setAwardsData] = useState(cache.awards);
-
-    useEffect(() => {
-        loadSanityData();
-
-        if (cache.loaded) {
-            setAwardsData(cache.awards);
-            return;
-        }
-
-        const handleUpdate = () => {
-            setAwardsData(cache.awards);
-        };
-
-        return subscribe(handleUpdate);
-    }, []);
-
-    return awardsData;
+    // Local content (Stage 2) — the external CMS path is disabled.
+    return AWARDS;
 }
 
 // Automatyczne odpalenie pobierania przy załadowaniu modułu JS
