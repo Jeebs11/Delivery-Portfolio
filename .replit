@@ -1,0 +1,16 @@
+# Replit config for Mujeeb Lawal's immersive 3D portfolio (Vite static app).
+# Dev: `npm run dev`. Production: static deployment serving the built dist/.
+run = "npm run dev"
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+deploymentTarget = "static"
+publicDir = "dist"
+build = ["sh", "-c", "npm install && npm run build"]
+
+[[ports]]
+localPort = 5173
+externalPort = 80
