@@ -17,6 +17,16 @@ import { useGalleryProjects } from '../../../../hooks/useSanityData';
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
 
+// Soft Studio Ghibli tints the career papers bloom into on hover (cycled per card).
+const HOVER_TINTS = [
+    new THREE.Color(0.66, 0.82, 0.66), // sage
+    new THREE.Color(0.66, 0.80, 0.90), // sky
+    new THREE.Color(0.94, 0.85, 0.60), // warm yellow
+    new THREE.Color(0.91, 0.72, 0.60), // terracotta
+    new THREE.Color(0.93, 0.77, 0.75), // soft pink
+];
+const WHITE = new THREE.Color(1, 1, 1);
+
 // ============================================
 // ⚙️ AUDIO SETTINGS - TWEAK HERE
 // Edytuj te wartości, aby zmienić głośność i zasięg słyszalności szumu miasta
@@ -1097,6 +1107,19 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         overwrite: 'auto'
                     });
                 }
+
+                // Career papers: bloom into a soft Ghibli colour + a gentle flutter
+                if (materialRef.current?.material && !isSelected) {
+                    const t = HOVER_TINTS[index % HOVER_TINTS.length];
+                    gsap.to(materialRef.current.material.color, {
+                        r: t.r, g: t.g, b: t.b,
+                        duration: 0.5, ease: 'power2.out', overwrite: 'auto'
+                    });
+                    gsap.to(materialRef.current, {
+                        windStrength: 0.05,
+                        duration: 0.6, ease: 'power2.out', overwrite: 'auto'
+                    });
+                }
             }}
             onPointerLeave={(e) => {
                 if (isMobile || isTransitioning) return;
@@ -1110,6 +1133,18 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         duration: 0.5,
                         ease: 'power2.out',
                         overwrite: 'auto'
+                    });
+                }
+
+                // Career papers: fade the colour + flutter back out
+                if (materialRef.current?.material && !isSelected) {
+                    gsap.to(materialRef.current.material.color, {
+                        r: WHITE.r, g: WHITE.g, b: WHITE.b,
+                        duration: 0.5, ease: 'power2.out', overwrite: 'auto'
+                    });
+                    gsap.to(materialRef.current, {
+                        windStrength: 0.0,
+                        duration: 0.6, ease: 'power2.out', overwrite: 'auto'
                     });
                 }
             }}
