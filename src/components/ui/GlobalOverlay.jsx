@@ -6,6 +6,17 @@ import '../../styles/GlobalOverlay.scss';
 
 gsap.registerPlugin(TextPlugin);
 
+// --- Career role detail (Ghibli-palette) style helpers ---
+const careerTag = (bg, fg, bd) => ({
+    fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase',
+    padding: '4px 11px', borderRadius: '999px', border: `1.5px solid ${bd}`,
+    background: bg, color: fg, whiteSpace: 'nowrap',
+});
+const careerLabel = {
+    margin: '0 0 7px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em',
+    textTransform: 'uppercase', color: '#5a7d5a',
+};
+
 const GlobalOverlay = () => {
     const { overlayContent, closeOverlay } = useScene();
     const [isVisible, setIsVisible] = useState(false);
@@ -385,11 +396,13 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                 {label}
                             </span>
                             <h2 style={{
-                                fontSize: '1.8rem',
+                                fontSize: content.layout === 'career_role' ? '1.5rem' : '1.8rem',
                                 margin: 0,
-                                lineHeight: 1.1,
+                                lineHeight: 1.15,
                                 fontWeight: 800,
-                                fontFamily: "'Rubik Scribble', cursive", // Clean, bold
+                                // career roles use a clean legible face; other overlays keep the sketch font
+                                fontFamily: content.layout === 'career_role' ? "'Inter', system-ui, sans-serif" : "'Rubik Scribble', cursive",
+                                color: '#2b2b28',
                             }}>
                                 {content.title}
                             </h2>
@@ -494,6 +507,50 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                 </div>
                             )}
                         </div>
+                    ) : content.layout === 'career_role' ? (
+                        /* === LAYOUT: CAREER ROLE (adaptive, Ghibli tags) === */
+                        <>
+                            {/* Tag row: period · industry · employment type */}
+                            <div style={{
+                                display: 'flex', flexWrap: 'wrap', gap: '7px',
+                                paddingBottom: '1rem', marginBottom: '0.25rem',
+                                borderBottom: '1.5px dashed rgba(43,43,40,.28)',
+                                ...getStaggerStyle(150)
+                            }}>
+                                {content.period && <span style={careerTag('#e2eef4', '#3f6274', '#9cc0d6')}>{content.period}</span>}
+                                {content.industry && <span style={careerTag('#e5ede1', '#496a49', '#8ba888')}>{content.industry}</span>}
+                                {content.employmentType && <span style={careerTag('#f6e6d7', '#9a5f3f', '#cf8b6a')}>{content.employmentType}</span>}
+                            </div>
+
+                            {/* About the role */}
+                            <div style={{ ...getStaggerStyle(250) }}>
+                                <h4 style={careerLabel}>About the role</h4>
+                                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.55, color: '#3a3730' }}>
+                                    {content.description}
+                                </p>
+                            </div>
+
+                            {/* Key impacts */}
+                            {content.keyImpacts && content.keyImpacts.length > 0 && (
+                                <div style={{ marginTop: '1.1rem', ...getStaggerStyle(350) }}>
+                                    <h4 style={careerLabel}>Key impacts</h4>
+                                    <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                                        {content.keyImpacts.map((k, i) => {
+                                            const ci = k.indexOf(':');
+                                            const hasLead = ci > 0 && ci < 40;
+                                            const lead = hasLead ? k.slice(0, ci) : '';
+                                            const rest = hasLead ? k.slice(ci + 1) : k;
+                                            return (
+                                                <li key={i} style={{ position: 'relative', paddingLeft: '19px', fontSize: '0.9rem', lineHeight: 1.45, color: '#3a3730' }}>
+                                                    <span style={{ position: 'absolute', left: 0, top: '7px', width: '8px', height: '8px', borderRadius: '50%', background: '#cf8b6a', border: '1px solid #a5623f' }} />
+                                                    {hasLead ? <><b style={{ color: '#2b2b28', fontWeight: 800 }}>{lead}:</b>{rest}</> : rest}
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         /* === LAYOUT: DEFAULT (The Studio Style) === */
                         <>

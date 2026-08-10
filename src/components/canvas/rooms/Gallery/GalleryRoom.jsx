@@ -86,7 +86,7 @@ const BIRD_HEIGHT = 0.35;
 const RIGHT_CROP_AMOUNT = 0.2;
 
 const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
-    const { openOverlay, isTeleporting } = useScene();
+    const { openOverlay, closeOverlay, overlayContent, isTeleporting } = useScene();
     const { showTutorial, unlockAchievement, hidePopup } = useAchievements();
     const { globalVolume, isMuted } = useAudio();
     const effectiveVolume = isMuted ? 0 : AUDIO_SETTINGS.volume * globalVolume;
@@ -149,30 +149,26 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         }
     }, [showRoom, isWarmup, isTeleporting]);
 
+    // Build the HTML detail-panel content for a career role.
+    const roleToOverlay = (p) => p && ({
+        layout: 'career_role',
+        title: p.title,
+        platformConfig: { label: p.company },
+        period: p.pegYear ? String(p.pegYear).replace(/–/g, '-') : p.period,
+        industry: p.industry,
+        employmentType: p.employmentType,
+        description: p.description,
+        keyImpacts: p.keyImpacts || [],
+    });
+
+    // Career mode: clicking a hanging card opens its detail as an HTML panel
+    // (no 3D flip). The card stays put; the panel is the read surface.
     const handleCardClick = async (clickedIndex) => {
-        if (globalIsAnimating || isTransitioning) return;
-
-        // Unlock inspect achievement
+        if (isTransitioning) return;
         unlockAchievement('gallery_inspect');
-
-        if (selectedCard === clickedIndex) {
-            setGlobalIsAnimating(true);
-            await cardRefs.current[clickedIndex].closeCard();
-            setSelectedCard(null);
-            setGlobalIsAnimating(false);
-        } else if (selectedCard !== null) {
-            setGlobalIsAnimating(true);
-            await cardRefs.current[selectedCard].closeCard();
-            setSelectedCard(null);
-            await cardRefs.current[clickedIndex].openCard();
-            setSelectedCard(clickedIndex);
-            setGlobalIsAnimating(false);
-        } else {
-            setGlobalIsAnimating(true);
-            await cardRefs.current[clickedIndex].openCard();
-            setSelectedCard(clickedIndex);
-            setGlobalIsAnimating(false);
-        }
+        const role = activeProjects[clickedIndex % activeProjects.length];
+        const overlay = roleToOverlay(role);
+        if (overlay) openOverlay(overlay);
     };
 
     // Track if we've signaled ready
@@ -1168,6 +1164,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === PRZYCISK: OPEN NA PLECACH KARTKI === */}
                 <group
                     ref={buttonGroupRef}
+                    visible={false} /* career detail now shown in the HTML panel */
                     position={[0, 0.92, 0]}
                     rotation={[Math.PI, 0, 0]}
                 >
@@ -1225,6 +1222,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === TEKST NA PLECACH KARTKI (PROJECT DETAILS) === */}
                 <group
                     ref={detailsGroupRef}
+                    visible={false} /* career detail now shown in the HTML panel */
                     position={[0, -0.58, 0]} // Top zone: heading + description
                     rotation={[Math.PI, 0, 0]}
                 >
@@ -1261,6 +1259,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === SEKCJA TECH STACK NA PLECACH KARTKI === */}
                 <group
                     ref={techStackGroupRef}
+                    visible={false} /* career detail now shown in the HTML panel */
                     position={[0, 0.16, 0]} // Middle zone: key impacts
                     rotation={[Math.PI, 0, 0]}
                 >
