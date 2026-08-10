@@ -46,7 +46,10 @@ function mapTechStack(stack) {
 }
 
 const GALLERY_PROJECTS = PROGRAMMES.map((p, i) => {
-    const [front, painted] = PLACEHOLDER_ART[i % PLACEHOLDER_ART.length];
+    // Real composited screenshot card (Stage 3); fall back to placeholder art.
+    const [phFront, phPainted] = PLACEHOLDER_ART[i % PLACEHOLDER_ART.length];
+    const front = p.image || phFront;
+    const painted = p.image || phPainted;
     return {
         id: `programme-${i}`,
         title: p.title.toUpperCase(),
