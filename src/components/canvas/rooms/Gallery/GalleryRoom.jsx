@@ -227,9 +227,10 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const paintedUrls = activeProjects.map(p => (canHover && p.painted) ? p.painted : p.front);
     const paintedTextures = useTexture(paintedUrls);
 
-    // Load the universal back texture and the button texture conditionally
-    const backTextureRaw = useTexture(canHover ? '/textures/gallery/tylkartki_painted.webp' : '/textures/gallery/tylkartki.webp');
-    const overlayTextureRaw = useTexture(canHover ? '/textures/gallery/przyciskdotylukartki_painted.webp' : '/textures/gallery/przyciskdotylukartki.webp');
+    // Career card back = clean plain paper (the old project template had empty
+    // tech-logo boxes that don't fit a career card). The button frame is dropped.
+    const backTextureRaw = useTexture('/textures/paper-texture.webp');
+    const overlayTextureRaw = useTexture('/textures/paper-texture.webp');
 
     // Preload tech stack logos to prevent stuttering on first flip
     // We use the same conditional logic: painted on desktop, regular on touch
@@ -1167,11 +1168,11 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === PRZYCISK: OPEN NA PLECACH KARTKI === */}
                 <group
                     ref={buttonGroupRef}
-                    position={[0, 0.75, 0]}
+                    position={[0, 0.92, 0]}
                     rotation={[Math.PI, 0, 0]}
                 >
-                    {/* Warstwa 1: Wizualna ramka przycisku (bez eventów) */}
-                    <mesh>
+                    {/* Warstwa 1: button frame hidden for career cards (plain paper back) */}
+                    <mesh visible={false}>
                         <planeGeometry args={[1.2, 1.2 / 3.613]} />
                         <meshBasicMaterial color="#ffffff"
                             map={project.buttonTexture}
@@ -1224,7 +1225,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === TEKST NA PLECACH KARTKI (PROJECT DETAILS) === */}
                 <group
                     ref={detailsGroupRef}
-                    position={[0, -0.5, 0]} // Miejsce u góry (gdy Y=0.75 to dół, to Y=-0.4 to góra)
+                    position={[0, -0.58, 0]} // Top zone: heading + description
                     rotation={[Math.PI, 0, 0]}
                 >
                     <Text
@@ -1243,13 +1244,13 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                     <Text
                         ref={detailsTextRef2}
                         position={[0, 0.2, 0.01]} // Poniżej nagłówka
-                        fontSize={0.06}
+                        fontSize={0.05}
                         color="#333333"
                         font="/fonts/CabinSketch-Bold.ttf"
                         anchorX="center"
                         anchorY="top"
-                        maxWidth={1.1} // Maksymalna szerokość zanim zacznie łamać linie
-                        lineHeight={1.4}
+                        maxWidth={1.25} // Maksymalna szerokość zanim zacznie łamać linie
+                        lineHeight={1.32}
                         textAlign="center"
                         fillOpacity={0} // Start hidden
                     >
@@ -1260,7 +1261,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 {/* === SEKCJA TECH STACK NA PLECACH KARTKI === */}
                 <group
                     ref={techStackGroupRef}
-                    position={[0, 0.30, 0]} // Pomiędzy Project Details a przyciskiem Open Project
+                    position={[0, 0.16, 0]} // Middle zone: key impacts
                     rotation={[Math.PI, 0, 0]}
                 >
                     <Text
@@ -1279,14 +1280,14 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                     {/* Key impacts as a bulleted text block (career mode) */}
                     <Text
                         ref={impactsTextRef}
-                        position={[0, 0.03, 0.01]}
-                        fontSize={0.052}
+                        position={[0, 0.04, 0.01]}
+                        fontSize={0.04}
                         color="#333333"
                         font="/fonts/CabinSketch-Bold.ttf"
                         anchorX="center"
                         anchorY="top"
-                        maxWidth={1.15}
-                        lineHeight={1.35}
+                        maxWidth={1.3}
+                        lineHeight={1.3}
                         textAlign="left"
                         fillOpacity={0} // Start hidden
                     >
