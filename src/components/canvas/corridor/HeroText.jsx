@@ -12,14 +12,17 @@ let hasPlayedDrawAnimation = false;
 
 /**
  * HeroText Component - Hand-drawn Style with Sketch Fonts
- * 
- * WOW Effects for Awwwards SOTD:
- * - ITOM in Rubik Scribble font (splits into letters during scroll)
- * - Creative developer in Cabin Sketch font (also splits)
+ *
+ * WOW Effects:
+ * - MUJEEB in Rubik Scribble font (splits into letters during scroll)
+ * - "transformation lead" tagline in Cabin Sketch font (also splits)
  * - Floating micro-animations
  * - Parallax split effect
  * - RESPONSIVE: scales down on mobile
  */
+// Hero wordmark. Letter layout is generated so the name can be any length
+// while keeping the split animation symmetric.
+const HERO_WORD = 'MUJEEB';
 const HeroText = ({ position = [0, 0.3, 0] }) => {
     const groupRef = useRef();
     const letterRefs = useRef([]);
@@ -54,20 +57,31 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
     // Pre-allocate Vector3 to avoid per-frame garbage collection
     const worldPosVec = useRef(new THREE.Vector3());
 
-    // Letter positions for ITOM split effect
-    const letters = useMemo(() => [
-        { char: 'I', baseX: -0.95, splitDir: -1.6, delay: 0 },
-        { char: 'T', baseX: -0.43, splitDir: -0.6, delay: 0 },
-        { char: 'O', baseX: 0.23, splitDir: 0.6, delay: 0 },
-        { char: 'M', baseX: 0.95, splitDir: 1.8, delay: 0 },
-    ], []);
+    // Letter positions for the hero wordmark split effect.
+    // Generated from HERO_WORD so spacing stays symmetric for any name length.
+    const letters = useMemo(() => {
+        const chars = HERO_WORD.split('');
+        const spacing = 0.42;
+        const totalWidth = (chars.length - 1) * spacing;
+        const half = totalWidth / 2 || 1;
+        return chars.map((char, i) => {
+            const baseX = -totalWidth / 2 + i * spacing;
+            return { char, baseX, splitDir: (baseX / half) * 1.8, delay: 0 };
+        });
+    }, []);
+
+    // Fluid font size so a longer wordmark still fits the same width as "ITOM" did.
+    const letterFontSize = useMemo(() => {
+        const base = 3.6; // ~ fontSize * letters for the original 4-letter mark
+        return Math.min(0.9, base / HERO_WORD.length);
+    }, []);
 
     // Tagline words for split effect
     const taglineWords = useMemo(() => [
-        { text: '<', baseX: -0.85, splitDir: -1.5, delay: 0 },
-        { text: 'creative', baseX: -0.4, splitDir: -0.8, delay: 0 },
-        { text: 'developer', baseX: 0.4, splitDir: 0.8, delay: 0 },
-        { text: '/>', baseX: 0.85, splitDir: 1.5, delay: 0 },
+        { text: '-', baseX: -0.9, splitDir: -1.5, delay: 0 },
+        { text: 'transformation', baseX: -0.32, splitDir: -0.8, delay: 0 },
+        { text: 'lead', baseX: 0.42, splitDir: 0.8, delay: 0 },
+        { text: '-', baseX: 0.9, splitDir: 1.5, delay: 0 },
     ], []);
 
     // Animation loop
@@ -131,13 +145,13 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
 
     return (
         <group ref={groupRef} position={position} scale={[scale, scale, 1]}>
-            {/* ITOM Letters - Rubik Scribble font with fade-in animation */}
+            {/* Hero wordmark - Rubik Scribble font with fade-in animation */}
             {letters.map((letter, i) => (
                 <Text
-                    key={letter.char}
+                    key={i}
                     ref={(el) => (letterRefs.current[i] = el)}
                     position={[letter.baseX, 0.2, 0]}
-                    fontSize={0.9}
+                    fontSize={letterFontSize}
                     font={RUBIK_SCRIBBLE_URL}
                     color="#ffffff"
                     outlineWidth={0.012}
@@ -153,7 +167,7 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
             {/* Tagline words - Cabin Sketch font with fade-in animation */}
             {taglineWords.map((word, i) => (
                 <Text
-                    key={word.text}
+                    key={i}
                     ref={(el) => (taglineRefs.current[i] = el)}
                     position={[word.baseX, -0.55, 0.3]}
                     fontSize={0.16}

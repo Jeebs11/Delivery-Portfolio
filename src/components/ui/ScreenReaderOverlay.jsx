@@ -26,11 +26,11 @@ const ScreenReaderOverlay = () => {
 
             {/* Main accessible navigation */}
             <nav id="sr-main-nav" className="sr-only" aria-label="Portfolio rooms">
-                <h1>ITom — Creative Developer Portfolio</h1>
+                <h1>Mujeeb Lawal — Transformation Lead & Program Manager Portfolio</h1>
                 <h2>Portfolio Navigation</h2>
 
                 {!hasEntered && (
-                    <p>Welcome to ITom's interactive 3D portfolio. Click or press Enter on the doors to enter.</p>
+                    <p>Welcome to Mujeeb Lawal's interactive 3D portfolio. Click or press Enter on the doors to enter.</p>
                 )}
 
                 {hasEntered && !isInRoom && (
@@ -39,12 +39,12 @@ const ScreenReaderOverlay = () => {
                         <ul>
                             <li>
                                 <button onClick={() => teleportTo('about')} type="button">
-                                    About — My story, skills, and journey
+                                    About — My profile, career, and journey
                                 </button>
                             </li>
                             <li>
                                 <button onClick={() => teleportTo('gallery')} type="button">
-                                    The Gallery — My projects and work
+                                    Programmes — My key programmes and achievements
                                 </button>
                             </li>
                             <li>
@@ -54,7 +54,7 @@ const ScreenReaderOverlay = () => {
                             </li>
                             <li>
                                 <button onClick={() => teleportTo('studio')} type="button">
-                                    The Studio — Technologies and experience
+                                    Insights — Thought leadership and case studies
                                 </button>
                             </li>
                         </ul>
@@ -77,11 +77,11 @@ const ScreenReaderOverlay = () => {
                         {currentRoom === 'about' && (
                             <div aria-label="About room content">
                                 <h3>About Me</h3>
-                                <p>This room contains my personal story, awards, journey milestones, and technology skills displayed as interactive balloons.</p>
-                                
+                                <p>This room contains my professional profile, certifications, career milestones, and capabilities displayed as interactive balloons.</p>
+
                                 {awards && (
                                     <section>
-                                        <h4>My Awards</h4>
+                                        <h4>Certifications & Recognition</h4>
                                         <ul>
                                             {awards.sotd && awards.sotd.items && awards.sotd.items.map((a, i) => (
                                                 <li key={i}>{a.label} - {a.date} {a.url && <a href={a.url}>View</a>}</li>
@@ -99,8 +99,8 @@ const ScreenReaderOverlay = () => {
                         )}
                         {currentRoom === 'gallery' && (
                             <div aria-label="Gallery room content">
-                                <h3>My Projects</h3>
-                                <p>Browse through my portfolio projects displayed on paper cards. Click on a project card to see details and visit the live site.</p>
+                                <h3>My Programmes & Projects</h3>
+                                <p>Browse through my key programmes and delivery achievements displayed on paper cards. Click on a card to see details.</p>
                                 
                                 {projects && projects.length > 0 && (
                                     <ul>
@@ -118,13 +118,13 @@ const ScreenReaderOverlay = () => {
                         {currentRoom === 'contact' && (
                             <div aria-label="Contact room content">
                                 <h3>Contact Me</h3>
-                                <p>Find my social media links displayed as floating barrels. Click to visit my profiles on LinkedIn, GitHub, and other platforms.</p>
+                                <p>Find my contact and professional links displayed as floating barrels. Click to connect on LinkedIn and get in touch.</p>
                             </div>
                         )}
                         {currentRoom === 'studio' && (
                             <div aria-label="Studio room content">
-                                <h3>The Studio</h3>
-                                <p>Explore my experience and skills on rotating monitors. Click a monitor to read detailed information about my work.</p>
+                                <h3>Insights & Thought Leadership</h3>
+                                <p>Explore my insights and case studies on rotating monitors. Click a monitor to read detailed information.</p>
 
                                 {studio && studio.length > 0 && (
                                     <ul>
