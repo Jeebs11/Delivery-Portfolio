@@ -77,11 +77,12 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
     }, []);
 
     // Tagline words for split effect
+    // Single centred phrase so long words never collide; flanked by dashes that
+    // drift outward on the split animation.
     const taglineWords = useMemo(() => [
-        { text: '-', baseX: -0.9, splitDir: -1.5, delay: 0 },
-        { text: 'transformation', baseX: -0.32, splitDir: -0.8, delay: 0 },
-        { text: 'lead', baseX: 0.42, splitDir: 0.8, delay: 0 },
-        { text: '-', baseX: 0.9, splitDir: 1.5, delay: 0 },
+        { text: '-', baseX: -1.15, splitDir: -1.6, delay: 0 },
+        { text: 'transformation lead', baseX: 0, splitDir: 0, delay: 0 },
+        { text: '-', baseX: 1.15, splitDir: 1.6, delay: 0 },
     ], []);
 
     // Animation loop
