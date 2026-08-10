@@ -6,6 +6,7 @@ import { setMusicVolume, getMusicVolume } from '../../utils/audioManager';
 import { useAchievements } from '../../context/AchievementsContext';
 import AchievementPopup from './AchievementPopup';
 import AchievementsPanel from './AchievementsPanel';
+import { CLASSIC_SITE_URL } from '../../config/content';
 import '../../styles/NavigationUI.scss';
 
 // Room data for the map - positions are percentages on the map image
@@ -219,6 +220,46 @@ const NavigationUI = () => {
         <div className="navigation-ui">
             {/* Global Achievement Popup */}
             <AchievementPopup />
+
+            {/* Mode toggle — always visible (incl. entrance) so visitors can pick
+                the immersive experience or the classic CV. Hidden while inspecting. */}
+            {!isUIHidden && (
+                <a
+                    className="classic-view-link"
+                    href={CLASSIC_SITE_URL}
+                    aria-label="Switch to the classic CV view"
+                    title="Switch to the classic CV view"
+                    style={{
+                        position: 'fixed',
+                        left: '20px',
+                        bottom: '20px',
+                        zIndex: 9998,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '9px 15px',
+                        background: 'rgba(255,255,255,0.92)',
+                        border: '2px solid #1a1a1a',
+                        borderRadius: '7px',
+                        color: '#1a1a1a',
+                        textDecoration: 'none',
+                        fontFamily: '"Caveat", cursive',
+                        fontSize: '20px',
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        boxShadow: '2px 2px 0 rgba(0,0,0,0.18)',
+                        backdropFilter: 'blur(2px)',
+                    }}
+                >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                        <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" />
+                        <line x1="9" y1="13" x2="15" y2="13" />
+                        <line x1="9" y1="17" x2="13" y2="17" />
+                    </svg>
+                    Classic CV View
+                </a>
+            )}
 
             {/* Back Button - Only visible in rooms, hides up when clicked */}
             {hasEntered && isInRoom && (

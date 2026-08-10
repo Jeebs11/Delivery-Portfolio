@@ -11,6 +11,9 @@
  * then, rooms use the placeholder textures already shipped in the repo.
  */
 
+// The classic (2D) CV site — the "current view" this immersive mode toggles to.
+export const CLASSIC_SITE_URL = 'https://mujeeb-lawal.replit.app/';
+
 // ---------------------------------------------------------------------------
 // Profile & identity
 // ---------------------------------------------------------------------------
