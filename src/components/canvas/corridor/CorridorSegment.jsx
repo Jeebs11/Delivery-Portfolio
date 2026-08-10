@@ -7,6 +7,7 @@ import DoorSection from './DoorSection';
 import SegmentDoors from './SegmentDoors';
 import Avatar from './Avatar';
 import HeroText from './HeroText';
+import HudPanels from './HudPanels';
 import Doodles from './Doodles';
 import CorridorDecorations from './CorridorDecorations';
 
@@ -127,6 +128,9 @@ const CorridorSegment = ({
 
                 {/* Doodles around avatar */}
                 <Doodles />
+
+                {/* PM-tool diagram panels floating around the hero */}
+                <HudPanels />
 
                 {/* Segment number (debug - can remove later) */}
                 <Text
