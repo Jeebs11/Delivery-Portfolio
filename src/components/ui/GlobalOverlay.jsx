@@ -333,12 +333,24 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                             right: 'auto',
                             bottom: 'auto',
                             transform: isOpen ? 'translate(-50%, -50%)' : 'translate(-50%, 100%)',
+                        } : {}),
+                        // Career role: clean rounded card (matches the hanging paper cards),
+                        // no torn/zigzag border, clean typography.
+                        ...(content.layout === 'career_role' ? {
+                            borderRadius: '18px',
+                            border: '1.5px solid #d9d2c2',
+                            boxShadow: '0 22px 55px rgba(43,43,40,0.30)',
+                            fontFamily: "'Inter', system-ui, sans-serif",
+                            overflowX: 'hidden',
+                            overflowY: 'auto',
+                            maxHeight: '86vh',
                         } : {})
                     }}
-                    className="studio-paper-card"
+                    className={content.layout === 'career_role' ? 'studio-paper-card career-role-card' : 'studio-paper-card'}
                     onClick={(e) => e.stopPropagation()} // Prevent closing when clicking card
                 >
-                    {/* SVG Border Overlay for Torn Paper */}
+                    {/* Torn-paper border — used for the Studio/awards overlays, not the clean career card */}
+                    {content.layout !== 'career_role' && (
                     <svg
                         className="studio-border-overlay"
                         viewBox="0 0 100 100"
@@ -363,6 +375,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                             vectorEffect="non-scaling-stroke"
                         />
                     </svg>
+                    )}
 
                     {/* Paper Tape / Decor (Mobile Handle) */}
                     <div style={{

@@ -70,6 +70,19 @@
     // so we apply a drop-shadow on its wrapper in inline styles.
 }
 
+// Career role: clean rounded card (no torn clip-path), matching the hanging
+// paper cards. Rounded corners + shadow + cream bg come from inline styles.
+.career-role-card {
+    clip-path: none !important;
+    background: #f6f2e7;
+
+    &::before {
+        border-radius: 18px;
+        // keep the paper grain subtle so the card reads as clean
+        opacity: 0.55;
+    }
+}
+
 .studio-close-btn {
     display: flex;
     align-items: center;
