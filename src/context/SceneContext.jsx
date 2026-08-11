@@ -64,6 +64,10 @@ export const SceneProvider = ({ children }) => {
         setHasEntered(true);
     }, []);
 
+    // 2D landing -> request the in-canvas camera fly-through into the corridor
+    const [entranceRequested, setEntranceRequested] = useState(false);
+    const requestEntrance = useCallback(() => setEntranceRequested(true), []);
+
     const openOverlay = useCallback((content) => {
         setOverlayContent(content);
     }, []);
@@ -148,6 +152,8 @@ export const SceneProvider = ({ children }) => {
         markEntered,
         openOverlay,    // Exposed
         closeOverlay,   // Exposed
+        entranceRequested,
+        requestEntrance,
         isInRoom: currentRoom !== null,
         // Deep linking
         initialRoom: initialRoom.current,
@@ -177,6 +183,8 @@ export const SceneProvider = ({ children }) => {
         markEntered,
         openOverlay,
         closeOverlay,
+        entranceRequested,
+        requestEntrance,
         // Teleportation dependencies
         teleportTarget,
         isTeleporting,

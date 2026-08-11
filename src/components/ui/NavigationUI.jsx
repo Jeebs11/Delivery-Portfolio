@@ -221,9 +221,8 @@ const NavigationUI = () => {
             {/* Global Achievement Popup */}
             <AchievementPopup />
 
-            {/* Mode toggle — always visible (incl. entrance) so visitors can pick
-                the immersive experience or the classic CV. Hidden while inspecting. */}
-            {!isUIHidden && (
+            {/* Mode toggle — hidden on the 2D landing; shown once inside the house. */}
+            {!isUIHidden && hasEntered && (
                 <a
                     className="classic-view-link"
                     href={CLASSIC_SITE_URL}

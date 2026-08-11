@@ -1,14 +1,38 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
+import gsap from 'gsap';
 import InfiniteCorridorManager from './corridor/InfiniteCorridorManager';
-import EntranceDoors from './entrance/EntranceDoors';
 import EmptyCorridor from './entrance/EmptyCorridor';
 import TeleportRoom from './corridor/TeleportRoom';
 import RoomWarmup from './corridor/RoomWarmup';
 import useInfiniteCamera from '../../hooks/useInfiniteCamera';
-import SignSystem from './entrance/SignSystem';
 import { useScene } from '../../context/SceneContext';
+import { playBackgroundMusic } from '../../utils/audioManager';
+
+/**
+ * EntranceFly — flies the camera from the start position into the corridor when
+ * the 2D landing requests entry (mirrors the old EntranceDoors fly-through),
+ * then marks the experience as entered.
+ */
+const EntranceFly = () => {
+    const { entranceRequested, markEntered } = useScene();
+    const { camera } = useThree();
+    const started = useRef(false);
+    useEffect(() => {
+        if (!entranceRequested || started.current) return;
+        started.current = true;
+        try { playBackgroundMusic(); } catch (e) { /* noop */ }
+        gsap.to(camera.position, {
+            z: 11,
+            y: 0.2,
+            duration: 1.8,
+            ease: 'power2.inOut',
+            onComplete: () => markEntered(),
+        });
+    }, [entranceRequested, camera, markEntered]);
+    return null;
+};
 
 // Positioning:
 // - Segment -1's SegmentDoors are at Z=15
@@ -86,18 +110,8 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
                 <EmptyCorridor camera={camera} />
             )}
 
-            {/* === ENTRANCE DOORS (visible until entered) === */}
-            {!hasEntered && (
-                <EntranceDoors
-                    position={[0, 0, ENTRANCE_DOORS_Z]}
-                    onComplete={handleEntranceComplete}
-                />
-            )}
-
-            {/* Separate SignSystem to avoid fragment nesting issues if any */}
-            {!hasEntered && (
-                <SignSystem position={[0, 0, ENTRANCE_DOORS_Z]} />
-            )}
+            {/* === ENTRANCE FLY-THROUGH (2D landing drives entry) === */}
+            {!hasEntered && <EntranceFly />}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
             <InfiniteCorridorManager
