@@ -2,11 +2,12 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
 import InfiniteCorridorManager from './corridor/InfiniteCorridorManager';
-import LandingScene from './entrance/LandingScene';
+import EntranceDoors from './entrance/EntranceDoors';
 import EmptyCorridor from './entrance/EmptyCorridor';
 import TeleportRoom from './corridor/TeleportRoom';
 import RoomWarmup from './corridor/RoomWarmup';
 import useInfiniteCamera from '../../hooks/useInfiniteCamera';
+import SignSystem from './entrance/SignSystem';
 import { useScene } from '../../context/SceneContext';
 
 // Positioning:
@@ -85,9 +86,17 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
                 <EmptyCorridor camera={camera} />
             )}
 
-            {/* === LANDING SCENE (MUJEEB HQ — visible until entered) === */}
+            {/* === ENTRANCE DOORS (visible until entered) === */}
             {!hasEntered && (
-                <LandingScene position={[0, 0, ENTRANCE_DOORS_Z]} />
+                <EntranceDoors
+                    position={[0, 0, ENTRANCE_DOORS_Z]}
+                    onComplete={handleEntranceComplete}
+                />
+            )}
+
+            {/* Separate SignSystem to avoid fragment nesting issues if any */}
+            {!hasEntered && (
+                <SignSystem position={[0, 0, ENTRANCE_DOORS_Z]} />
             )}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}

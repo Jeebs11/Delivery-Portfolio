@@ -12,7 +12,6 @@ import { SceneProvider, useScene } from './context/SceneContext';
 import NavigationUI from './components/ui/NavigationUI';
 import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
-import EntranceSpirits from './components/ui/EntranceSpirits';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
 import { loadSanityData } from './hooks/useSanityData';
