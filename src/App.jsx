@@ -202,7 +202,6 @@ function AppContent() {
           {isLoaded && (
             <>
               <NavigationUI />
-              <EntranceSpirits />
               <GlobalOverlay />
               <PaperTransition />
               <ScreenReaderOverlay />
