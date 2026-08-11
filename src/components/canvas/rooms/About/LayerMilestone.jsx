@@ -95,10 +95,16 @@ export const ABOUT_LAYERS = [
         title: 'BEYOND WORK',
         caption: 'Family, travel, sport, curiosity.',
         items: [
-            { src: `${L}/l2-sports.webp`, pos: [0, -0.4, -0.6], w: 9.0 },
-            { src: `${L}/l2-family.webp`, pos: [0, 0.9, 0.2], w: 3.2 },
-            { src: `${L}/l2-cycling.webp`, pos: [-6.0, 3.0, 0], w: 2.8 },
-            { src: `${L}/l2-travel.webp`, pos: [6.0, 3.0, 0], w: 2.6 },
+            // family island alone in the centre
+            { src: `${L}/l2-family.webp`, pos: [0, 0.9, 0.3], w: 2.8 },
+            // sports spread around it (separate islands, well spaced)
+            { src: `${L}/l2-soccer.webp`, pos: [-4.7, 0.4, 0], w: 2.5 },
+            { src: `${L}/l2-football.webp`, pos: [4.5, 0.8, 0], w: 2.9 },
+            { src: `${L}/l2-basketball.webp`, pos: [-3.8, -2.6, 0], w: 2.7 },
+            { src: `${L}/l2-golf.webp`, pos: [4.3, -2.5, 0], w: 2.6 },
+            // corners: cycling + travel
+            { src: `${L}/l2-cycling.webp`, pos: [-5.8, 3.1, 0], w: 2.7 },
+            { src: `${L}/l2-travel.webp`, pos: [5.8, 3.1, 0], w: 2.5 },
         ],
     },
     {
