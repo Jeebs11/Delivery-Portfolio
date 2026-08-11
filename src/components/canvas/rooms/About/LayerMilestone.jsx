@@ -54,7 +54,7 @@ const LayerMilestone = ({ z, scrollProgressRef, config }) => {
                 const w = item.w;
                 const h = item.h || w / aspect;
                 return (
-                    <mesh key={i} ref={(el) => (itemRefs.current[i] = el)} position={item.pos} scale={item.scale || 1}>
+                    <mesh key={i} ref={(el) => (itemRefs.current[i] = el)} position={item.pos} rotation={item.rot || [0, 0, 0]} scale={item.scale || 1}>
                         <planeGeometry args={[w, h]} />
                         <meshBasicMaterial map={tex} color="#ffffff" transparent opacity={0} side={THREE.DoubleSide} depthWrite={false} />
                     </mesh>
@@ -113,15 +113,15 @@ export const ABOUT_LAYERS = [
         subtitle: 'Credentials and measurable impact',
         caption: 'Proof of experience, capability and delivery.',
         items: [
-            // cloud platform behind the certificates
-            { src: `${L}/l3-cloud.webp`, pos: [-3.2, -1.2, -0.6], w: 7.5 },
-            // certificate row
-            { src: `${L}/l3-cert-prince2.webp`, pos: [-5.7, 0.8, 0], w: 1.4 },
-            { src: `${L}/l3-cert-psm1.webp`, pos: [-4.35, 0.8, 0], w: 1.4 },
-            { src: `${L}/l3-cert-psm2.webp`, pos: [-3.0, 0.8, 0], w: 1.4 },
-            { src: `${L}/l3-cert-pmp.webp`, pos: [-1.65, 0.85, 0], w: 1.4 },
-            // trophy in front, lower-centre of the cloud
-            { src: `${L}/l3-trophy.webp`, pos: [-3.5, -1.5, 0.15], w: 1.4 },
+            // cloud platform the certificates + trophy sit on
+            { src: `${L}/l3-cloud.webp`, pos: [-3.2, -1.0, -0.6], w: 7.6 },
+            // certificates fanned in an arc around the trophy, resting on the cloud
+            { src: `${L}/l3-cert-prince2.webp`, pos: [-5.5, 0.15, -0.1], w: 1.5, rot: [0, 0, 0.22] },
+            { src: `${L}/l3-cert-psm1.webp`, pos: [-4.15, 0.55, -0.05], w: 1.5, rot: [0, 0, 0.09] },
+            { src: `${L}/l3-cert-psm2.webp`, pos: [-2.55, 0.55, -0.05], w: 1.5, rot: [0, 0, -0.09] },
+            { src: `${L}/l3-cert-pmp.webp`, pos: [-1.2, 0.15, -0.1], w: 1.5, rot: [0, 0, -0.22] },
+            // trophy front-and-centre on the cloud, nested inside the arc
+            { src: `${L}/l3-trophy.webp`, pos: [-3.35, -0.9, 0.2], w: 1.5 },
             // measurable-impact stat clouds (text baked in)
             { src: `${L}/l3-stat-years.webp`, pos: [3.0, 2.3, 0], w: 2.6 },
             { src: `${L}/l3-stat-reporting.webp`, pos: [5.2, 1.0, 0], w: 2.7 },
