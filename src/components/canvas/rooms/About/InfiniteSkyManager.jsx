@@ -8,6 +8,7 @@ import { useScene } from '../../../../context/SceneContext';
 import '../../shaders/RevealBasicMaterial'; // Registers brush-stroke reveal for BasicMaterial
 import { isTouchDevice } from '../../../../utils/deviceDetect';
 import { useAwards } from '../../../../hooks/useSanityData';
+import LayerMilestone, { ABOUT_LAYERS } from './LayerMilestone';
 
 // Reusable Vector3 to avoid allocations in event handlers
 const _tempVec3 = new THREE.Vector3();
@@ -220,33 +221,17 @@ const InfiniteSkyManager = ({ scrollProgressRef }) => {
                 />
             ))}
 
-            {/* === STORY MILESTONES (loop every 160 units) === */}
+            {/* === 3-LAYER ABOUT JOURNEY (Mujeeb at work / Beyond work / What drives me) === */}
             {activeStoryCycles.map((cycleIndex) => (
                 <group key={`story-cycle-${cycleIndex}`}>
-                    {/* === INTRO MILESTONE === */}
-                    <IntroMilestone
-                        z={-(cycleIndex * STORY_CYCLE_LENGTH + 15)}
-                        scrollProgressRef={scrollProgressRef}
-                    />
-
-                    {/* === AWARDS MILESTONE === */}
-                    <AwardsMilestone
-                        z={-(cycleIndex * STORY_CYCLE_LENGTH + 55)}
-                        scrollProgressRef={scrollProgressRef}
-                    />
-
-                    {/* === JOURNEY MILESTONE === */}
-                    <JourneyMilestone
-                        z={-(cycleIndex * STORY_CYCLE_LENGTH + 95)}
-                        scrollProgressRef={scrollProgressRef}
-                    />
-
-                    {/* === SKILLS MILESTONE === */}
-
-                    <SkillsMilestone
-                        z={-(cycleIndex * STORY_CYCLE_LENGTH + 135)}
-                        scrollProgressRef={scrollProgressRef}
-                    />
+                    {ABOUT_LAYERS.map((layer, li) => (
+                        <LayerMilestone
+                            key={layer.id}
+                            z={-(cycleIndex * STORY_CYCLE_LENGTH + 20 + li * 55)}
+                            scrollProgressRef={scrollProgressRef}
+                            config={layer}
+                        />
+                    ))}
                 </group>
             ))}
         </group>
