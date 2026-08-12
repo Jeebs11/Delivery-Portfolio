@@ -59,9 +59,9 @@ const LandingPage = () => {
                     user-select: none; -webkit-user-drag: none;
                 }
                 .home-cloud { position: absolute; pointer-events: none; opacity: .92; }
-                .cloud-1 { left: 3%;  top: 12%; width: 15%; animation: cdrift1 46s ease-in-out infinite alternate; }
-                .cloud-2 { right: 4%; top: 7%;  width: 12%; animation: cdrift2 57s ease-in-out infinite alternate; }
-                .cloud-3 { left: 25%; top: 3%;  width: 8%;  animation: cdrift3 40s ease-in-out infinite alternate; }
+                .cloud-1 { right: 5%;  top: 4%;  width: 13%; animation: cdrift1 46s ease-in-out infinite alternate; }
+                .cloud-2 { right: 15%; top: 31%; width: 11%; animation: cdrift2 57s ease-in-out infinite alternate; }
+                .cloud-3 { right: 3%;  top: 17%; width: 8%;  animation: cdrift3 40s ease-in-out infinite alternate; }
                 @keyframes cdrift1 { from { transform: translateX(0); } to { transform: translateX(28px); } }
                 @keyframes cdrift2 { from { transform: translateX(0); } to { transform: translateX(-32px); } }
                 @keyframes cdrift3 { from { transform: translateX(0); } to { transform: translateX(20px); } }

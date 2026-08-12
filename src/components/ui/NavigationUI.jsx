@@ -221,6 +221,48 @@ const NavigationUI = () => {
             {/* Global Achievement Popup */}
             <AchievementPopup />
 
+            {/* Ask-AI launcher — bottom-left, sits above the Classic CV link.
+                Opens the chatbot that lives on the classic site. */}
+            {!isUIHidden && hasEntered && (
+                <a
+                    className="ask-ai-link"
+                    href={CLASSIC_SITE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Ask my AI assistant"
+                    title="Ask my AI assistant"
+                    style={{
+                        position: 'fixed',
+                        left: '20px',
+                        bottom: '64px',
+                        zIndex: 9998,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '9px 15px',
+                        background: 'rgba(255,255,255,0.92)',
+                        border: '2px solid #1a1a1a',
+                        borderRadius: '7px',
+                        color: '#1a1a1a',
+                        textDecoration: 'none',
+                        fontFamily: '"Caveat", cursive',
+                        fontSize: '20px',
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        boxShadow: '2px 2px 0 rgba(0,0,0,0.18)',
+                        backdropFilter: 'blur(2px)',
+                    }}
+                >
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                        <line x1="9" y1="10.5" x2="9" y2="10.5" />
+                        <line x1="12.5" y1="10.5" x2="12.5" y2="10.5" />
+                        <line x1="16" y1="10.5" x2="16" y2="10.5" />
+                    </svg>
+                    Ask AI
+                </a>
+            )}
+
             {/* Mode toggle — hidden on the 2D landing; shown once inside the house. */}
             {!isUIHidden && hasEntered && (
                 <a

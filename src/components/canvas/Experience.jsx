@@ -8,7 +8,6 @@ import TeleportRoom from './corridor/TeleportRoom';
 import RoomWarmup from './corridor/RoomWarmup';
 import useInfiniteCamera from '../../hooks/useInfiniteCamera';
 import { useScene } from '../../context/SceneContext';
-import { playBackgroundMusic } from '../../utils/audioManager';
 
 /**
  * EntranceFly — flies the camera from the start position into the corridor when
@@ -22,7 +21,6 @@ const EntranceFly = () => {
     useEffect(() => {
         if (!entranceRequested || started.current) return;
         started.current = true;
-        try { playBackgroundMusic(); } catch (e) { /* noop */ }
         gsap.to(camera.position, {
             z: 11,
             y: 0.2,
