@@ -18,6 +18,11 @@ const EntranceFly = () => {
     const { entranceRequested, markEntered } = useScene();
     const { camera } = useThree();
     const started = useRef(false);
+    // On (re)mount of the landing state — including a return from the exit —
+    // frame the camera back on the entrance.
+    useEffect(() => {
+        camera.position.set(0, 0.2, 28);
+    }, [camera]);
     useEffect(() => {
         if (!entranceRequested || started.current) return;
         started.current = true;
@@ -29,6 +34,19 @@ const EntranceFly = () => {
             onComplete: () => markEntered(),
         });
     }, [entranceRequested, camera, markEntered]);
+    return null;
+};
+
+// End of the walkable corridor (past segment 0's last door + frames, before the
+// next segment would repeat). Reaching here surfaces the 2D exit scene.
+const EXIT_Z = -68;
+const ExitWatcher = () => {
+    const { hasEntered, isInRoom, isTeleporting, exitReached, reachExit } = useScene();
+    const { camera } = useThree();
+    useFrame(() => {
+        if (!hasEntered || isInRoom || isTeleporting || exitReached) return;
+        if (camera.position.z < EXIT_Z) reachExit();
+    });
     return null;
 };
 
@@ -49,19 +67,19 @@ const ENTRANCE_DOORS_Z = 22;
  */
 const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
     // Use SceneContext for room state
-    const { hasEntered, markEntered, enterRoom, isTeleporting, isInRoom, pendingDoorClick } = useScene();
+    const { hasEntered, markEntered, enterRoom, isTeleporting, isInRoom, pendingDoorClick, exitReached } = useScene();
 
     const { camera } = useThree();
 
-    // Camera control - both scroll and parallax only work after entering
-    // Disable during teleporting to prevent scroll interference
+    // Camera control - both scroll and parallax only work after entering.
+    // Disable during teleporting, and once the exit scene is up.
     const { setCameraOverride } = useInfiniteCamera({
         segmentLength: 80,
         scrollSpeed: 0.025,
         parallaxIntensity: 0.4,
         smoothing: 0.06,
-        scrollEnabled: hasEntered && !isTeleporting && !isInRoom,
-        parallaxEnabled: hasEntered && !isTeleporting && !isInRoom
+        scrollEnabled: hasEntered && !isTeleporting && !isInRoom && !exitReached,
+        parallaxEnabled: hasEntered && !isTeleporting && !isInRoom && !exitReached
     });
 
     // NOTE: Camera override is now managed directly by DoorSection.jsx
@@ -110,6 +128,9 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
 
             {/* === ENTRANCE FLY-THROUGH (2D landing drives entry) === */}
             {!hasEntered && <EntranceFly />}
+
+            {/* === EXIT WATCHER (surfaces the exit scene at the end of the corridor) === */}
+            {hasEntered && <ExitWatcher />}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
             <InfiniteCorridorManager

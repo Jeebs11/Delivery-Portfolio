@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useScene } from '../../context/SceneContext';
 
 /**
@@ -13,6 +13,9 @@ const L = '/textures/entrance/landing';
 const LandingPage = () => {
     const { hasEntered, requestEntrance } = useScene();
     const [leaving, setLeaving] = useState(false);
+
+    // Re-show cleanly if we return to the landing from the exit scene.
+    useEffect(() => { if (!hasEntered) setLeaving(false); }, [hasEntered]);
 
     if (hasEntered) return null;
 

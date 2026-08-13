@@ -68,6 +68,18 @@ export const SceneProvider = ({ children }) => {
     const [entranceRequested, setEntranceRequested] = useState(false);
     const requestEntrance = useCallback(() => setEntranceRequested(true), []);
 
+    // End-of-corridor exit scene + return to the landing
+    const [exitReached, setExitReached] = useState(false);
+    const reachExit = useCallback(() => setExitReached(true), []);
+    const [resetToken, setResetToken] = useState(0);
+    const returnToEntrance = useCallback(() => {
+        setExitReached(false);
+        setEntranceRequested(false);
+        setCurrentRoom(null);
+        setHasEntered(false);
+        setResetToken((t) => t + 1); // re-arm the entrance fly + snap camera to start
+    }, []);
+
     const openOverlay = useCallback((content) => {
         setOverlayContent(content);
     }, []);
@@ -154,6 +166,10 @@ export const SceneProvider = ({ children }) => {
         closeOverlay,   // Exposed
         entranceRequested,
         requestEntrance,
+        exitReached,
+        reachExit,
+        returnToEntrance,
+        resetToken,
         isInRoom: currentRoom !== null,
         // Deep linking
         initialRoom: initialRoom.current,
@@ -185,6 +201,10 @@ export const SceneProvider = ({ children }) => {
         closeOverlay,
         entranceRequested,
         requestEntrance,
+        exitReached,
+        reachExit,
+        returnToEntrance,
+        resetToken,
         // Teleportation dependencies
         teleportTarget,
         isTeleporting,

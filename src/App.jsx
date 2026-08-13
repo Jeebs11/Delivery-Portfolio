@@ -13,6 +13,7 @@ import NavigationUI from './components/ui/NavigationUI';
 import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
 import LandingPage from './components/ui/LandingPage';
+import ExitPage from './components/ui/ExitPage';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
 import { loadSanityData } from './hooks/useSanityData';
@@ -206,6 +207,7 @@ function AppContent() {
               <PaperTransition />
               <ScreenReaderOverlay />
               <LandingPage />
+              <ExitPage />
             </>
           )}
 
