@@ -182,6 +182,7 @@ const CorridorSegment = ({
                 <SegmentDoors
                     position={[0, 0, zOffset - SEGMENT_LENGTH + 5]}
                     corridorHeight={3.5}
+                    isExit={segmentIndex === 0}
                 />
             )}
         </group>

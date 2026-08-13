@@ -37,19 +37,6 @@ const EntranceFly = () => {
     return null;
 };
 
-// End of the walkable corridor (past segment 0's last door + frames, before the
-// next segment would repeat). Reaching here surfaces the 2D exit scene.
-const EXIT_Z = -68;
-const ExitWatcher = () => {
-    const { hasEntered, isInRoom, isTeleporting, exitReached, reachExit } = useScene();
-    const { camera } = useThree();
-    useFrame(() => {
-        if (!hasEntered || isInRoom || isTeleporting || exitReached) return;
-        if (camera.position.z < EXIT_Z) reachExit();
-    });
-    return null;
-};
-
 // Positioning:
 // - Segment -1's SegmentDoors are at Z=15
 // - Entrance doors at Z=22 (in front of segment doors)
@@ -67,7 +54,7 @@ const ENTRANCE_DOORS_Z = 22;
  */
 const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
     // Use SceneContext for room state
-    const { hasEntered, markEntered, enterRoom, isTeleporting, isInRoom, pendingDoorClick, exitReached } = useScene();
+    const { hasEntered, markEntered, enterRoom, isTeleporting, isInRoom, pendingDoorClick } = useScene();
 
     const { camera } = useThree();
 
@@ -78,8 +65,8 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
         scrollSpeed: 0.025,
         parallaxIntensity: 0.4,
         smoothing: 0.06,
-        scrollEnabled: hasEntered && !isTeleporting && !isInRoom && !exitReached,
-        parallaxEnabled: hasEntered && !isTeleporting && !isInRoom && !exitReached
+        scrollEnabled: hasEntered && !isTeleporting && !isInRoom,
+        parallaxEnabled: hasEntered && !isTeleporting && !isInRoom
     });
 
     // NOTE: Camera override is now managed directly by DoorSection.jsx
@@ -128,9 +115,6 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
 
             {/* === ENTRANCE FLY-THROUGH (2D landing drives entry) === */}
             {!hasEntered && <EntranceFly />}
-
-            {/* === EXIT WATCHER (surfaces the exit scene at the end of the corridor) === */}
-            {hasEntered && <ExitWatcher />}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
             <InfiniteCorridorManager

@@ -58,23 +58,26 @@ const InfiniteCorridorManager = ({
     // Pre-mount segments 0 and 1 so shaders compile during preloader.
     // Segment -1 is NOT pre-mounted to avoid visual collision with entrance doors.
     // It mounts dynamically when camera reaches entrance (behind camera = invisible stutter).
-    const [activeSegments, setActiveSegments] = useState([0, 1]);
+    const [activeSegments, setActiveSegments] = useState([0]);
 
     // Calculate which segment the camera is in
     const getSegmentFromZ = useCallback((z) => {
         return Math.floor((10 - z) / SEGMENT_LENGTH);
     }, []);
 
-    // Update active segments based on camera position
+    // Update active segments based on camera position.
+    // CAP: the corridor no longer loops — nothing past segment 0 is generated,
+    // so the repeating hero is gone. The end of segment 0 leads to the exit
+    // scene, keeping the entrance and exit separate.
     useFrame(() => {
         const currentSegment = getSegmentFromZ(camera.position.z);
 
-        // Render previous, current, and next segment
+        // Render previous, current, and next segment — but never past segment 0.
         const shouldBeActive = [
             currentSegment - 1,
             currentSegment,
             currentSegment + 1
-        ];
+        ].filter((seg) => seg <= 0);
 
         // Check if we need to update
         const needsUpdate = shouldBeActive.some(seg => !activeSegments.includes(seg)) ||

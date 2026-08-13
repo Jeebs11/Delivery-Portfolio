@@ -4,6 +4,9 @@ import { useTexture, PositionalAudio } from '@react-three/drei';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { useAudio } from '../../../context/AudioManager';
+import { useScene } from '../../../context/SceneContext';
+
+const EXIT_LINKEDIN_URL = 'https://www.linkedin.com/in/mujeeb-lawal-b381032a';
 
 // Global settings for automatic segment doors audio
 const SEGMENT_DOOR_AUDIO_SETTINGS = {
@@ -23,13 +26,15 @@ const SEGMENT_DOOR_AUDIO_SETTINGS = {
 const SegmentDoors = ({
     position = [0, 0, 0],
     corridorHeight = 3.5,
-    corridorWidth = 7
+    corridorWidth = 7,
+    isExit = false
 }) => {
     const leftDoorRef = useRef();
     const rightDoorRef = useRef();
     const leftHandleRef = useRef();
     const rightHandleRef = useRef();
     const isOpenRef = useRef(false);
+    const passedRef = useRef(false); // guards the walk-through -> landing trigger
 
     // Audio Refs for 3D positional sound
     const openAudioRef = useRef();
@@ -38,12 +43,14 @@ const SegmentDoors = ({
 
     const { camera } = useThree();
     const { globalVolume, isMuted } = useAudio();
+    const { returnToEntrance } = useScene();
 
     // Load textures
     // Note: User provided specific filenames in corridor/doors/
     const frameTexture = useTexture('/textures/corridor/doors/frame_sketch.webp');
     const doorLeftTexture = useTexture('/textures/corridor/doors/doorrleft.webp');
     const doorRightTexture = useTexture('/textures/corridor/doors/dorright.webp');
+    const doorPlainTexture = useTexture('/textures/corridor/doors/backsingledoors.webp'); // no ∞, for the exit doors
     const handleLeftTexture = useTexture('/textures/corridor/doors/handle_left_sketch.webp');
     const handleRightTexture = useTexture('/textures/corridor/doors/handle_right_sketch.webp');
     const doorBackTexture = useTexture('/textures/corridor/doors/door_back.webp');
@@ -146,12 +153,30 @@ const SegmentDoors = ({
                 gsap.to(rightHandleRef.current.rotation, { z: 0, duration: 0.2, ease: 'power2.out', delay: 0.5 });
             }
         }
+
+        // Exit doors: walking through (past the doorway) returns to the landing.
+        if (isExit) {
+            if (!passedRef.current && camera.position.z < position[2] - 0.6 && distanceX < 1.2) {
+                passedRef.current = true;
+                returnToEntrance();
+            }
+            if (camera.position.z > 0) passedRef.current = false; // re-arm after returning
+        }
     });
 
-    // Wall Decorations
+    // Wall Decorations (loop version)
     const whileTrueTexture = useTexture('/textures/corridor/decorations/while_true_loop.webp');
     const coffeeTexture = useTexture('/textures/corridor/decorations/coffee_debug.webp');
     const ideaTexture = useTexture('/textures/corridor/decorations/idea_process.webp');
+
+    // Exit-wall decorations (only used when isExit)
+    const thankyouTex = useTexture('/textures/exit/exit_thankyou.webp');
+    const planTex = useTexture('/textures/exit/exit_plan.webp');
+    const enhanceTex = useTexture('/textures/exit/exit_enhance.webp');
+    const leadTex = useTexture('/textures/exit/exit_lead.webp');
+    const talkTex = useTexture('/textures/exit/exit_talk.webp');
+    const signTex = useTexture('/textures/exit/exit_sign.webp');
+    const plantTex = useTexture('/textures/exit/exit_plant.webp');
 
     return (
         <group position={[position[0], 0, position[2]]}>
@@ -166,18 +191,36 @@ const SegmentDoors = ({
                 - rotation={[x, y, z]} -> Obrót (np. z = 0.1 to lekki przechył)
                 - args={[Szerokość, Wysokość]} -> Rozmiar
             */}
-            <mesh
-                position={[-(doorOpeningWidth / 2 + sideWallWidth / 2), wallCenterY, 0.07]}
-                rotation={[0, 0, 0.05]}
-            >
-                <planeGeometry args={[1.2, 1.2 / 0.402]} />
-                <meshBasicMaterial color="#e0e0e0"
-                    map={ideaTexture}
-                    transparent={true}
-                    roughness={0.9}
-                    alphaTest={0.1}
-                />
-            </mesh>
+            {!isExit && (
+                <mesh
+                    position={[-(doorOpeningWidth / 2 + sideWallWidth / 2), wallCenterY, 0.07]}
+                    rotation={[0, 0, 0.05]}
+                >
+                    <planeGeometry args={[1.2, 1.2 / 0.402]} />
+                    <meshBasicMaterial color="#e0e0e0"
+                        map={ideaTexture}
+                        transparent={true}
+                        roughness={0.9}
+                        alphaTest={0.1}
+                    />
+                </mesh>
+            )}
+            {/* EXIT: PLAN / ENHANCE / LEAD panels stacked on the left wall */}
+            {isExit && (() => {
+                const lx = -(doorOpeningWidth / 2 + sideWallWidth / 2);
+                const panels = [
+                    { tex: planTex, y: 1.05, a: 1.48 },
+                    { tex: enhanceTex, y: 0.0, a: 1.525 },
+                    { tex: leadTex, y: -1.05, a: 1.48 },
+                ];
+                const w = 1.55;
+                return panels.map((p, i) => (
+                    <mesh key={i} position={[lx, p.y, 0.07]}>
+                        <planeGeometry args={[w, w / p.a]} />
+                        <meshBasicMaterial map={p.tex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
+                    </mesh>
+                ));
+            })()}
 
             {/* === RIGHT WALL PANEL (Coffee & Bug) === */}
             <mesh position={[(doorOpeningWidth / 2 + sideWallWidth / 2), wallCenterY, 0]}>
@@ -188,18 +231,36 @@ const SegmentDoors = ({
             {/* 
                 EDYCJA GRAFIKI PRAWEJ (Coffee):
             */}
-            <mesh
-                position={[(doorOpeningWidth / 2 + sideWallWidth / 2), wallCenterY, 0.08]}
-                rotation={[0, 0, -0.05]}
-            >
-                <planeGeometry args={[2.2, 2.2 / 1.833]} />
-                <meshBasicMaterial color="#e0e0e0"
-                    map={coffeeTexture}
-                    transparent={true}
-                    roughness={0.9}
-                    alphaTest={0.1}
-                />
-            </mesh>
+            {!isExit && (
+                <mesh
+                    position={[(doorOpeningWidth / 2 + sideWallWidth / 2), wallCenterY, 0.08]}
+                    rotation={[0, 0, -0.05]}
+                >
+                    <planeGeometry args={[2.2, 2.2 / 1.833]} />
+                    <meshBasicMaterial color="#e0e0e0"
+                        map={coffeeTexture}
+                        transparent={true}
+                        roughness={0.9}
+                        alphaTest={0.1}
+                    />
+                </mesh>
+            )}
+            {/* EXIT: "Good work" sign + plant on the right wall */}
+            {isExit && (() => {
+                const rx = (doorOpeningWidth / 2 + sideWallWidth / 2);
+                return (
+                    <group>
+                        <mesh position={[rx, 0.6, 0.07]}>
+                            <planeGeometry args={[1.3, 1.3 / 0.917]} />
+                            <meshBasicMaterial map={signTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
+                        </mesh>
+                        <mesh position={[rx + 0.1, -1.0, 0.05]}>
+                            <planeGeometry args={[0.85, 0.85 / 0.67]} />
+                            <meshBasicMaterial map={plantTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
+                        </mesh>
+                    </group>
+                );
+            })()}
 
             {/* === TOP WALL PANEL (While True) === */}
             <mesh position={[0, topWallCenterY, 0]}>
@@ -207,15 +268,49 @@ const SegmentDoors = ({
                 <meshBasicMaterial color="#e0e0e0" map={wallTexture} roughness={0.95} />
             </mesh>
             {/* Decoration Top (While True) */}
-            <mesh position={[0, topWallCenterY, 0.07]}>
-                <planeGeometry args={[1.4, 1.4 / 1.833]} />
-                <meshBasicMaterial color="#e0e0e0"
-                    map={whileTrueTexture}
-                    transparent={true}
-                    roughness={0.9}
-                    alphaTest={0.1}
-                />
-            </mesh>
+            {!isExit && (
+                <mesh position={[0, topWallCenterY, 0.07]}>
+                    <planeGeometry args={[1.4, 1.4 / 1.833]} />
+                    <meshBasicMaterial color="#e0e0e0"
+                        map={whileTrueTexture}
+                        transparent={true}
+                        roughness={0.9}
+                        alphaTest={0.1}
+                    />
+                </mesh>
+            )}
+            {/* EXIT: "Thank you for visiting" above the doors */}
+            {isExit && (
+                <mesh position={[0, topWallCenterY, 0.07]}>
+                    <planeGeometry args={[1.85, 1.85 / 3.636]} />
+                    <meshBasicMaterial map={thankyouTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
+                </mesh>
+            )}
+            {/* EXIT: "Let's talk" panel revealed through the open doorway + LinkedIn hotspot */}
+            {isExit && (
+                <group>
+                    {/* cream backdrop so the doorway doesn't open onto the void */}
+                    <mesh position={[0, doorCenterY, -0.6]}>
+                        <planeGeometry args={[doorOpeningWidth + 0.3, doorHeight + 0.2]} />
+                        <meshBasicMaterial color="#f4f0e7" />
+                    </mesh>
+                    {/* Let's talk / Connect on LinkedIn art */}
+                    <mesh position={[0, doorCenterY + 0.35, -0.45]}>
+                        <planeGeometry args={[1.55, 1.55 / 1.01]} />
+                        <meshBasicMaterial map={talkTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
+                    </mesh>
+                    {/* clickable LinkedIn hotspot over the baked button */}
+                    <mesh
+                        position={[0, doorCenterY + 0.05, -0.43]}
+                        onClick={(e) => { e.stopPropagation(); window.open(EXIT_LINKEDIN_URL, '_blank', 'noopener'); }}
+                        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+                        onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+                    >
+                        <planeGeometry args={[0.95, 0.18]} />
+                        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+                    </mesh>
+                </group>
+            )}
 
             {/* === TEXTURED FRAME === */}
             {/* Moved to Z = 0.09 to sit in front of baseboards (Z=0.07), hiding the hole edges */}
@@ -242,7 +337,7 @@ const SegmentDoors = ({
                 <mesh position={[doorWidth / 2, 0, 0.09]}>
                     <planeGeometry args={[doorWidth, doorHeight]} />
                     <meshBasicMaterial color="#e0e0e0"
-                        map={doorLeftTexture}
+                        map={isExit ? doorPlainTexture : doorLeftTexture}
                         transparent={true}
                         alphaTest={0.5}
                         roughness={0.8}
@@ -287,7 +382,7 @@ const SegmentDoors = ({
                 <mesh position={[-doorWidth / 2, 0, 0.09]}>
                     <planeGeometry args={[doorWidth, doorHeight]} />
                     <meshBasicMaterial color="#e0e0e0"
-                        map={doorRightTexture}
+                        map={isExit ? doorPlainTexture : doorRightTexture}
                         transparent={true}
                         alphaTest={0.5}
                         roughness={0.8}
