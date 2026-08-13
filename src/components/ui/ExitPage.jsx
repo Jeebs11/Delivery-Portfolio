@@ -1,24 +1,38 @@
+import { useState, useEffect } from 'react';
 import { useScene } from '../../context/SceneContext';
 
 /**
  * ExitPage — the flat 2D "Thank you for visiting / Let's talk" scene shown at
- * the end of the corridor (instead of the endless loop). Connect on LinkedIn,
- * or head back to the entrance (which returns to the landing).
+ * the end of the corridor. Walking through the open door returns you to the
+ * landing; the LinkedIn button opens Mujeeb's profile.
  */
 const BG = '/textures/exit/exit_bg.webp';
-
 const LINKEDIN_URL = 'https://www.linkedin.com/in/mujeeb-lawal-b381032a';
 
 const ExitPage = () => {
     const { exitReached, returnToEntrance } = useScene();
+    const [leaving, setLeaving] = useState(false);
+
+    // Reset the fade when the scene is dismissed so it re-shows cleanly.
+    useEffect(() => { if (!exitReached) setLeaving(false); }, [exitReached]);
+
     if (!exitReached) return null;
 
+    const walkThrough = () => {
+        if (leaving) return;
+        setLeaving(true);
+        setTimeout(() => returnToEntrance(), 650); // fade, then back to the landing
+    };
+
     return (
-        <div className="exit-scene">
+        <div className={`exit-scene${leaving ? ' leaving' : ''}`}>
             <div className="exit-stage">
                 <img className="exit-bg" src={BG} alt="Thank you for visiting — let's talk. Connect on LinkedIn." draggable="false" />
 
-                {/* Connect on LinkedIn — hotspot over the baked button */}
+                {/* Walk through the open doorway -> back to the landing */}
+                <button className="exit-door" type="button" onClick={walkThrough} aria-label="Walk through the door back to the entrance" />
+
+                {/* Connect on LinkedIn — hotspot over the baked button (on top of the doorway) */}
                 <a
                     className="exit-linkedin"
                     href={LINKEDIN_URL}
@@ -27,15 +41,6 @@ const ExitPage = () => {
                     aria-label="Connect on LinkedIn"
                     title="Connect on LinkedIn"
                 />
-
-                {/* Head back to the entrance / landing */}
-                <button className="exit-return" type="button" onClick={returnToEntrance}>
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M3 12a9 9 0 1 0 3-6.7" />
-                        <polyline points="3 3 3 8 8 8" />
-                    </svg>
-                    Back to the entrance
-                </button>
             </div>
 
             <style>{`
@@ -46,19 +51,34 @@ const ExitPage = () => {
                     overflow: hidden;
                     animation: exitFade .7s ease both;
                 }
+                .exit-scene.leaving { animation: exitLeave .65s ease both; }
                 @keyframes exitFade { from { opacity: 0; } to { opacity: 1; } }
+                @keyframes exitLeave { from { opacity: 1; } to { opacity: 0; } }
                 .exit-stage {
                     position: relative;
-                    width: min(100vw, calc(100vh * 1.3559));
-                    aspect-ratio: 1600 / 1180;
+                    width: min(100vw, calc(100vh * 1.3333));
+                    aspect-ratio: 4 / 3;
                 }
                 .exit-bg {
                     position: absolute; inset: 0; width: 100%; height: 100%;
                     object-fit: contain; display: block;
                     user-select: none; -webkit-user-drag: none;
                 }
+                /* the doorway = "walk through" to the landing */
+                .exit-door {
+                    position: absolute; left: 37.5%; top: 22%; width: 25%; height: 56%;
+                    padding: 0; border: 0; background: transparent; cursor: pointer;
+                    border-radius: 40% 40% 4% 4%;
+                    transition: background .3s ease, box-shadow .3s ease;
+                }
+                .exit-door:hover, .exit-door:focus-visible {
+                    outline: none;
+                    background: radial-gradient(ellipse at 50% 55%, rgba(255,240,190,.22), rgba(255,240,190,0) 70%);
+                    box-shadow: inset 0 0 40px rgba(255,220,150,.30);
+                }
+                /* LinkedIn button — sits above the doorway hotspot */
                 .exit-linkedin {
-                    position: absolute; left: 38%; top: 60%; width: 29%; height: 7%;
+                    position: absolute; left: 39%; top: 52.5%; width: 22%; height: 6.5%;
                     border-radius: 8px; cursor: pointer;
                     transition: background .25s ease, box-shadow .25s ease;
                 }
@@ -67,17 +87,6 @@ const ExitPage = () => {
                     background: rgba(40,103,178,.12);
                     box-shadow: 0 0 18px rgba(40,103,178,.28);
                 }
-                .exit-return {
-                    position: absolute; left: 50%; bottom: 3.5%; transform: translateX(-50%);
-                    display: inline-flex; align-items: center; gap: 8px;
-                    padding: 9px 16px;
-                    background: rgba(255,255,255,0.92);
-                    border: 2px solid #1a1a1a; border-radius: 7px;
-                    color: #1a1a1a; cursor: pointer;
-                    font-family: "Caveat", cursive; font-size: 20px; font-weight: 700; line-height: 1;
-                    box-shadow: 2px 2px 0 rgba(0,0,0,0.18);
-                }
-                .exit-return:hover, .exit-return:focus-visible { outline: none; background: #fff; }
             `}</style>
         </div>
     );
