@@ -7,8 +7,7 @@ import { useScene } from '../../context/SceneContext';
  */
 const BG = '/textures/exit/exit_bg.webp';
 
-// TODO(Mujeeb): replace with your real LinkedIn profile URL.
-const LINKEDIN_URL = 'https://www.linkedin.com/';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/mujeeb-lawal-b381032a';
 
 const ExitPage = () => {
     const { exitReached, returnToEntrance } = useScene();
