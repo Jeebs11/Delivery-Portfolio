@@ -221,7 +221,7 @@ const NavigationUI = () => {
             {/* Global Achievement Popup */}
             <AchievementPopup />
 
-            {/* Ask-AI launcher — bottom-left, sits above the Classic CV link.
+            {/* Ask-Me-Anything launcher — bottom-right.
                 Opens the chatbot that lives on the classic site. */}
             {!isUIHidden && hasEntered && (
                 <a
@@ -229,12 +229,12 @@ const NavigationUI = () => {
                     href={CLASSIC_SITE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Ask my AI assistant"
-                    title="Ask my AI assistant"
+                    aria-label="Ask me anything"
+                    title="Ask me anything"
                     style={{
                         position: 'fixed',
-                        left: '20px',
-                        bottom: '64px',
+                        right: '20px',
+                        bottom: '20px',
                         zIndex: 9998,
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -259,7 +259,7 @@ const NavigationUI = () => {
                         <line x1="12.5" y1="10.5" x2="12.5" y2="10.5" />
                         <line x1="16" y1="10.5" x2="16" y2="10.5" />
                     </svg>
-                    Ask AI
+                    Ask Me Anything
                 </a>
             )}
 

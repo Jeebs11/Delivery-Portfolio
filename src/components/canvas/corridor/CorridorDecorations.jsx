@@ -379,31 +379,31 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
         {
             z: zOffset - 10, side: 'right', id: 'frame-1',
             photoFrame: true, width: 1.13, height: 1.5, y: 0.15,
-            image: '/textures/wall/medal_bw.webp', imagePainted: '/textures/wall/medal.webp',
+            image: '/textures/wall/medal_bw.webp?v=2', imagePainted: '/textures/wall/medal.webp?v=2',
             imageWidth: 1.13, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
             z: zOffset - 25, side: 'left', id: 'frame-2',
             photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
-            image: '/textures/wall/cycling_bw.webp', imagePainted: '/textures/wall/cycling.webp',
+            image: '/textures/wall/cycling_bw.webp?v=2', imagePainted: '/textures/wall/cycling.webp?v=2',
             imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
             z: zOffset - 40, side: 'right', id: 'frame-3',
             photoFrame: true, width: 1.5, height: 1.47, y: 0.2,
-            image: '/textures/wall/football_bw.webp', imagePainted: '/textures/wall/football.webp',
+            image: '/textures/wall/football_bw.webp?v=2', imagePainted: '/textures/wall/football.webp?v=2',
             imageWidth: 1.5, imageHeight: 1.47, offsetFromWall: 0.1,
         },
         {
             z: zOffset - 55, side: 'left', id: 'frame-4',
             photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
-            image: '/textures/wall/golf_bw.webp', imagePainted: '/textures/wall/golf.webp',
+            image: '/textures/wall/golf_bw.webp?v=2', imagePainted: '/textures/wall/golf.webp?v=2',
             imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
             z: zOffset - 70, side: 'right', id: 'frame-5',
             photoFrame: true, width: 1.48, height: 1.49, y: 0.2,
-            image: '/textures/wall/shooting_bw.webp', imagePainted: '/textures/wall/shooting.webp',
+            image: '/textures/wall/shooting_bw.webp?v=2', imagePainted: '/textures/wall/shooting.webp?v=2',
             imageWidth: 1.48, imageHeight: 1.49, offsetFromWall: 0.1,
         },
     ], [zOffset]);

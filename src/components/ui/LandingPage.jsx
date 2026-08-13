@@ -31,6 +31,7 @@ const LandingPage = () => {
                 <img className="home-cloud cloud-1" src={`${L}/cloud_lg.webp`} alt="" aria-hidden="true" />
                 <img className="home-cloud cloud-2" src={`${L}/cloud_md.webp`} alt="" aria-hidden="true" />
                 <img className="home-cloud cloud-3" src={`${L}/cloud_sm.webp`} alt="" aria-hidden="true" />
+                <img className="home-cloud cloud-4" src={`${L}/cloud_sm.webp`} alt="" aria-hidden="true" />
 
                 {/* flying paper plane */}
                 <img className="home-plane" src={`${L}/plane.webp`} alt="" aria-hidden="true" />
@@ -62,6 +63,7 @@ const LandingPage = () => {
                 .cloud-1 { right: 5%;  top: 4%;  width: 13%; animation: cdrift1 46s ease-in-out infinite alternate; }
                 .cloud-2 { right: 15%; top: 31%; width: 11%; animation: cdrift2 57s ease-in-out infinite alternate; }
                 .cloud-3 { right: 3%;  top: 17%; width: 8%;  animation: cdrift3 40s ease-in-out infinite alternate; }
+                .cloud-4 { left: 20.5%; top: 4%; width: 7%; animation: cdrift1 50s ease-in-out infinite alternate; }
                 @keyframes cdrift1 { from { transform: translateX(0); } to { transform: translateX(28px); } }
                 @keyframes cdrift2 { from { transform: translateX(0); } to { transform: translateX(-32px); } }
                 @keyframes cdrift3 { from { transform: translateX(0); } to { transform: translateX(20px); } }
