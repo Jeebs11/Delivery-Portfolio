@@ -374,37 +374,53 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
     // - width/height: rozmiar ramki
     // - y: pozycja Y (wysokość na ścianie, 0 = środek)
     const frames = useMemo(() => [
-        // Personal photos as clean framed prints (grayscale by default, bloom to
-        // colour on hover). photoFrame:true skips the hand-drawn landscape ramka.
+        // Personal + travel photos as framed prints, shown in true colour
+        // (no grayscale overlay). photoFrame:true skips the hand-drawn ramka.
+        // Interleaved with the room doors down both walls.
         {
-            z: zOffset - 10, side: 'right', id: 'frame-1',
+            z: zOffset - 10, side: 'right', id: 'frame-medal',
             photoFrame: true, width: 1.13, height: 1.5, y: 0.15,
-            image: '/textures/wall/medal_bw.webp?v=2', imagePainted: '/textures/wall/medal.webp?v=2',
-            imageWidth: 1.13, imageHeight: 1.5, offsetFromWall: 0.1,
+            image: '/textures/wall/medal.webp?v=3', imageWidth: 1.13, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 25, side: 'left', id: 'frame-2',
+            z: zOffset - 20, side: 'right', id: 'frame-bridge',
+            photoFrame: true, width: 1.6, height: 1.19, y: 0.2,
+            image: '/textures/wall/bridge.webp?v=3', imageWidth: 1.6, imageHeight: 1.19, offsetFromWall: 0.1,
+        },
+        {
+            z: zOffset - 25, side: 'left', id: 'frame-cycling',
             photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
-            image: '/textures/wall/cycling_bw.webp?v=2', imagePainted: '/textures/wall/cycling.webp?v=2',
-            imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
+            image: '/textures/wall/cycling.webp?v=3', imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 40, side: 'right', id: 'frame-3',
+            z: zOffset - 36, side: 'left', id: 'frame-eiffel',
+            photoFrame: true, width: 1.4, height: 1.4, y: 0.2,
+            image: '/textures/wall/eiffel.webp?v=3', imageWidth: 1.4, imageHeight: 1.4, offsetFromWall: 0.1,
+        },
+        {
+            z: zOffset - 40, side: 'right', id: 'frame-football',
             photoFrame: true, width: 1.5, height: 1.47, y: 0.2,
-            image: '/textures/wall/football_bw.webp?v=2', imagePainted: '/textures/wall/football.webp?v=2',
-            imageWidth: 1.5, imageHeight: 1.47, offsetFromWall: 0.1,
+            image: '/textures/wall/football.webp?v=3', imageWidth: 1.5, imageHeight: 1.47, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 55, side: 'left', id: 'frame-4',
+            z: zOffset - 51, side: 'right', id: 'frame-cntower',
+            photoFrame: true, width: 1.2, height: 1.48, y: 0.15,
+            image: '/textures/wall/cntower.webp?v=3', imageWidth: 1.2, imageHeight: 1.48, offsetFromWall: 0.1,
+        },
+        {
+            z: zOffset - 55, side: 'left', id: 'frame-golf',
             photoFrame: true, width: 1.14, height: 1.5, y: 0.15,
-            image: '/textures/wall/golf_bw.webp?v=2', imagePainted: '/textures/wall/golf.webp?v=2',
-            imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
+            image: '/textures/wall/golf.webp?v=3', imageWidth: 1.14, imageHeight: 1.5, offsetFromWall: 0.1,
         },
         {
-            z: zOffset - 70, side: 'right', id: 'frame-5',
+            z: zOffset - 65, side: 'left', id: 'frame-social',
+            photoFrame: true, width: 1.2, height: 1.48, y: 0.15,
+            image: '/textures/wall/social.webp?v=3', imageWidth: 1.2, imageHeight: 1.48, offsetFromWall: 0.1,
+        },
+        {
+            z: zOffset - 70, side: 'right', id: 'frame-shooting',
             photoFrame: true, width: 1.48, height: 1.49, y: 0.2,
-            image: '/textures/wall/shooting_bw.webp?v=2', imagePainted: '/textures/wall/shooting.webp?v=2',
-            imageWidth: 1.48, imageHeight: 1.49, offsetFromWall: 0.1,
+            image: '/textures/wall/shooting.webp?v=3', imageWidth: 1.48, imageHeight: 1.49, offsetFromWall: 0.1,
         },
     ], [zOffset]);
 

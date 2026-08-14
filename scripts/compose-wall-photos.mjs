@@ -12,6 +12,10 @@ const MAP = [
     ['American Football.jpg', 'football'],
     ['Golf.jpg', 'golf'],
     ['Clay Pidgeon Shooting.jpg', 'shooting'],
+    ['IMG_5907.jpg', 'bridge'],
+    ['IMG_5908.jpg', 'eiffel'],
+    ['IMG_5909.jpg', 'cntower'],
+    ['IMG_5910.jpg', 'social'],
 ];
 
 const LONG = 900;

@@ -254,8 +254,9 @@ const SegmentDoors = ({
                             <planeGeometry args={[1.3, 1.3 / 0.917]} />
                             <meshBasicMaterial map={signTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
                         </mesh>
-                        <mesh position={[rx + 0.1, -1.0, 0.05]}>
-                            <planeGeometry args={[0.85, 0.85 / 0.67]} />
+                        {/* plant standing on the floor, in front of the wall, under the sign */}
+                        <mesh position={[rx - 0.15, -1.03, 0.5]}>
+                            <planeGeometry args={[0.98, 0.98 / 0.67]} />
                             <meshBasicMaterial map={plantTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
                         </mesh>
                     </group>
