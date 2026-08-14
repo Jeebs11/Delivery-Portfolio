@@ -37,6 +37,25 @@ const EntranceFly = () => {
     return null;
 };
 
+// Reversing back past the entrance (segment 0's hero) walks you back out to the
+// landing, instead of looping backward into segment -1. Fires before segment
+// -1's doors (z=15) come into view.
+const BACK_EXIT_Z = 14;
+const BackExitWatcher = () => {
+    const { isInRoom, isTeleporting, returnToEntrance } = useScene();
+    const { camera } = useThree();
+    const firedRef = useRef(false);
+    useFrame(() => {
+        if (isInRoom || isTeleporting) return;
+        if (!firedRef.current && camera.position.z > BACK_EXIT_Z) {
+            firedRef.current = true;
+            returnToEntrance();
+        }
+        if (camera.position.z < 12) firedRef.current = false; // re-arm once back inside
+    });
+    return null;
+};
+
 // Positioning:
 // - Segment -1's SegmentDoors are at Z=15
 // - Entrance doors at Z=22 (in front of segment doors)
@@ -115,6 +134,9 @@ const Experience = ({ isLoaded, onSceneReady, performanceTier }) => {
 
             {/* === ENTRANCE FLY-THROUGH (2D landing drives entry) === */}
             {!hasEntered && <EntranceFly />}
+
+            {/* === BACK-OUT WATCHER (reverse past the entrance -> landing) === */}
+            {hasEntered && <BackExitWatcher />}
 
             {/* === INFINITE CORRIDOR (segment -1 SegmentDoors hidden during entrance) === */}
             <InfiniteCorridorManager
