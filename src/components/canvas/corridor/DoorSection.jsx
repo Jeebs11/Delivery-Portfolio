@@ -41,16 +41,16 @@ const DOOR_ALIGN_X = 1.2;
 
 // Door texture mapping - maps label to texture file
 const DOOR_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/drzwiprojekty.webp',
-    'THE STUDIO': '/textures/corridor/doors/drzwisocial.webp',
+    'THE GALLERY': '/textures/corridor/doors/career_door.webp?v=1',
+    'THE STUDIO': '/textures/corridor/doors/portfolio_door.webp?v=1',
     'THE ABOUT': '/textures/corridor/doors/drzwiabout.webp',
     "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt.webp',
 };
 
 // Painted (colored) variants for brush-stroke reveal on hover
 const DOOR_PAINTED_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/drzwiprojekty_painted.webp',
-    'THE STUDIO': '/textures/corridor/doors/drzwisocial_painted.webp',
+    'THE GALLERY': '/textures/corridor/doors/career_door.webp?v=1',
+    'THE STUDIO': '/textures/corridor/doors/portfolio_door.webp?v=1',
     'THE ABOUT': '/textures/corridor/doors/drzwiabout_painted.webp',
     "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_painted.webp',
 };
