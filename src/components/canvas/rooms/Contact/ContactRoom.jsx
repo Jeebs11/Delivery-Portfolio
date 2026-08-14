@@ -398,53 +398,23 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
             </group>
 
             {/* 🛢️ SOCIAL BARRELS (Floating in water) */}
-            {/* LINKEDIN */}
+            {/* LINKEDIN — kept in place */}
             <SocialBarrel
                 position={isMobile ? [-1.2, 0.5, -10] : [-3, 0.5, -10]}
                 rotation={[0, 0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="LINKEDIN"
-                onClick={() => window.open('https://www.linkedin.com/in/tomasz-szmajda-259337305/', '_blank')}
+                onClick={() => window.open('https://www.linkedin.com/in/mujeeb-lawal-b381032a', '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
-            {/* GITHUB */}
-            <SocialBarrel
-                position={isMobile ? [-1.5, -0.3, -7] : [-5, -0.3, -8]}
-                rotation={[0, 0.3, 0]}
-                texturePath="/textures/contact/beczka.webp"
-                label="GITHUB"
-                onClick={() => window.open('https://github.com/ITomPoland', '_blank')}
-                paintOnBeforeCompile={onBeforeCompile}
-                paintUniforms={uniformsData}
-            />
-            {/* FACEBOOK */}
+            {/* GITHUB — moved to the old Facebook spot to balance with LinkedIn */}
             <SocialBarrel
                 position={isMobile ? [1.2, 0.5, -10] : [3, 0.5, -10]}
                 rotation={[0, -0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
-                label="FACEBOOK"
-                onClick={() => window.open('https://www.facebook.com/people/ITom/61586563487664/', '_blank')}
-                paintOnBeforeCompile={onBeforeCompile}
-                paintUniforms={uniformsData}
-            />
-            {/* INSTAGRAM */}
-            <SocialBarrel
-                position={isMobile ? [1.5, -0.3, -7] : [5, -0.3, -8]}
-                rotation={[0, -0.3, 0]}
-                texturePath="/textures/contact/beczka.webp"
-                label="INSTAGRAM"
-                onClick={() => window.open('https://www.instagram.com/itom.dev/', '_blank')}
-                paintOnBeforeCompile={onBeforeCompile}
-                paintUniforms={uniformsData}
-            />
-            {/* MAIL (Triggers animation) */}
-            <SocialBarrel
-                position={isMobile ? [0, -0.7, -6] : [0, -0.7, -7]}
-                rotation={[0, 0, 0]}
-                texturePath="/textures/contact/beczka.webp"
-                label="MESSAGE"
-                onClick={handleMailSelect}
+                label="GITHUB"
+                onClick={() => window.open('https://github.com/Jeebs11', '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
