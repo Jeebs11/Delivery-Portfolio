@@ -501,14 +501,16 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     />
                 </mesh>
 
-                {/* Banners hung neatly over the rail (spaced either side of centre) */}
-                <mesh position={[-1.85, 0.44, -3.8]} raycast={() => null}>
-                    <planeGeometry args={[1.25, 1.25 / 0.713]} />
-                    <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" transparent alphaTest={0.05} side={THREE.DoubleSide} depthWrite={false} />
+                {/* Banners hung neatly over the rail (spaced either side of centre).
+                    Hard alpha cutout (opaque) so the text isn't see-through; height
+                    reduced so the whole banner sits above the floor. */}
+                <mesh position={[-1.85, 0.7, -3.8]} raycast={() => null}>
+                    <planeGeometry args={[1.3 * 0.713, 1.3]} />
+                    <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
-                <mesh position={[1.85, 0.37, -3.8]} raycast={() => null}>
-                    <planeGeometry args={[1.25, 1.25 / 0.662]} />
-                    <meshBasicMaterial map={bannerCvTexture} color="#ffffff" transparent alphaTest={0.05} side={THREE.DoubleSide} depthWrite={false} />
+                <mesh position={[1.85, 0.7, -3.8]} raycast={() => null}>
+                    <planeGeometry args={[1.3 * 0.662, 1.3]} />
+                    <meshBasicMaterial map={bannerCvTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
 
                 {/* === THRESHOLD (At the end of the floor) === */}
