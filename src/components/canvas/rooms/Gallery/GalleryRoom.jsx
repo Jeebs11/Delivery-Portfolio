@@ -373,6 +373,8 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const cityTexture = useTexture('/textures/gallery/miastotlo.webp');
     const birdTexture = useTexture('/textures/gallery/bird_gray.webp');
     const clothespinTexture = useTexture('/textures/gallery/klamerka.webp');
+    const bannerClassicTexture = useTexture('/textures/gallery/banner_classicview.webp');
+    const bannerCvTexture = useTexture('/textures/gallery/banner_downloadcv.webp');
 
     useEffect(() => {
         if (floorTexture) {
@@ -497,6 +499,16 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                         onBeforeCompile={onBeforeCompile}
                         customProgramCacheKey={() => 'railing-paint'}
                     />
+                </mesh>
+
+                {/* Banners hung neatly over the rail (spaced either side of centre) */}
+                <mesh position={[-1.85, 0.44, -3.8]} raycast={() => null}>
+                    <planeGeometry args={[1.25, 1.25 / 0.713]} />
+                    <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" transparent alphaTest={0.05} side={THREE.DoubleSide} depthWrite={false} />
+                </mesh>
+                <mesh position={[1.85, 0.37, -3.8]} raycast={() => null}>
+                    <planeGeometry args={[1.25, 1.25 / 0.662]} />
+                    <meshBasicMaterial map={bannerCvTexture} color="#ffffff" transparent alphaTest={0.05} side={THREE.DoubleSide} depthWrite={false} />
                 </mesh>
 
                 {/* === THRESHOLD (At the end of the floor) === */}
