@@ -1,104 +1,32 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { useAudio } from '../../context/AudioManager';
 
-// Reusable SVG Line Component (now accepts ref)
-const TearLineSVG = ({ svgPathData, pathLength, strokeDashoffset, pathRef }) => (
-  <svg
-    className="preloader__overlay"
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-    style={{ pointerEvents: 'none' }}
-  >
-    <path
-      ref={pathRef}
-      d={svgPathData}
-      fill="none"
-      stroke="#1a1a1a"
-      strokeWidth="0.1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{
-        strokeDasharray: pathLength,
-        strokeDashoffset: strokeDashoffset,
-      }}
-    />
-  </svg>
-);
+// Checklist steps + the progress % at which each one ticks.
+const STEPS = [
+  { label: 'Define the problem', at: 20 },
+  { label: 'Build the plan', at: 40 },
+  { label: 'Align the moving parts', at: 60 },
+  { label: 'Deliver the solution', at: 80 },
+  { label: 'Launch', at: 99 },
+];
 
-// New Ring Loader - Cleaner circle that spins around text
-const RingLoader = () => (
-  <div className="preloader__ring">
-    <svg width="120" height="120" viewBox="0 0 100 100" style={{ overflow: 'visible' }}>
-      <circle
-        cx="50" cy="50" r="45"
-        fill="none"
-        stroke="#000"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="10 15"
-        opacity="0.8"
-      />
-      <circle
-        cx="50" cy="50" r="35"
-        fill="none"
-        stroke="#000"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeDasharray="5 10"
-        opacity="0.5"
-        style={{
-          animation: 'ring-spin-reverse 4s linear infinite',
-          transformOrigin: '50% 50%'
-        }}
-      />
-    </svg>
-    <style>{`
-      @keyframes ring-spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-      @keyframes ring-spin-reverse {
-        0% { transform: rotate(360deg); }
-        100% { transform: rotate(0deg); }
-      }
-      .preloader__ring {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 120px;
-        height: 120px;
-        pointer-events: none;
-        z-index: 5;
-        animation: ring-spin 10s linear infinite;
-      }
-    `}</style>
-  </div>
-);
-
-const percentageStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '0',
-  width: '100%',
-  transform: 'translateY(-50%)',
-  textAlign: 'center',
-  zIndex: 20,
-  fontFamily: "'Inter', sans-serif",
-  fontSize: '2rem',
-  fontWeight: 'bold',
-  mixBlendMode: 'multiply',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  overflow: 'visible'
+const statusFor = (v) => {
+  if (v >= 99) return { text: 'Ready. Step inside.', done: true };
+  if (v >= 80) return { text: 'Preparing to launch…' };
+  if (v >= 60) return { text: 'Putting it all together…' };
+  if (v >= 40) return { text: 'Aligning the moving parts…' };
+  if (v >= 20) return { text: 'Building the plan…' };
+  return { text: 'Defining the problem…' };
 };
+
+const RING_R = 26;
+const RING_C = 2 * Math.PI * RING_R;
 
 const Preloader = ({ onComplete, ready }) => {
   const [isDone, setIsDone] = useState(false);
 
-  // Custom throttled progress state to prevent React 'Maximum update depth exceeded'
   const [realProgress, setRealProgress] = useState(0);
   const [active, setActive] = useState(true);
 
@@ -112,27 +40,17 @@ const Preloader = ({ onComplete, ready }) => {
       setActive(true);
       origOnStart?.(url, loaded, total);
     };
-
     THREE.DefaultLoadingManager.onProgress = (url, loaded, total) => {
       cancelAnimationFrame(t);
-      t = requestAnimationFrame(() => {
-        setRealProgress((loaded / total) * 100);
-      });
+      t = requestAnimationFrame(() => setRealProgress((loaded / total) * 100));
       origOnProgress?.(url, loaded, total);
     };
-
     THREE.DefaultLoadingManager.onLoad = () => {
       cancelAnimationFrame(t);
       setRealProgress(100);
       setActive(false);
-      
-      const loadEnd = performance.now();
-      const loadDuration = ((loadEnd - loadStartTime.current) / 1000).toFixed(2);
-      // console.info(`📦 Assets Loaded: ${loadDuration}s`);
-      
       origOnLoad?.();
     };
-
     return () => {
       THREE.DefaultLoadingManager.onStart = origOnStart;
       THREE.DefaultLoadingManager.onProgress = origOnProgress;
@@ -141,159 +59,86 @@ const Preloader = ({ onComplete, ready }) => {
   }, []);
 
   const { play } = useAudio();
-  // Track audio handle to stop loop
   const pencilSoundRef = useRef(null);
 
-  // Performance Tracking
-  const loadStartTime = useRef(performance.now());
-
-  // Use refs for animation targets
+  // Refs the progress engine writes to directly (skip React re-renders)
   const containerRef = useRef(null);
-  const leftHalfRef = useRef(null);
-  const rightHalfRef = useRef(null);
-  const pathLeftRef = useRef(null);
-  const pathRightRef = useRef(null);
-  const textLeftRef = useRef(null);
-  const textRightRef = useRef(null);
+  const noteRef = useRef(null);
+  const percentRef = useRef(null);
+  const statusRef = useRef(null);
+  const ringRef = useRef(null);
+  const checkRefs = useRef([]);
 
-  // Track visual progress entirely in refs to skip React renders 60x/sec!
   const [targetProgress, setTargetProgress] = useState(0);
   const displayProgressRef = useRef(0);
   const trackerRef = useRef({ val: 0 });
   const readyRef = useRef(ready);
+  const exitStarted = useRef(false);
 
   useEffect(() => { readyRef.current = ready; }, [ready]);
 
-  // ----------------------------------------
-  // GENERATE TEAR PATH
-  // ----------------------------------------
-  const tearPoints = useMemo(() => {
-    const points = [];
-    const segments = 12; // Fewer segments
-
-    points.push([50, 0]);
-
-    for (let i = 1; i < segments; i++) {
-      const y = (i / segments) * 100;
-      const xOffset = (Math.random() - 0.5) * 6;
-      const x = 50 + xOffset;
-      points.push([x, y]);
-    }
-
-    points.push([50, 100]);
-    return points;
-  }, []);
-
-  const svgPathData = useMemo(() => {
-    return tearPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]} `).join(' ');
-  }, [tearPoints]);
-
-  const leftClipPoly = useMemo(() => {
-    let poly = '0% 0%, ';
-    tearPoints.forEach(p => { poly += `${p[0]}% ${p[1]}%, `; });
-    poly += '0% 100%';
-    return `polygon(${poly})`;
-  }, [tearPoints]);
-
-  const rightClipPoly = useMemo(() => {
-    let poly = '100% 0%, ';
-    poly += '100% 100%, ';
-    [...tearPoints].reverse().forEach(p => { poly += `${p[0]}% ${p[1]}%, `; });
-    return `polygon(${poly.slice(0, -2)})`;
-  }, [tearPoints]);
-
-
-  // ----------------------------------------
-  // SMOOTH LOADING LOGIC
-  // ----------------------------------------
+  // Real load % -> a target the visual eases toward (hold at 90 until ready).
   useEffect(() => {
     let newTarget = 0;
-    if (active) {
-      newTarget = (realProgress / 100) * 85;
-    } else {
-      if (ready) {
-        newTarget = 100;
-      } else {
-        newTarget = 90;
-      }
-    }
-
+    if (active) newTarget = (realProgress / 100) * 85;
+    else newTarget = ready ? 100 : 90;
     setTargetProgress(prev => Math.max(prev, newTarget));
   }, [realProgress, active, ready]);
 
-  // Handle Pencil Sound & Exit checking dynamically
+  const applyProgress = (val) => {
+    const v = Math.min(100, Math.max(0, val));
+    if (percentRef.current) percentRef.current.innerText = `${Math.round(v)}%`;
+    if (ringRef.current) ringRef.current.style.strokeDashoffset = RING_C * (1 - v / 100);
+    if (statusRef.current) {
+      const s = statusFor(v);
+      statusRef.current.innerText = s.text;
+      statusRef.current.style.color = s.done ? '#3a7d44' : '#2b5c9e';
+    }
+    checkRefs.current.forEach((el, i) => {
+      if (el) el.style.opacity = v >= STEPS[i].at ? '1' : '0';
+    });
+  };
+
   const checkProgressTriggers = (val) => {
-    // Pencil Sound
     if (val < 99 && !pencilSoundRef.current) {
       pencilSoundRef.current = play('pencil', { loop: true, volume: 0.5 });
-    }
-    else if (val >= 99 && pencilSoundRef.current) {
+    } else if (val >= 99 && pencilSoundRef.current) {
       pencilSoundRef.current.stop();
       pencilSoundRef.current = null;
     }
-
-    // Exit phase
     if (val >= 99.5 && readyRef.current && !exitStarted.current) {
       exitStarted.current = true;
       startExit();
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (pencilSoundRef.current) {
-        pencilSoundRef.current.stop();
-        pencilSoundRef.current = null;
-      }
-    };
+  useEffect(() => () => {
+    if (pencilSoundRef.current) { pencilSoundRef.current.stop(); pencilSoundRef.current = null; }
   }, []);
 
   useEffect(() => {
     const distance = targetProgress - displayProgressRef.current;
     let duration = 0.5;
-
-    if (distance > 60) {
-      duration = 1.5;
-    } else if (distance > 30) {
-      duration = 1.0;
-    } else if (distance > 10) {
-      duration = 0.6;
-    } else if (distance > 0) {
-      duration = 0.4;
-    }
+    if (distance > 60) duration = 1.5;
+    else if (distance > 30) duration = 1.0;
+    else if (distance > 10) duration = 0.6;
+    else if (distance > 0) duration = 0.4;
 
     gsap.to(trackerRef.current, {
       val: targetProgress,
-      duration: duration,
-      ease: "power2.out",
-      overwrite: true, // Auto kill previous tweens on trackerRef
+      duration,
+      ease: 'power2.out',
+      overwrite: true,
       onUpdate: () => {
         const val = trackerRef.current.val;
         displayProgressRef.current = val;
-
-        const safeProgress = Math.min(100, Math.max(0, val));
-        const strokeDashoffset = 120 - (120 * safeProgress) / 100;
-        const percentageText = `${Math.round(safeProgress)}%`;
-
-        // Direct DOM manipulation - BYPASS React Render!
-        if (textLeftRef.current) textLeftRef.current.innerText = percentageText;
-        if (textRightRef.current) textRightRef.current.innerText = percentageText;
-        if (pathLeftRef.current) pathLeftRef.current.style.strokeDashoffset = strokeDashoffset;
-        if (pathRightRef.current) pathRightRef.current.style.strokeDashoffset = strokeDashoffset;
-
+        applyProgress(val);
         checkProgressTriggers(val);
-      }
+      },
     });
-
   }, [targetProgress]);
 
-
-  // ----------------------------------------
-  // EXIT SEQUENCE
-  // ----------------------------------------
-  const exitStarted = useRef(false);
-
-  // Fallback trigger if ready becomes true AFTER 99.5% reached
+  // Fallback: if ready arrives after we've already reached the end
   useEffect(() => {
     if (displayProgressRef.current >= 99.5 && ready && !exitStarted.current) {
       exitStarted.current = true;
@@ -302,95 +147,119 @@ const Preloader = ({ onComplete, ready }) => {
   }, [ready]);
 
   const startExit = () => {
-    exitStarted.current = true;
-
-    if (pencilSoundRef.current) {
-      pencilSoundRef.current.stop();
-      pencilSoundRef.current = null;
-    }
-    play('tear', { volume: 0.8 });
+    if (pencilSoundRef.current) { pencilSoundRef.current.stop(); pencilSoundRef.current = null; }
+    try { play('tear', { volume: 0.6 }); } catch (e) { /* noop */ }
 
     const tl = gsap.timeline({
-      onComplete: () => {
-        setIsDone(true);
-        
-        const exitEnd = performance.now();
-        const totalDuration = ((exitEnd - loadStartTime.current) / 1000).toFixed(2);
-        // console.group("⏱️ Portfolio Loading Performance");
-        // console.log(`- Start: %c${loadStartTime.current.toFixed(0)}ms`, "color: #888");
-        // console.log(`- Total Duration: %c${totalDuration}s`, "color: #00ff00; font-weight: bold;");
-        // console.groupEnd();
-        
-        onComplete?.();
-      }
+      onComplete: () => { setIsDone(true); onComplete?.(); },
     });
-
-    // 1. Quick pause before tear
-    tl.to({}, { duration: 0.1 });
-
-    // 2. Tear Apart
-    tl.to(leftHalfRef.current, {
-      xPercent: -100,
-      rotation: -2,
-      duration: 1.8,
-      ease: "power3.inOut"
-    }, 'tear');
-
-    tl.to(rightHalfRef.current, {
-      xPercent: 100,
-      rotation: 2,
-      duration: 1.8,
-      ease: "power3.inOut"
-    }, 'tear');
-
-    // 3. Fade container
-    tl.to(containerRef.current, {
-      opacity: 0,
-      duration: 0.5
-    }, '-=0.5');
+    tl.to({}, { duration: 0.35 }); // let the completed checklist register
+    tl.to(noteRef.current, { y: -26, scale: 1.03, duration: 0.5, ease: 'power2.out' });
+    tl.to(containerRef.current, { opacity: 0, duration: 0.55, ease: 'power2.in' }, '-=0.15');
   };
 
   if (isDone) return null;
 
-  const pathLength = 120;
-  // Initialize values
-  const safeProgress = Math.min(100, Math.max(0, displayProgressRef.current));
-  const strokeDashoffset = pathLength - (pathLength * safeProgress) / 100;
-  const percentageText = `${Math.round(safeProgress)}%`;
-
   return (
-    <div className="preloader" ref={containerRef}>
-      {/* LEFT HALF */}
-      <div
-        className="preloader__half preloader__half--left"
-        ref={leftHalfRef}
-        style={{ clipPath: leftClipPoly }}
-      >
-        {/* Content: Percentage & Line */}
-        <div className="preloader__percentage" style={percentageStyle}>
-          <span ref={textLeftRef}>{percentageText}</span>
-          <RingLoader />
-        </div>
+    <div className="mexe-loader" ref={containerRef}>
+      <div className="mexe-note" ref={noteRef}>
+        <span className="mexe-pin" aria-hidden="true" />
+        <div className="mexe-project">PROJECT:</div>
+        <div className="mexe-title">MUJEEB.EXE</div>
+        <div className="mexe-rule" />
 
-        {/* SVG is now INSIDE the clipped half */}
-        <TearLineSVG pathRef={pathLeftRef} svgPathData={svgPathData} pathLength={pathLength} strokeDashoffset={strokeDashoffset} />
+        <ul className="mexe-list">
+          {STEPS.map((step, i) => (
+            <li className="mexe-item" key={step.label}>
+              <span className="mexe-box">
+                <svg viewBox="0 0 24 24" className="mexe-square"><rect x="2.5" y="2.5" width="19" height="19" rx="3" /></svg>
+                <svg viewBox="0 0 24 24" className="mexe-tick" ref={(el) => (checkRefs.current[i] = el)}>
+                  <path d="M4 12.5 L10 18.5 L20 5.5" />
+                </svg>
+              </span>
+              <span className="mexe-label">{step.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mexe-foot">
+          <div className="mexe-ring">
+            <svg viewBox="0 0 60 60">
+              <circle cx="30" cy="30" r={RING_R} className="mexe-ring-bg" />
+              <circle
+                cx="30" cy="30" r={RING_R} className="mexe-ring-fg" ref={ringRef}
+                style={{ strokeDasharray: RING_C, strokeDashoffset: RING_C, transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+              />
+            </svg>
+            <span className="mexe-percent" ref={percentRef}>0%</span>
+          </div>
+          <div className="mexe-divider" />
+          <div className="mexe-status" ref={statusRef}>Defining the problem…</div>
+        </div>
       </div>
 
-      {/* RIGHT HALF */}
-      <div
-        className="preloader__half preloader__half--right"
-        ref={rightHalfRef}
-        style={{ clipPath: rightClipPoly }}
-      >
-        {/* Content: Percentage & Line */}
-        <div className="preloader__percentage" style={percentageStyle}>
-          <span ref={textRightRef}>{percentageText}</span>
-          <RingLoader />
-        </div>
-
-        {/* SVG is now INSIDE the clipped half */}
-        <TearLineSVG pathRef={pathRightRef} svgPathData={svgPathData} pathLength={pathLength} strokeDashoffset={strokeDashoffset} />
-      </div>
+      <style>{`
+        @font-face { font-family: 'Cabin Sketch'; src: url('/fonts/CabinSketch-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+        .mexe-loader {
+          position: fixed; inset: 0; z-index: 99999;
+          background: #f4f1ea;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .mexe-note {
+          position: relative;
+          width: min(88vw, 460px);
+          background: #fffdf8;
+          border: 2.5px solid #1c1c1c;
+          border-radius: 8px;
+          padding: 34px 34px 26px;
+          box-shadow: 7px 9px 0 rgba(0,0,0,0.16);
+          transform: rotate(-0.6deg);
+        }
+        .mexe-pin {
+          position: absolute; top: -12px; left: 50%; width: 20px; height: 20px;
+          transform: translateX(-50%);
+          background: radial-gradient(circle at 35% 30%, #e07a63, #b23a26 70%);
+          border-radius: 50%;
+          box-shadow: 0 3px 4px rgba(0,0,0,0.3);
+        }
+        .mexe-pin::after {
+          content: ''; position: absolute; left: 50%; top: 90%;
+          width: 2px; height: 10px; background: #7a7a7a; transform: translateX(-50%);
+        }
+        .mexe-project {
+          font-family: 'Caveat', cursive; font-size: 1.15rem; color: #444;
+          letter-spacing: 1px; line-height: 1;
+        }
+        .mexe-title {
+          font-family: 'Cabin Sketch', 'Caveat', cursive; font-weight: 700;
+          font-size: 2.6rem; color: #1c1c1c; line-height: 1.05; margin-top: 2px;
+        }
+        .mexe-rule { height: 3px; background: #2b5c9e; border-radius: 2px; margin: 8px 0 18px; width: 62%; opacity: 0.85; }
+        .mexe-list { list-style: none; margin: 0; padding: 0; }
+        .mexe-item { display: flex; align-items: center; gap: 14px; padding: 7px 0; border-bottom: 1.5px dashed #d9d4c7; }
+        .mexe-item:last-child { border-bottom: 0; }
+        .mexe-box { position: relative; width: 26px; height: 26px; flex: 0 0 26px; }
+        .mexe-square { position: absolute; inset: 0; }
+        .mexe-square rect { fill: #fff; stroke: #1c1c1c; stroke-width: 2; }
+        .mexe-tick { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s ease; }
+        .mexe-tick path { fill: none; stroke: #2b5c9e; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .mexe-label { font-family: 'Caveat', cursive; font-size: 1.5rem; color: #222; line-height: 1; }
+        .mexe-foot { display: flex; align-items: center; gap: 16px; margin-top: 20px; padding-top: 16px; border-top: 2px solid #1c1c1c; }
+        .mexe-ring { position: relative; width: 66px; height: 66px; flex: 0 0 66px; }
+        .mexe-ring svg { width: 100%; height: 100%; }
+        .mexe-ring-bg { fill: none; stroke: #cfc9ba; stroke-width: 3; stroke-dasharray: 3 6; stroke-linecap: round; }
+        .mexe-ring-fg { fill: none; stroke: #2b5c9e; stroke-width: 3.5; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+        .mexe-percent {
+          position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+          font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.35rem; color: #1c1c1c;
+        }
+        .mexe-divider { width: 2px; align-self: stretch; background: #d9d4c7; }
+        .mexe-status { font-family: 'Caveat', cursive; font-size: 1.5rem; color: #2b5c9e; line-height: 1.15; }
+        @media (max-width: 480px) {
+          .mexe-title { font-size: 2.1rem; }
+          .mexe-label, .mexe-status { font-size: 1.3rem; }
+        }
+      `}</style>
     </div>
   );
 };
