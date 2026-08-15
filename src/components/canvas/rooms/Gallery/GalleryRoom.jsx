@@ -373,8 +373,8 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const cityTexture = useTexture('/textures/gallery/miastotlo.webp');
     const birdTexture = useTexture('/textures/gallery/bird_gray.webp');
     const clothespinTexture = useTexture('/textures/gallery/klamerka.webp');
-    const bannerClassicTexture = useTexture('/textures/gallery/banner_classicview.webp');
-    const bannerCvTexture = useTexture('/textures/gallery/banner_downloadcv.webp');
+    const bannerClassicTexture = useTexture('/textures/gallery/banner_classicview.webp?v=2');
+    const bannerCvTexture = useTexture('/textures/gallery/banner_downloadcv.webp?v=2');
 
     useEffect(() => {
         if (floorTexture) {
@@ -505,11 +505,11 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     Hard alpha cutout (opaque) so the text isn't see-through; height
                     reduced so the whole banner sits above the floor. */}
                 <mesh position={[-1.85, 0.7, -3.8]} raycast={() => null}>
-                    <planeGeometry args={[1.3 * 0.713, 1.3]} />
+                    <planeGeometry args={[1.3 * 0.700, 1.3]} />
                     <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
                 <mesh position={[1.85, 0.7, -3.8]} raycast={() => null}>
-                    <planeGeometry args={[1.3 * 0.662, 1.3]} />
+                    <planeGeometry args={[1.3 * 0.652, 1.3]} />
                     <meshBasicMaterial map={bannerCvTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
 
@@ -613,9 +613,6 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                         onBeforeCompile={onBeforeCompile}
                     />
                 </mesh>
-
-                {/* Flying Bird */}
-                <FlyingBird texture={birdTexture} />
 
                 {/* Clouds scattered above */}
                 <GalleryClouds count={65} seed={123} />
