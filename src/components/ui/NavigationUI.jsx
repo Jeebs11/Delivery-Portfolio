@@ -7,6 +7,7 @@ import { useAchievements } from '../../context/AchievementsContext';
 import AchievementPopup from './AchievementPopup';
 import AchievementsPanel from './AchievementsPanel';
 import { CLASSIC_SITE_URL } from '../../config/content';
+import CVDownloadModal from './CVDownloadModal';
 import '../../styles/NavigationUI.scss';
 
 // Room data for the map - positions are percentages on the map image
@@ -34,6 +35,7 @@ const NavigationUI = () => {
     const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
     const [bgmVol, setBgmVol] = useState(0.3);
     const [isUIHidden, setIsUIHidden] = useState(false);
+    const [cvDownloadOpen, setCvDownloadOpen] = useState(false);
 
     // Refs for focus management
     const mapPanelRef = useRef();
@@ -221,20 +223,16 @@ const NavigationUI = () => {
             {/* Global Achievement Popup */}
             <AchievementPopup />
 
-            {/* Ask-Me-Anything launcher — bottom-right.
-                Opens the chatbot that lives on the classic site. */}
+            {/* Download CV — bottom-left, stacked above Classic CV View. */}
             {!isUIHidden && hasEntered && (
-                <a
-                    className="ask-ai-link"
-                    href={CLASSIC_SITE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Ask me anything"
-                    title="Ask me anything"
+                <button
+                    onClick={() => setCvDownloadOpen(true)}
+                    aria-label="Download Mujeeb's CV"
+                    title="Download CV"
                     style={{
                         position: 'fixed',
-                        right: '20px',
-                        bottom: '20px',
+                        left: '20px',
+                        bottom: '78px',
                         zIndex: 9998,
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -244,7 +242,7 @@ const NavigationUI = () => {
                         border: '2px solid #1a1a1a',
                         borderRadius: '7px',
                         color: '#1a1a1a',
-                        textDecoration: 'none',
+                        cursor: 'pointer',
                         fontFamily: '"Caveat", cursive',
                         fontSize: '20px',
                         fontWeight: 700,
@@ -254,13 +252,12 @@ const NavigationUI = () => {
                     }}
                 >
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                        <line x1="9" y1="10.5" x2="9" y2="10.5" />
-                        <line x1="12.5" y1="10.5" x2="12.5" y2="10.5" />
-                        <line x1="16" y1="10.5" x2="16" y2="10.5" />
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    Ask Me Anything
-                </a>
+                    Download CV
+                </button>
             )}
 
             {/* Mode toggle — hidden on the 2D landing; shown once inside the house. */}
@@ -578,6 +575,8 @@ const NavigationUI = () => {
                     }}
                 />
             )}
+
+            <CVDownloadModal open={cvDownloadOpen} onClose={() => setCvDownloadOpen(false)} />
         </div>
     );
 };
