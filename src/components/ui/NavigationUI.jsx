@@ -219,12 +219,12 @@ const NavigationUI = () => {
     };
 
     return (
-        <div className="navigation-ui">
-            {/* Global Achievement Popup */}
-            <AchievementPopup />
-
-            {/* Download CV — bottom-left, stacked above Classic CV View. */}
-            {!isUIHidden && hasEntered && (
+        <>
+            {/* Landing-visible action buttons — rendered OUTSIDE .navigation-ui so they sit
+                above the 2D landing overlay (z-index:9995). Inside .navigation-ui they'd be
+                trapped in its stacking context (z-index:100) and hidden behind the landing. */}
+            {/* Download CV — bottom-left, stacked above Classic CV View. Shown on the landing too. */}
+            {!isUIHidden && (
                 <button
                     onClick={() => setCvDownloadOpen(true)}
                     aria-label="Download Mujeeb's CV"
@@ -234,6 +234,7 @@ const NavigationUI = () => {
                         left: '20px',
                         bottom: '78px',
                         zIndex: 9998,
+                        pointerEvents: 'auto',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
@@ -260,8 +261,8 @@ const NavigationUI = () => {
                 </button>
             )}
 
-            {/* Mode toggle — hidden on the 2D landing; shown once inside the house. */}
-            {!isUIHidden && hasEntered && (
+            {/* Mode toggle — Classic CV View. Shown on the landing and inside the house. */}
+            {!isUIHidden && (
                 <a
                     className="classic-view-link"
                     href={CLASSIC_SITE_URL}
@@ -272,6 +273,7 @@ const NavigationUI = () => {
                         left: '20px',
                         bottom: '20px',
                         zIndex: 9998,
+                        pointerEvents: 'auto',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
@@ -298,6 +300,10 @@ const NavigationUI = () => {
                     Classic CV View
                 </a>
             )}
+
+            <div className="navigation-ui">
+            {/* Global Achievement Popup */}
+            <AchievementPopup />
 
             {/* Back Button - Only visible in rooms, hides up when clicked */}
             {hasEntered && isInRoom && (
@@ -577,7 +583,8 @@ const NavigationUI = () => {
             )}
 
             <CVDownloadModal open={cvDownloadOpen} onClose={() => setCvDownloadOpen(false)} />
-        </div>
+            </div>
+        </>
     );
 };
 

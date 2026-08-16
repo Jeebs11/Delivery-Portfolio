@@ -165,7 +165,7 @@ const Preloader = ({ onComplete, ready }) => {
       <div className="mexe-note" ref={noteRef}>
         <span className="mexe-pin" aria-hidden="true" />
         <div className="mexe-project">PROJECT:</div>
-        <div className="mexe-title">MUJEEB.EXE</div>
+        <div className="mexe-title">Meet Mujeeb</div>
         <div className="mexe-rule" />
 
         <ul className="mexe-list">
