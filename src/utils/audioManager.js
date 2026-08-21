@@ -19,7 +19,7 @@ export const initAudio = () => {
         bgMusicAudio = new Audio('/sounds/cfl_turningpages-belem-breeze-487596.ogg');
         bgMusicAudio.preload = 'auto'; // Force browser to fetch data immediately
         bgMusicAudio.loop = true;
-        bgMusicAudio.volume = 0.3; // Default volume for background cozy music
+        bgMusicAudio.volume = 0; // Off by default — user turns the Ambient slider up
         bgMusicAudio.muted = isMuted; // Apply synced mute state
 
         // Trigger background load
@@ -54,24 +54,32 @@ export const toggleMute = () => {
 
 export const getIsMuted = () => isMuted;
 
+// The ambient bed is intentionally gentle: the 0..1 slider maps to a low actual
+// volume so even "full" stays subtle (the raw track at 0.3 felt distracting).
+const AMBIENT_GAIN = 0.22;
+
 export const setMusicVolume = (vol) => {
+    const v = Math.max(0, Math.min(1, vol));
     if (bgMusicAudio) {
-        bgMusicAudio.volume = Math.max(0, Math.min(1, vol));
+        bgMusicAudio.volume = v * AMBIENT_GAIN;
         // Auto-unmute if user drags slider up
-        if (vol > 0 && isMuted) {
+        if (v > 0 && isMuted) {
             isMuted = false;
             bgMusicAudio.muted = false;
         }
-
-        // Ensure playback continues if we unmute, ONLY if the music has actually been requested to start
-        if (vol > 0 && bgMusicAudio.paused && bgMusicStarted) {
+        // Slider up starts the ambient bed (the drag itself is the user gesture);
+        // slider to 0 turns it off.
+        if (v > 0 && bgMusicAudio.paused) {
+            bgMusicStarted = true;
             bgMusicAudio.play().catch(e => console.warn(e));
+        } else if (v <= 0 && !bgMusicAudio.paused) {
+            bgMusicAudio.pause();
         }
     }
     // Dispatch event so UI sliders can stay in sync if changed programmatically
-    window.dispatchEvent(new CustomEvent('musicVolumeChanged', { detail: vol }));
+    window.dispatchEvent(new CustomEvent('musicVolumeChanged', { detail: v }));
 };
 
 export const getMusicVolume = () => {
-    return bgMusicAudio ? bgMusicAudio.volume : 0.3;
+    return bgMusicAudio ? bgMusicAudio.volume / AMBIENT_GAIN : 0;
 };

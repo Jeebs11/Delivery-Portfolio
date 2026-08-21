@@ -116,9 +116,8 @@ export default function CorridorLife({ zOffset, wallX, floorY, ceilingY }) {
     // Extra props scattered down the walk. z is relative to zOffset (corridor runs -z).
     // Kept clear of the existing tree (~-58 left) and table (~-35 left).
     const scatter = [
-        { type: 'tree', z: -20, side: 'right', phase: 0.0 },
-        { type: 'dresser', z: -45, side: 'right', phase: 1.1 },
-        { type: 'tree', z: -70, side: 'left', phase: 2.2 },
+        { type: 'tree', z: -22, side: 'right', phase: 0.0 },
+        { type: 'dresser', z: -52, side: 'right', phase: 1.1 },
     ];
 
     return (

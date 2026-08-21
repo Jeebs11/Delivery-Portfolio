@@ -33,7 +33,7 @@ const NavigationUI = () => {
     // Audio controls state
     const [isAudioMenuOpen, setIsAudioMenuOpen] = useState(false);
     const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
-    const [bgmVol, setBgmVol] = useState(0.3);
+    const [bgmVol, setBgmVol] = useState(0); // ambient bed off by default
     const [isUIHidden, setIsUIHidden] = useState(false);
     const [cvDownloadOpen, setCvDownloadOpen] = useState(false);
 
@@ -538,7 +538,7 @@ const NavigationUI = () => {
                         <div className="audio-sliders-container">
                             <div className="slider-group">
                                 <div className="slider-label">
-                                    <span>Music</span>
+                                    <span>Ambient</span>
                                     <span>{Math.round(bgmVol * 100)}%</span>
                                 </div>
                                 <input
@@ -547,7 +547,7 @@ const NavigationUI = () => {
                                     value={bgmVol}
                                     onChange={(e) => handleBgmChange(parseFloat(e.target.value))}
                                     className="paper-slider"
-                                    aria-label="Music volume"
+                                    aria-label="Ambient sound volume"
                                     aria-valuetext={`${Math.round(bgmVol * 100)} percent`}
                                 />
                             </div>
