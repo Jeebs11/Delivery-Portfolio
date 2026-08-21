@@ -82,21 +82,20 @@ const CorridorWalls = ({ zStart = 10, length = 80, doorPositions = [], zClip = 1
     // USTAWIENIA PODŁOGI (FLOOR SETTINGS)
     // =============================================
     // Tekstura kawałka podłogi - ręcznie rysowane deski
-    const floorTexture = useTexture('/textures/corridor/kawalekpodlogi.webp');
+    const floorTexture = useTexture('/textures/corridor/nc_floor.webp');
     floorTexture.wrapS = floorTexture.wrapT = THREE.ClampToEdgeWrapping;
 
-    // Tekstura listwy przypodłogowej (baseboards)
-    // Wymiary obrazka: 1582 x 94 px → aspect ratio 16.83:1
-    const baseboardTexture = useTexture('/textures/corridor/texturadoprogow.webp');
+    // Tekstura listwy przypodłogowej (baseboards) — warm wood rail
+    const baseboardTexture = useTexture('/textures/corridor/nc_rail.webp');
     baseboardTexture.wrapS = baseboardTexture.wrapT = THREE.RepeatWrapping;
     baseboardTexture.colorSpace = THREE.SRGBColorSpace;
 
-    // Load wall texture
-    const wallTexture = useTexture('/textures/corridor/wall_texture.webp');
+    // Load wall texture — warm cream plaster
+    const wallTexture = useTexture('/textures/corridor/nc_wall.webp');
     wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 
-    // Load ceiling texture
-    const ceilingTexture = useTexture('/textures/corridor/ceiling_texture.webp');
+    // Load ceiling texture — soft cream
+    const ceilingTexture = useTexture('/textures/corridor/nc_ceiling.webp');
     ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping;
 
     // Calculate effective geometry based on clipping

@@ -332,9 +332,9 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
     const frameTexture = useTexture('/textures/corridor/ramkanazdjecieduza.webp');
     const framePaintedTexture = useTexture('/textures/corridor/ramkanazdjecieduza_painted.webp');
     const standingFrameTexture = useTexture('/textures/corridor/ramkanazdjeciemala.webp');
-    const treeTexture = useTexture('/textures/corridor/drzewkowdoniczce.webp');
+    const treeTexture = useTexture('/textures/corridor/nc_tree.webp');
     const grateTexture = useTexture('/textures/corridor/kratkawentylacyjna.webp');
-    const flowerTexture = useTexture('/textures/corridor/kwiatekwdoniczce.webp');
+    const flowerTexture = useTexture('/textures/corridor/nc_seedling.webp');
 
     // --- Ceiling Lights (punkty światła) ---
     // Tekstury lamp
@@ -550,10 +550,10 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
 
                 {/* KWIATEK NA STOLE */}
                 <mesh
-                    position={[0, tableConfig.height + tableConfig.topThickness + 0.2, 0]} // Na blacie
+                    position={[0, tableConfig.height + tableConfig.topThickness + 0.3, 0]} // Na blacie, grounded
                     rotation={[0, -Math.PI / 4, 0]} // Lekki obrót
                 >
-                    <planeGeometry args={[0.3, 0.3 / 0.758]} />
+                    <planeGeometry args={[0.3, 0.3 / 0.497]} /> {/* nc_seedling aspect 634x1275 */}
                     <meshBasicMaterial color="#e0e0e0"
                         map={flowerTexture}
                         transparent={true}
@@ -632,10 +632,10 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
             {/* === DRZEWKO W DONICZCE (POTTED TREE) === */}
             {/* Kolo drzwi Contact (Right -62). Ustawiamy na -58, ODWROTNIE (Left). */}
             <mesh
-                position={[-wallX + 0.8, floorY + 1.5, zOffset - 58]} // Left side
+                position={[-wallX + 0.8, floorY + 1.61, zOffset - 58]} // Left side, base grounded on floor
                 rotation={[0, Math.PI / 4, 0]} // Obrócone w stronę korytarza (z lewej)
             >
-                <planeGeometry args={[1.8, 1.8 / 0.602]} />
+                <planeGeometry args={[1.8, 1.8 / 0.558]} /> {/* nc_tree aspect 923x1653 */}
                 <meshBasicMaterial color="#e0e0e0"
                     map={treeTexture}
                     transparent={true}

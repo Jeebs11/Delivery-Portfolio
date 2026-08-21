@@ -37,11 +37,11 @@ export const ENTRANCE_TEXTURES = [
 // Corridor scene textures
 export const CORRIDOR_TEXTURES = [
     // Walls/Floor/Ceiling
-    '/textures/corridor/wall_texture.webp',
-    '/textures/corridor/kawalekpodlogi.webp',
-    '/textures/corridor/texturadoprogow.webp',
+    '/textures/corridor/nc_wall.webp',
+    '/textures/corridor/nc_floor.webp',
+    '/textures/corridor/nc_rail.webp',
     '/textures/corridor/texturadrewnadonozekbiurka.webp',
-    '/textures/corridor/ceiling_texture.webp',
+    '/textures/corridor/nc_ceiling.webp',
     '/textures/corridor/avatar_sketch.webp',
     // Double doors (end of corridor)
     '/textures/corridor/doors/frame_sketch.webp',
@@ -76,9 +76,9 @@ export const CORRIDOR_TEXTURES = [
     '/textures/corridor/ramkanazdjecieduza.webp',
     '/textures/corridor/ramkanazdjecieduza_painted.webp',
     '/textures/corridor/ramkanazdjeciemala.webp',
-    '/textures/corridor/drzewkowdoniczce.webp',
+    '/textures/corridor/nc_tree.webp',
     '/textures/corridor/kratkawentylacyjna.webp',
-    '/textures/corridor/kwiatekwdoniczce.webp',
+    '/textures/corridor/nc_seedling.webp',
     '/textures/corridor/kratanalampy.webp',
     '/textures/corridor/bokilampy.webp',
     '/textures/corridor/gorastolika.webp',
