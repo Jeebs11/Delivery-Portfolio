@@ -40,6 +40,8 @@ export const CORRIDOR_TEXTURES = [
     '/textures/corridor/nc_wall.webp',
     '/textures/corridor/nc_floor.webp',
     '/textures/corridor/nc_rail.webp',
+    '/textures/corridor/nc_wood_v.webp',
+    '/textures/corridor/nc_wood_h.webp',
     '/textures/corridor/texturadrewnadonozekbiurka.webp',
     '/textures/corridor/nc_ceiling.webp',
     '/textures/corridor/avatar_sketch.webp',

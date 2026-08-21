@@ -427,8 +427,8 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
     // =============================================
     // STOLIK (TABLE)
     // =============================================
-    const woodTexture = useTexture('/textures/corridor/texturadrewnadonozekbiurka.webp');
-    const tableTopTexture = useTexture('/textures/corridor/gorastolika.webp');
+    const woodTexture = useTexture('/textures/corridor/nc_wood_v.webp');
+    const tableTopTexture = useTexture('/textures/corridor/nc_wood_h.webp');
 
     // Tekstury szafki
     const cabinetFrontTexture = useTexture('/textures/corridor/szafkaprzod.webp');

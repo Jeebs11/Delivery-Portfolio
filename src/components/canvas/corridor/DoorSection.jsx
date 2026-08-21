@@ -189,7 +189,7 @@ const DoorSection = ({
     const currentTilt = useRef(0);
 
     // Load wall texture
-    const originalWallTexture = useTexture('/textures/corridor/wall_texture.webp');
+    const originalWallTexture = useTexture('/textures/corridor/nc_wall.webp');
 
     // Clone texture to have independent repeat settings (fixes scaling issues)
     const wallTexture = useMemo(() => {
