@@ -54,6 +54,13 @@ const NavigationUI = () => {
         return () => window.removeEventListener('inspectChange', handleInspectChange);
     }, []);
 
+    // Let the in-canvas "Download CV" banner (Career room) open the modal.
+    useEffect(() => {
+        const openCv = () => setCvDownloadOpen(true);
+        window.addEventListener('openCvDownload', openCv);
+        return () => window.removeEventListener('openCvDownload', openCv);
+    }, []);
+
     const paintedMapsRefs = {
         about: useRef(),
         gallery: useRef(),
@@ -582,8 +589,10 @@ const NavigationUI = () => {
                 />
             )}
 
-            <CVDownloadModal open={cvDownloadOpen} onClose={() => setCvDownloadOpen(false)} />
             </div>
+            {/* Rendered OUTSIDE .navigation-ui so its inputs aren't disabled by that
+                wrapper's pointer-events:none (only <button>s are re-enabled there). */}
+            <CVDownloadModal open={cvDownloadOpen} onClose={() => setCvDownloadOpen(false)} />
         </>
     );
 };

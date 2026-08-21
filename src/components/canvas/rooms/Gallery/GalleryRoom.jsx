@@ -13,6 +13,7 @@ import GalleryClouds from './GalleryClouds';
 import { useAudio } from '../../../../context/AudioManager';
 import { usePaintMaterial } from './usePaintMaterial';
 import { useGalleryProjects } from '../../../../hooks/useSanityData';
+import { CLASSIC_SITE_URL } from '../../../../config/content';
 
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
@@ -504,11 +505,21 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Banners hung neatly over the rail (spaced either side of centre).
                     Hard alpha cutout (opaque) so the text isn't see-through; height
                     reduced so the whole banner sits above the floor. */}
-                <mesh position={[-1.85, 0.7, -3.8]} raycast={() => null}>
+                <mesh
+                    position={[-1.85, 0.7, -3.8]}
+                    onClick={(e) => { e.stopPropagation(); window.location.href = CLASSIC_SITE_URL; }}
+                    onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+                    onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+                >
                     <planeGeometry args={[1.3 * 0.700, 1.3]} />
                     <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
-                <mesh position={[1.85, 0.7, -3.8]} raycast={() => null}>
+                <mesh
+                    position={[1.85, 0.7, -3.8]}
+                    onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('openCvDownload')); }}
+                    onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+                    onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+                >
                     <planeGeometry args={[1.3 * 0.652, 1.3]} />
                     <meshBasicMaterial map={bannerCvTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
