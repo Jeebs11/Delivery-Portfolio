@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import '../shaders/RevealMaterial';
+import CorridorLife, { Sway } from './CorridorLife';
 import { isTouchDevice } from '../../../utils/deviceDetect';
 /**
  * CorridorDecorations - Dekoracje korytarza.
@@ -456,6 +457,9 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
 
     return (
         <group>
+            {/* Ambient life: drifting dust motes + scattered swaying props */}
+            <CorridorLife zOffset={zOffset} wallX={wallX} floorY={floorY} ceilingY={ceilingY} />
+
             {/* === LAMPY SUFITOWE === */}
             {lights.filter(light => light.z <= zClip).map((light, i) => {
                 // Konfiguracja tekstur wewnątrz pętli (lub poza, ale upewnijmy się co do wrappingu)
@@ -631,19 +635,21 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
 
             {/* === DRZEWKO W DONICZCE (POTTED TREE) === */}
             {/* Kolo drzwi Contact (Right -62). Ustawiamy na -58, ODWROTNIE (Left). */}
-            <mesh
-                position={[-wallX + 0.8, floorY + 1.61, zOffset - 58]} // Left side, base grounded on floor
-                rotation={[0, Math.PI / 4, 0]} // Obrócone w stronę korytarza (z lewej)
-            >
-                <planeGeometry args={[1.8, 1.8 / 0.558]} /> {/* nc_tree aspect 923x1653 */}
-                <meshBasicMaterial color="#e0e0e0"
-                    map={treeTexture}
-                    transparent={true}
-                    alphaTest={0.1}
-                    side={THREE.DoubleSide}
-                    roughness={0.8}
-                />
-            </mesh>
+            <Sway position={[-wallX + 0.8, floorY, zOffset - 58]} amplitude={0.018} speed={0.9}>
+                <mesh
+                    position={[0, 1.61, 0]} // base grounded on floor, sway pivots at the pot
+                    rotation={[0, Math.PI / 4, 0]} // Obrócone w stronę korytarza (z lewej)
+                >
+                    <planeGeometry args={[1.8, 1.8 / 0.558]} /> {/* nc_tree aspect 923x1653 */}
+                    <meshBasicMaterial color="#e0e0e0"
+                        map={treeTexture}
+                        transparent={true}
+                        alphaTest={0.1}
+                        side={THREE.DoubleSide}
+                        roughness={0.8}
+                    />
+                </mesh>
+            </Sway>
 
             {/* === KRATKI WENTYLACYJNE (VENTILATION GRATES) === */}
             {/* Generujemy kratkę na przeciwległej ścianie dla każdego obrazu */}

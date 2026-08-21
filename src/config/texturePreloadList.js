@@ -81,6 +81,7 @@ export const CORRIDOR_TEXTURES = [
     '/textures/corridor/nc_tree.webp',
     '/textures/corridor/kratkawentylacyjna.webp',
     '/textures/corridor/nc_seedling.webp',
+    '/textures/corridor/nc_dresser.webp',
     '/textures/corridor/kratanalampy.webp',
     '/textures/corridor/bokilampy.webp',
     '/textures/corridor/gorastolika.webp',
