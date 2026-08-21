@@ -431,8 +431,8 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
     const tableTopTexture = useTexture('/textures/corridor/nc_wood_h.webp');
 
     // Tekstury szafki
-    const cabinetFrontTexture = useTexture('/textures/corridor/szafkaprzod.webp');
-    const cabinetRestTexture = useTexture('/textures/corridor/szafkaprzodgora.webp');
+    const cabinetFrontTexture = useTexture('/textures/corridor/szafkaprzod_wood.webp');
+    const cabinetRestTexture = useTexture('/textures/corridor/szafkaprzodgora_wood.webp');
 
     // Klonujemy teksturę dla nóg, żeby ją obrócić (bo user mówi że jest poziomo a ma być pionowo)
     const legTexture = useMemo(() => {
@@ -504,7 +504,7 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
                         >
                             <planeGeometry args={[1.9, 0.4]} />
                             <meshBasicMaterial
-                                color="#ffffff"
+                                color="#fff2db"
                                 toneMapped={false}
                                 side={THREE.DoubleSide}
                             />

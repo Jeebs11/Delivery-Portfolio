@@ -84,8 +84,8 @@ export const CORRIDOR_TEXTURES = [
     '/textures/corridor/kratanalampy.webp',
     '/textures/corridor/bokilampy.webp',
     '/textures/corridor/gorastolika.webp',
-    '/textures/corridor/szafkaprzod.webp',
-    '/textures/corridor/szafkaprzodgora.webp',
+    '/textures/corridor/szafkaprzod_wood.webp',
+    '/textures/corridor/szafkaprzodgora_wood.webp',
     '/textures/corridor/rysuneknaobraz1.webp',
     '/textures/corridor/rysuneknaobrazek3.webp',
     // DoorSection extras

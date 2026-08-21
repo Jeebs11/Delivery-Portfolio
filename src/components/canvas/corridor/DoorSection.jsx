@@ -222,8 +222,8 @@ const DoorSection = ({
     const doorBackTexture = useTexture('/textures/corridor/doors/backsingledoors_wood.webp');
     const arrowTexture = useTexture('/textures/corridor/strzalka_wood.webp');
 
-    // Baseboard texture for door sections (1582x94 px, aspect 16.83:1)
-    const baseboardTexture = useTexture('/textures/corridor/texturadoprogow.webp');
+    // Baseboard texture for door sections — warm wood rail to match the corridor
+    const baseboardTexture = useTexture('/textures/corridor/nc_rail.webp');
     baseboardTexture.wrapS = baseboardTexture.wrapT = THREE.RepeatWrapping;
     baseboardTexture.colorSpace = THREE.SRGBColorSpace;
 
