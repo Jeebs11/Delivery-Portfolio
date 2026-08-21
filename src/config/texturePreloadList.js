@@ -53,15 +53,15 @@ export const CORRIDOR_TEXTURES = [
     '/textures/corridor/doors/handle_right_sketch.webp',
     '/textures/corridor/doors/pien.webp',
     // Single side doors
-    '/textures/corridor/doors/ramkasingledoors_wood.webp',
+    '/textures/corridor/doors/ramkasingledoors_wood.webp?v=2',
     '/textures/corridor/doors/klamkadodrzwi.webp',
     '/textures/corridor/doors/backsingledoors_wood.webp',
     '/textures/corridor/doors/career_door_wood.webp',
     '/textures/corridor/doors/portfolio_door_wood.webp',
     '/textures/corridor/doors/drzwiabout_wood.webp',
     '/textures/corridor/doors/drzwikontakt_wood.webp',
-    '/textures/corridor/doors/career_door_painted_wood.webp',
-    '/textures/corridor/doors/portfolio_door_painted_wood.webp',
+    '/textures/corridor/doors/career_door_painted_wood.webp?v=2',
+    '/textures/corridor/doors/portfolio_door_painted_wood.webp?v=2',
     '/textures/corridor/doors/drzwiabout_painted_wood.webp',
     '/textures/corridor/doors/drzwikontakt_painted_wood.webp',
     // Signs

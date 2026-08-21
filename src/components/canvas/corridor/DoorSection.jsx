@@ -49,8 +49,8 @@ const DOOR_TEXTURES = {
 
 // Painted (colored) variants — the gravity word-art blooms to colour on hover
 const DOOR_PAINTED_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/career_door_painted_wood.webp',
-    'THE STUDIO': '/textures/corridor/doors/portfolio_door_painted_wood.webp',
+    'THE GALLERY': '/textures/corridor/doors/career_door_painted_wood.webp?v=2',
+    'THE STUDIO': '/textures/corridor/doors/portfolio_door_painted_wood.webp?v=2',
     'THE ABOUT': '/textures/corridor/doors/drzwiabout_painted_wood.webp',
     "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_painted_wood.webp',
 };
@@ -216,7 +216,7 @@ const DoorSection = ({
 
     const doorPaintedTexturePath = DOOR_PAINTED_TEXTURES[label] || DOOR_PAINTED_TEXTURES['THE GALLERY'];
     const doorPaintedTexture = useTexture(isTouch ? dummyTex : doorPaintedTexturePath);
-    const frameTexture = useTexture('/textures/corridor/doors/ramkasingledoors_wood.webp');
+    const frameTexture = useTexture('/textures/corridor/doors/ramkasingledoors_wood.webp?v=2');
     const handleTexture = useTexture('/textures/corridor/doors/klamkadodrzwi.webp');
     const handlePaintedTexture = useTexture(isTouch ? dummyTex : '/textures/corridor/doors/klamkadodrzwi_painted.webp');
     const doorBackTexture = useTexture('/textures/corridor/doors/backsingledoors_wood.webp');

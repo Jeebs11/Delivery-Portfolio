@@ -117,19 +117,10 @@ export default function CorridorLife({ zOffset, wallX, floorY, ceilingY }) {
     // Kept clear of the existing tree (~-58 left) and table (~-35 left).
     const scatter = [
         { type: 'tree', z: -22, side: 'right', phase: 0.0 },
-        { type: 'dresser', z: -52, side: 'right', phase: 1.1 },
     ];
 
     return (
         <group>
-            <DustMotes
-                zStart={zOffset - 2}
-                zEnd={zOffset - 78}
-                wallX={wallX}
-                floorY={floorY}
-                ceilingY={ceilingY}
-            />
-
             {scatter.map((s, i) => {
                 if (s.type === 'tree') {
                     return (
