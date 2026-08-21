@@ -41,18 +41,18 @@ const DOOR_ALIGN_X = 1.2;
 
 // Door texture mapping - maps label to texture file
 const DOOR_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/career_door.webp?v=3',
-    'THE STUDIO': '/textures/corridor/doors/portfolio_door.webp?v=3',
-    'THE ABOUT': '/textures/corridor/doors/drzwiabout.webp',
-    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt.webp',
+    'THE GALLERY': '/textures/corridor/doors/career_door_wood.webp',
+    'THE STUDIO': '/textures/corridor/doors/portfolio_door_wood.webp',
+    'THE ABOUT': '/textures/corridor/doors/drzwiabout_wood.webp',
+    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_wood.webp',
 };
 
 // Painted (colored) variants — the gravity word-art blooms to colour on hover
 const DOOR_PAINTED_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/career_door_painted.webp?v=3',
-    'THE STUDIO': '/textures/corridor/doors/portfolio_door_painted.webp?v=3',
-    'THE ABOUT': '/textures/corridor/doors/drzwiabout_painted.webp',
-    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_painted.webp',
+    'THE GALLERY': '/textures/corridor/doors/career_door_painted_wood.webp',
+    'THE STUDIO': '/textures/corridor/doors/portfolio_door_painted_wood.webp',
+    'THE ABOUT': '/textures/corridor/doors/drzwiabout_painted_wood.webp',
+    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_painted_wood.webp',
 };
 
 
@@ -216,11 +216,11 @@ const DoorSection = ({
 
     const doorPaintedTexturePath = DOOR_PAINTED_TEXTURES[label] || DOOR_PAINTED_TEXTURES['THE GALLERY'];
     const doorPaintedTexture = useTexture(isTouch ? dummyTex : doorPaintedTexturePath);
-    const frameTexture = useTexture('/textures/corridor/doors/ramkasingledoors.webp');
+    const frameTexture = useTexture('/textures/corridor/doors/ramkasingledoors_wood.webp');
     const handleTexture = useTexture('/textures/corridor/doors/klamkadodrzwi.webp');
     const handlePaintedTexture = useTexture(isTouch ? dummyTex : '/textures/corridor/doors/klamkadodrzwi_painted.webp');
-    const doorBackTexture = useTexture('/textures/corridor/doors/backsingledoors.webp');
-    const arrowTexture = useTexture('/textures/corridor/strzalka.webp');
+    const doorBackTexture = useTexture('/textures/corridor/doors/backsingledoors_wood.webp');
+    const arrowTexture = useTexture('/textures/corridor/strzalka_wood.webp');
 
     // Baseboard texture for door sections (1582x94 px, aspect 16.83:1)
     const baseboardTexture = useTexture('/textures/corridor/texturadoprogow.webp');
@@ -937,7 +937,7 @@ const DoorSection = ({
     const handlePivotX = side === 'left' ? doorWidth * 0.25 : -doorWidth * 0.25;
 
     // Sign texture mapping - now uses a single empty sign texture
-    const signTextureUrl = '/textures/corridor/pustatabliczka.webp';
+    const signTextureUrl = '/textures/corridor/pustatabliczka_wood.webp';
     const signLegacyRatio = 1.792; // 2752x1536
     const signHeight = 0.55;
     const signWidth = signHeight * signLegacyRatio;
