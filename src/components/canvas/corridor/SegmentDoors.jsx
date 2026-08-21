@@ -47,20 +47,20 @@ const SegmentDoors = ({
 
     // Load textures
     // Note: User provided specific filenames in corridor/doors/
-    const frameTexture = useTexture('/textures/corridor/doors/frame_sketch.webp');
+    const frameTexture = useTexture('/textures/corridor/doors/frame_sketch_wood.webp');
     const doorLeftTexture = useTexture('/textures/corridor/doors/doorrleft.webp');
     const doorRightTexture = useTexture('/textures/corridor/doors/dorright.webp');
-    const doorPlainTexture = useTexture('/textures/corridor/doors/backsingledoors.webp'); // no ∞, for the exit doors
+    const doorPlainTexture = useTexture('/textures/corridor/doors/backsingledoors_wood.webp'); // no ∞, for the exit doors
     const handleLeftTexture = useTexture('/textures/corridor/doors/handle_left_sketch.webp');
     const handleRightTexture = useTexture('/textures/corridor/doors/handle_right_sketch.webp');
-    const doorBackTexture = useTexture('/textures/corridor/doors/door_back.webp');
-    const edgeTexture = useTexture('/textures/corridor/doors/pien.webp');
-    const wallTexture = useTexture('/textures/corridor/wall_texture.webp');
+    const doorBackTexture = useTexture('/textures/corridor/doors/door_back_wood.webp');
+    const edgeTexture = useTexture('/textures/corridor/doors/pien_wood.webp');
+    const wallTexture = useTexture('/textures/corridor/nc_wall.webp');
 
     wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 
     // Baseboard texture (1582x94 px)
-    const baseboardTexSrc = useTexture('/textures/corridor/texturadoprogow.webp');
+    const baseboardTexSrc = useTexture('/textures/corridor/nc_rail.webp');
     const NATURAL_TILE_W = (1582 / 94) * 0.15; // ~2.524 units per natural tile
 
     // --- Dimensions from EntranceDoors ---
