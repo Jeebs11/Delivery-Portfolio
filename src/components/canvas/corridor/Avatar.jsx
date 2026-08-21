@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -13,7 +13,7 @@ const easeOutQuad = (t) => t * (2 - t);
 
 const FRAME_COUNT = 10;
 const FRAME_PATHS = Array.from({ length: FRAME_COUNT }, (_, i) => `/textures/corridor/avatar_new/${i + 1}.webp`);
-const FPS = 9; // wave speed (frames per second)
+const FPS = 5; // wave speed (frames per second)
 
 const Avatar = ({ position = [0, 0, 0] }) => {
     const groupRef = useRef();
@@ -29,8 +29,14 @@ const Avatar = ({ position = [0, 0, 0] }) => {
     const frames = useTexture(FRAME_PATHS);
     const [dims, setDims] = useState({ w: 1.53, h: 2.3 });
 
+    // Set sRGB synchronously (before first GPU upload) so every frame renders with
+    // the same bold colour — a deferred effect leaves the first frame washed out,
+    // which flashes as a "white filter" each wave cycle.
+    useMemo(() => {
+        frames.forEach((t) => { if (t) { t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; } });
+    }, [frames]);
+
     useEffect(() => {
-        frames.forEach((t) => { if (t) t.colorSpace = THREE.SRGBColorSpace; });
         const img = frames[0]?.image;
         if (img) {
             const baseH = 2.3;
