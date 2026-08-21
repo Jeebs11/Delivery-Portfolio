@@ -1,38 +1,42 @@
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * Avatar — Mujeeb's illustrated character (transparent cutout), rendered as a
- * single plane. The raised-hand pose already reads as a welcome; we add a gentle
- * "alive" idle (breathing bob + subtle sway) rather than a puppet wave (which
- * showed a seam at the elbow). Keeps the "step aside as you approach" dodge.
+ * Avatar — Mujeeb's illustrated character, frame-animated (a hand wave) from the
+ * 10 cut-out frames in /avatar_new. Ping-pongs through the frames for a smooth
+ * back-and-forth wave, plus a gentle breathing bob and the "step aside as you
+ * approach" dodge.
  */
 const easeOutQuad = (t) => t * (2 - t);
+
+const FRAME_COUNT = 10;
+const FRAME_PATHS = Array.from({ length: FRAME_COUNT }, (_, i) => `/textures/corridor/avatar_new/${i + 1}.webp`);
+const FPS = 9; // wave speed (frames per second)
 
 const Avatar = ({ position = [0, 0, 0] }) => {
     const groupRef = useRef();
     const idleRef = useRef();
+    const matRef = useRef();
     const { camera } = useThree();
 
     const dodgeX = useRef(0);
     const targetDodgeX = useRef(0);
     const worldPosVec = useRef(new THREE.Vector3());
+    const lastFrame = useRef(-1);
 
-    const [dims, setDims] = useState({ w: 0.95, h: 2.3 });
-    const tex = useTexture('/textures/corridor/avatar_src/character.png');
+    const frames = useTexture(FRAME_PATHS);
+    const [dims, setDims] = useState({ w: 1.53, h: 2.3 });
 
     useEffect(() => {
-        if (!tex) return;
-        tex.colorSpace = THREE.SRGBColorSpace;
-        if (tex.image) {
+        frames.forEach((t) => { if (t) t.colorSpace = THREE.SRGBColorSpace; });
+        const img = frames[0]?.image;
+        if (img) {
             const baseH = 2.3;
-            setDims({ w: baseH * (tex.image.width / tex.image.height), h: baseH });
+            setDims({ w: baseH * (img.width / img.height), h: baseH });
         }
-    }, [tex]);
-
-    useMemo(() => { if (tex) tex.colorSpace = THREE.SRGBColorSpace; }, [tex]);
+    }, [frames]);
 
     useFrame((state) => {
         if (!groupRef.current) return;
@@ -53,10 +57,19 @@ const Avatar = ({ position = [0, 0, 0] }) => {
         groupRef.current.position.x = position[0] + dodgeX.current;
         groupRef.current.position.y = position[1];
 
-        // Gentle "alive" idle: breathing bob + subtle sway
+        // Frame animation: ping-pong through the wave frames (0..9..0)
+        const span = 2 * (FRAME_COUNT - 1);
+        const c = Math.floor(time * FPS) % span;
+        const idx = c < FRAME_COUNT ? c : span - c;
+        if (idx !== lastFrame.current && matRef.current && frames[idx]) {
+            matRef.current.map = frames[idx];
+            matRef.current.needsUpdate = true;
+            lastFrame.current = idx;
+        }
+
+        // Gentle "alive" breathing bob
         if (idleRef.current) {
-            idleRef.current.position.y = Math.sin(time * 1.3) * 0.018;
-            idleRef.current.rotation.z = Math.sin(time * 0.8) * 0.006;
+            idleRef.current.position.y = Math.sin(time * 1.3) * 0.015;
         }
     });
 
@@ -65,7 +78,7 @@ const Avatar = ({ position = [0, 0, 0] }) => {
             <group ref={idleRef}>
                 <mesh>
                     <planeGeometry args={[dims.w, dims.h]} />
-                    <meshBasicMaterial map={tex} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
+                    <meshBasicMaterial ref={matRef} map={frames[0]} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
                 </mesh>
             </group>
         </group>
