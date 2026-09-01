@@ -554,10 +554,10 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
 
                 {/* KWIATEK NA STOLE */}
                 <mesh
-                    position={[0, tableConfig.height + tableConfig.topThickness + 0.3, 0]} // Na blacie, grounded
+                    position={[0, tableConfig.height + tableConfig.topThickness + 0.27, 0]} // Na blacie, grounded
                     rotation={[0, -Math.PI / 4, 0]} // Lekki obrót
                 >
-                    <planeGeometry args={[0.3, 0.3 / 0.497]} /> {/* nc_seedling aspect 634x1275 */}
+                    <planeGeometry args={[0.3, 0.3 / 0.554]} /> {/* nc_seedling realistic aspect */}
                     <meshBasicMaterial color="#e0e0e0"
                         map={flowerTexture}
                         transparent={true}
@@ -637,10 +637,10 @@ const CorridorDecorations = ({ segmentLength, zOffset, corridorWidth = 4, corrid
             {/* Kolo drzwi Contact (Right -62). Ustawiamy na -58, ODWROTNIE (Left). */}
             <Sway position={[-wallX + 0.8, floorY, zOffset - 58]} amplitude={0.018} speed={0.9}>
                 <mesh
-                    position={[0, 1.61, 0]} // base grounded on floor, sway pivots at the pot
+                    position={[0, 1.54, 0]} // base grounded on floor, sway pivots at the pot
                     rotation={[0, Math.PI / 4, 0]} // Obrócone w stronę korytarza (z lewej)
                 >
-                    <planeGeometry args={[1.8, 1.8 / 0.558]} /> {/* nc_tree aspect 923x1653 */}
+                    <planeGeometry args={[1.8, 1.8 / 0.585]} /> {/* nc_tree realistic aspect */}
                     <meshBasicMaterial color="#e0e0e0"
                         map={treeTexture}
                         transparent={true}

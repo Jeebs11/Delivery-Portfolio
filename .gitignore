@@ -27,3 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Corridor redesign source art (large; processed versions live in public/)
+design/corridor-elements/

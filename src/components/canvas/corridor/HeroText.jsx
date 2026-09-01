@@ -33,9 +33,9 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
         [wordmark, subtitle].forEach((t) => { if (t) t.colorSpace = THREE.SRGBColorSpace; });
     }, [wordmark, subtitle]);
 
-    // sizes from asset aspect (wordmark 1100x237, subtitle 1100x55)
-    const WM_W = 4.0, WM_H = WM_W * (237 / 1100);
-    const ST_W = 3.1, ST_H = ST_W * (55 / 1100);
+    // sizes from asset aspect (realistic wordmark 1300x279, subtitle 1400x88)
+    const WM_W = 4.0, WM_H = WM_W * (279 / 1300);
+    const ST_W = 3.1, ST_H = ST_W * (88 / 1400);
 
     useFrame((state) => {
         const t = state.clock.elapsedTime;

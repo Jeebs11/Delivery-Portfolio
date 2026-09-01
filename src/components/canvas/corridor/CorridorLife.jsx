@@ -125,11 +125,11 @@ export default function CorridorLife({ zOffset, wallX, floorY, ceilingY }) {
                 if (s.type === 'tree') {
                     return (
                         <Prop key={i} texture={treeTex} z={zOffset + s.z} side={s.side}
-                            width={1.6} aspect={0.558} floorY={floorY} wallX={wallX} sway phase={s.phase} />
+                            width={1.6} aspect={0.585} floorY={floorY} wallX={wallX} sway phase={s.phase} />
                     );
                 }
                 // dresser + a little seedling on top
-                const dW = 1.2, dAspect = 0.90, dH = dW / dAspect;
+                const dW = 1.2, dAspect = 0.930, dH = dW / dAspect;
                 const dx = s.side === 'left' ? -wallX + 0.7 : wallX - 0.7;
                 const rotY = s.side === 'left' ? Math.PI / 4 : -Math.PI / 4;
                 return (
@@ -139,8 +139,8 @@ export default function CorridorLife({ zOffset, wallX, floorY, ceilingY }) {
                             <meshBasicMaterial map={dresserTex} transparent alphaTest={0.1} side={THREE.DoubleSide} />
                         </mesh>
                         <Sway phase={s.phase} amplitude={0.02}>
-                            <mesh position={[0, dH + 0.34, 0.05]}>
-                                <planeGeometry args={[0.34, 0.34 / 0.497]} />
+                            <mesh position={[0, dH + 0.30, 0.05]}>
+                                <planeGeometry args={[0.34, 0.34 / 0.554]} />
                                 <meshBasicMaterial map={seedlingTex} transparent alphaTest={0.1} side={THREE.DoubleSide} />
                             </mesh>
                         </Sway>
