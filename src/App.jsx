@@ -175,8 +175,8 @@ function AppContent() {
               dpr={settings.dpr}
               shadows={settings.shadows}
             >
-              <color attach="background" args={['#fafafa']} />
-              <fog attach="fog" args={['#fafafa', 15, 50]} />
+              <color attach="background" args={['#efe7d8']} />
+              <fog attach="fog" args={['#e9dfcc', 14, 54]} />
 
               {/* Scale performance down if fps drops */}
               <PerformanceMonitor
