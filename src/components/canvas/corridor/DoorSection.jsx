@@ -40,19 +40,28 @@ const DOOR_LOOK_ANGLE = Math.PI * 0.334;
 const DOOR_ALIGN_X = 1.2;
 
 // Door texture mapping - maps label to texture file
+// Realistic doors — CLOSED is the default, OPEN is revealed (dissolves in) on hover.
 const DOOR_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/career_door_wood.webp',
-    'THE STUDIO': '/textures/corridor/doors/portfolio_door_wood.webp',
-    'THE ABOUT': '/textures/corridor/doors/drzwiabout_wood.webp',
-    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_wood.webp',
+    'THE GALLERY': '/textures/corridor/doors/v1/door_career_closed.webp',
+    'THE STUDIO': '/textures/corridor/doors/v1/door_portfolio_closed.webp',
+    'THE ABOUT': '/textures/corridor/doors/v1/door_about_closed.webp',
+    "LET'S CONNECT": '/textures/corridor/doors/v1/door_contact_closed.webp',
 };
 
-// Painted (colored) variants — the gravity word-art blooms to colour on hover
+// OPEN variants — the door dissolves from closed to open on hover.
 const DOOR_PAINTED_TEXTURES = {
-    'THE GALLERY': '/textures/corridor/doors/career_door_painted_wood.webp?v=2',
-    'THE STUDIO': '/textures/corridor/doors/portfolio_door_painted_wood.webp?v=2',
-    'THE ABOUT': '/textures/corridor/doors/drzwiabout_painted_wood.webp',
-    "LET'S CONNECT": '/textures/corridor/doors/drzwikontakt_painted_wood.webp',
+    'THE GALLERY': '/textures/corridor/doors/v1/door_career_open.webp',
+    'THE STUDIO': '/textures/corridor/doors/v1/door_portfolio_open.webp',
+    'THE ABOUT': '/textures/corridor/doors/v1/door_about_open.webp',
+    "LET'S CONNECT": '/textures/corridor/doors/v1/door_contact_open.webp',
+};
+
+// Brass nameplate mounted above each door.
+const DOOR_PLATE_TEXTURES = {
+    'THE GALLERY': '/textures/corridor/doors/v1/plate_career.webp',
+    'THE STUDIO': '/textures/corridor/doors/v1/plate_portfolio.webp',
+    'THE ABOUT': '/textures/corridor/doors/v1/plate_about.webp',
+    "LET'S CONNECT": '/textures/corridor/doors/v1/plate_contact.webp',
 };
 
 
@@ -250,18 +259,19 @@ const DoorSection = ({
         return tex;
     }, [baseboardTexture]);
 
-    // Door dimensions - based on legacy texture aspect ratio (approx 0.376)
-    const doorRatio = label === 'THE STUDIO' ? 0.388 : 0.376;
-    const doorHeight = 2.5;
+    // Realistic door image aspect ~0.667 (includes its own frame). doorWidth = height*0.667.
+    const doorRatio = 0.595;
+    const doorHeight = 2.7;
     const doorWidth = doorHeight * doorRatio * 1.12;
 
     // Frame dimensions - based on legacy ratio 762/1759 (0.433)
     const frameHeight = 2.5;
     const frameWidth = frameHeight * 0.5;
 
-    // Hole dimensions - MUST fit inside wall
-    const holeWidth = doorWidth - 0.03;
-    const holeHeight = doorHeight - 0.1;
+    // Hole dimensions - kept smaller than the door image so its transparent margins
+    // never reveal the wall/room behind (the baked frame overlaps the wall around it).
+    const holeWidth = doorWidth * 0.66;
+    const holeHeight = doorHeight * 0.78;
     const holeOffsetY = -0.55; // Same as door group Y offset
 
     // Create wall geometry with door hole
@@ -529,7 +539,7 @@ const DoorSection = ({
         if (!doorRef.current) return;
 
         setIsOpen(true);
-        const openAngle = side === 'left' ? Math.PI * 0.6 : -Math.PI * 0.6;
+        const openAngle = 0; // realistic doors don't swing; the hover reveal already shows them open
 
         if (!fastMode && openAudioRef.current) {
             const vol = isMuted ? 0 : DOOR_AUDIO_SETTINGS.openVolume * globalVolume;
@@ -937,11 +947,8 @@ const DoorSection = ({
     const handlePivotX = side === 'left' ? doorWidth * 0.25 : -doorWidth * 0.25;
 
     // Sign texture mapping - now uses a single empty sign texture
-    const signTextureUrl = '/textures/corridor/pustatabliczka_wood.webp';
-    const signLegacyRatio = 1.792; // 2752x1536
-    const signHeight = 0.55;
-    const signWidth = signHeight * signLegacyRatio;
-    const signTexture = useTexture(signTextureUrl);
+    // Brass nameplate mounted above each realistic door (replaces the wooden sign + 3D text).
+    const plateTexture = useTexture(DOOR_PLATE_TEXTURES[label] || DOOR_PLATE_TEXTURES['THE GALLERY']);
 
     return (
         // Outer group at pivot position (outer edge of wall)
@@ -962,43 +969,17 @@ const DoorSection = ({
                       - Y = 0             → wysokość (0 = środek ściany, + = wyżej, - = niżej)
                     scale={[0.5, 0.5, 1]} → rozmiar strzałki
                     =================================================== */}
+                {/* Sketch arrows hidden — realistic doors don't use them. */}
+                {false && (
                 <mesh
                     position={[wallOffsetX - 1.1, 0, 0.02]}
                     rotation={[0, 0, 0]}
                     scale={[0.5, 0.5, 1]}
                 >
                     <planeGeometry args={[1, 0.5]} />
-                    <meshBasicMaterial color="#e0e0e0"
-                        map={arrowTexture}
-                        transparent={true}
-                        alphaTest={0.1}
-                        side={THREE.DoubleSide}
-                        roughness={0.8}
-                    />
+                    <meshBasicMaterial color="#e0e0e0" map={arrowTexture} transparent alphaTest={0.1} side={THREE.DoubleSide} />
                 </mesh>
-
-                {/* === ARROW DECORATION (RIGHT, MIRRORED) === */}
-                {/* ===================================================
-                    REGULACJA STRZAŁKI PRAWEJ:
-                    position={[wallOffsetX + 0.9, -0.3, 0.02]}
-                      - wallOffsetX + 0.9 → odległość od środka drzwi (prawa strona)
-                      - Y = -0.3          → trochę niżej niż lewa strzałka
-                    scale={[-0.5, 0.5, 1]} → ujemny X = lustrzane odbicie
-                    =================================================== */}
-                <mesh
-                    position={[wallOffsetX + 1.1, -0.3, 0.02]}
-                    rotation={[0, 0, 0]}
-                    scale={[-0.5, 0.5, 1]}
-                >
-                    <planeGeometry args={[1, 0.5]} />
-                    <meshBasicMaterial color="#e0e0e0"
-                        map={arrowTexture}
-                        transparent={true}
-                        alphaTest={0.1}
-                        side={THREE.DoubleSide}
-                        roughness={0.8}
-                    />
-                </mesh>
+                )}
 
                 {/* Baseboard (Listwa) Left side of door */}
                 <mesh position={[wallOffsetX - 1.4, -CORRIDOR_HEIGHT / 2 + 0.075, 0.02]}>
@@ -1050,110 +1031,26 @@ const DoorSection = ({
 
                 {/* Door and frame - centered on wall */}
                 <group position={[wallOffsetX, -0.4, 0]}>
-                    {/* === TEXTURED SIGN === */}
-                    <group position={[0, doorHeight / 2 + 0.45, 0.08]}>
-                        {/* 
-                            WIELKOŚĆ TABLICZKI (SIGN SIZE):
-                            Zmień liczby w args={[Szerokość, Wysokość]}
-                            Obecnie: 1.3 szerokości, 0.65 wysokości
-                        */}
-                        <mesh>
-                            {/* Adjusted size for the signs - assuming rectangular aspect ratio */}
-                            <planeGeometry args={[1.3, 0.65]} />
-                            <meshBasicMaterial color="#e0e0e0"
-                                map={signTexture}
-                                transparent={true}
-                                alphaTest={0.1}
-                                roughness={0.8}
-                            />
-                        </mesh>
-
-                        {/* === DYNAMIC TEXT FOR SIGNS === */}
-                        {label === 'THE GALLERY' && (
-                            <group position={[0, 0, 0.01]}>
-                                <Text
-                                    font="/fonts/CabinSketch-Bold.ttf"
-                                    fontSize={0.25}
-                                    color="#111111"
-                                    anchorX="center"
-                                    anchorY="bottom"
-                                    position={[0, -0.02, 0]}
-                                >
-                                    MY
-                                </Text>
-                                <Text
-                                    font="/fonts/CabinSketch-Bold.ttf"
-                                    fontSize={0.25}
-                                    color="#111111"
-                                    anchorX="center"
-                                    anchorY="top"
-                                    position={[0, +0.02, 0]}
-                                >
-                                    CAREER
-                                </Text>
-                            </group>
-                        )}
-                        {label === 'THE STUDIO' && (
-                            <group position={[0, 0, 0.01]}>
-                                <Text
-                                    font="/fonts/CabinSketch-Bold.ttf"
-                                    fontSize={0.25}
-                                    color="#111111"
-                                    anchorX="center"
-                                    anchorY="bottom"
-                                    position={[0, -0.02, 0]}
-                                >
-                                    THE
-                                </Text>
-                                <Text
-                                    font="/fonts/CabinSketch-Bold.ttf"
-                                    fontSize={0.18}
-                                    color="#111111"
-                                    anchorX="center"
-                                    anchorY="top"
-                                    position={[0, +0.03, 0]}
-                                >
-                                    PORTFOLIO
-                                </Text>
-                            </group>
-                        )}
-                        {label === 'THE ABOUT' && (
-                            <Text
-                                font="/fonts/CabinSketch-Bold.ttf"
-                                fontSize={0.30}
-                                color="#111111"
-                                anchorX="center"
-                                anchorY="middle"
-                                position={[0, 0, 0.01]}
-                            >
-                                ABOUT
-                            </Text>
-                        )}
-                        {label === "LET'S CONNECT" && (
-                            <Text
-                                font="/fonts/CabinSketch-Bold.ttf"
-                                fontSize={0.25}
-                                color="#111111"
-                                anchorX="center"
-                                anchorY="middle"
-                                position={[0, 0, 0.01]}
-                            >
-                                CONTACT
-                            </Text>
-                        )}
-                    </group>
+                    {/* === BRASS NAMEPLATE (above the door) === */}
+                    <mesh position={[0, doorHeight / 2 + 0.32, 0.08]}>
+                        <planeGeometry args={[1.15, 1.15 / 3.0]} />
+                        <meshBasicMaterial
+                            map={plateTexture}
+                            transparent={true}
+                            alphaTest={0.3}
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
 
                     {/* === DOOR FRAME (textured) === */}
                     {/* Moved to Z = 0.04 to sit in front of baseboards (Z=0.02), hiding the hole edges */}
+                    {/* Frame is baked into the realistic door image — separate frame hidden. */}
+                    {false && (
                     <mesh position={[0, -0.1, 0.04]} scale={[side === 'right' ? -1 : 1, 1, 1]}>
                         <planeGeometry args={[frameWidth, frameHeight]} />
-                        <meshBasicMaterial color="#e0e0e0"
-                            map={frameTexture}
-                            transparent={true}
-                            alphaTest={0.1}
-                            roughness={0.9}
-                        />
+                        <meshBasicMaterial color="#e0e0e0" map={frameTexture} transparent alphaTest={0.1} />
                     </mesh>
+                    )}
 
                     {/* === DOOR INTERIOR CORRIDOR + ROOM === */}
                     {/* Always render, but pass showRoom prop for lazy loading giant room */}
@@ -1182,7 +1079,7 @@ const DoorSection = ({
                         <mesh
                             ref={doorPaintedRef}
                             position={[doorMeshX, -0.2, -0.001]}
-                            scale={[(side === 'right' && label !== 'THE STUDIO') ? -1 : 1, 1, 1]}
+                            scale={[1, 1, 1]}
                         >
                             <planeGeometry args={[doorWidth, doorHeight]} />
                             <meshBasicMaterial color="#e0e0e0"
@@ -1196,7 +1093,7 @@ const DoorSection = ({
                         {/* Sketch overlay (front) - brush-stroke discard reveals painted beneath */}
                         <mesh
                             position={[doorMeshX, -0.2, 0]}
-                            scale={[(side === 'right' && label !== 'THE STUDIO') ? -1 : 1, 1, 1]}
+                            scale={[1, 1, 1]}
                         >
                             <planeGeometry args={[doorWidth, doorHeight]} />
                             <revealMaterial color="#e0e0e0"
@@ -1209,23 +1106,8 @@ const DoorSection = ({
                             />
                         </mesh>
 
-                        {/* Door Back Texture */}
-                        <mesh
-                            position={[doorMeshX, -0.2, -0.01]}
-                            rotation={[0, Math.PI, 0]}
-                            scale={[side === 'right' ? -1 : 1, 1, 1]}
-                        >
-                            <planeGeometry args={[doorWidth, doorHeight]} />
-                            <meshBasicMaterial color="#e0e0e0"
-                                map={doorBackTexture}
-                                transparent={true}
-                                alphaTest={0.1}
-                                roughness={0.8}
-                                side={THREE.DoubleSide}
-                            />
-                        </mesh>
-
-                        {/* Handle Layer - pivot at screw position */}
+                        {/* Door back + separate handle are baked into the realistic door image — hidden. */}
+                        {false && (
                         <group ref={handleRef} position={[doorMeshX + (side === 'left' ? 0.45 : -0.45), -0.29, 0.03]}>
                             {/* Painted handle (behind) - hidden after 2 frames */}
                             <mesh ref={handlePaintedRef} position={[side === 'left' ? -0.50 : 0.50, 0.14, -0.001]} scale={[side === 'right' ? -1 : 1, 1, 1]}>
@@ -1250,6 +1132,7 @@ const DoorSection = ({
                                 />
                             </mesh>
                         </group>
+                        )}
                     </group>
                 </group>
 
