@@ -176,7 +176,7 @@ const SegmentDoors = ({
     const leadTex = useTexture('/textures/exit/exit_lead.webp');
     const talkTex = useTexture('/textures/exit/exit_talk.webp');
     const signTex = useTexture('/textures/exit/exit_sign.webp');
-    const plantTex = useTexture('/textures/exit/exit_plant.webp');
+    const plantTex = useTexture('/textures/corridor/nc_tree.webp'); // realistic fiddle-leaf tree
 
     return (
         <group position={[position[0], 0, position[2]]}>
@@ -255,8 +255,8 @@ const SegmentDoors = ({
                             <meshBasicMaterial map={signTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
                         </mesh>
                         {/* plant standing on the floor, in front of the wall, under the sign */}
-                        <mesh position={[rx - 0.15, -1.03, 0.5]}>
-                            <planeGeometry args={[0.98, 0.98 / 0.67]} />
+                        <mesh position={[rx - 0.15, -0.92, 0.5]}>
+                            <planeGeometry args={[0.98, 0.98 / 0.585]} /> {/* nc_tree aspect, base grounded */}
                             <meshBasicMaterial map={plantTex} color="#ffffff" transparent alphaTest={0.05} depthWrite={false} />
                         </mesh>
                     </group>
