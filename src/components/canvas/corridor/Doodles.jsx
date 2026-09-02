@@ -33,56 +33,7 @@ const Doodles = () => {
 
     return (
         <group ref={groupRef}>
-            {/* Paper Airplane - BIGGER, above head */}
-            <SketchElement
-                texture={textures.paperAirplane}
-                position={[0.5, 0.8, 0.3]}
-                scale={0.55}
-                rotationSpeed={0.15}
-                floatSpeed={0.7}
-                floatAmount={0.04}
-            />
-
-            {/* Paper Ball - BIGGER, lower left near creative developer */}
-            <SketchElement
-                texture={textures.paperBall}
-                position={[-0.9, -0.7, 0.4]}
-                scale={0.4}
-                rotationSpeed={0.4}
-                floatSpeed={0.5}
-                floatAmount={0.02}
-            />
-
-            {/* Second Paper Ball - upper left, bigger */}
-            <SketchElement
-                texture={textures.paperBall}
-                position={[-1.3, 0.5, -0.2]}
-                scale={0.3}
-                rotationSpeed={-0.3}
-                floatSpeed={0.6}
-                floatAmount={0.03}
-            />
-
-            {/* Pencil - BIGGER, under creative developer */}
-            <SketchElement
-                texture={textures.pencil}
-                position={[0.7, -0.8, 0.5]}
-                scale={0.5}
-                rotationSpeed={0.1}
-                floatSpeed={0.4}
-                floatAmount={0.02}
-                initialRotation={-0.4}
-            />
-
-            {/* Coffee Cup - bigger, upper right */}
-            <SketchElement
-                texture={textures.coffeeCup}
-                position={[1.2, 0.6, -0.1]}
-                scale={0.35}
-                rotationSpeed={0.05}
-                floatSpeed={0.35}
-                floatAmount={0.025}
-            />
+            {/* Floating doodles (paper plane, paper balls, pencil, coffee cup) removed per request. */}
 
             {/* Minor decorative elements - HIDDEN on LOW tier for performance */}
             {!isLowTier && (

@@ -51,11 +51,17 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
                 <meshBasicMaterial map={wordmark} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
             </mesh>
 
-            {/* Role subtitle (below the character, slightly forward) */}
-            <mesh ref={subtitleRef} position={[0, -0.62, 0.3]}>
-                <planeGeometry args={[ST_W, ST_H]} />
-                <meshBasicMaterial map={subtitle} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
-            </mesh>
+            {/* Role subtitle (below the character, slightly forward) — on a white panel for legibility */}
+            <group ref={subtitleRef} position={[0, -0.62, 0.3]}>
+                <mesh position={[0, 0, -0.01]}>
+                    <planeGeometry args={[ST_W * 1.04, ST_H * 2.6]} />
+                    <meshBasicMaterial color="#fdfcf9" transparent opacity={0.9} depthWrite={false} toneMapped={false} />
+                </mesh>
+                <mesh>
+                    <planeGeometry args={[ST_W, ST_H]} />
+                    <meshBasicMaterial map={subtitle} color="#ffffff" transparent side={THREE.DoubleSide} depthWrite={false} />
+                </mesh>
+            </group>
         </group>
     );
 };
