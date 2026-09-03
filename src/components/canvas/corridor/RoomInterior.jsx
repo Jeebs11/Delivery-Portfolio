@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 // Eagerly import room components - textures are preloaded during the preloader phase
 import GalleryRoom from '../rooms/Gallery/GalleryRoom';
-import ShowcaseWall from '../rooms/Studio/ShowcaseWall';
+import CinemaRoom from '../rooms/Studio/CinemaRoom';
 import AboutRoom from '../rooms/About/AboutRoom';
 import ContactRoom from '../rooms/Contact/ContactRoom';
 
@@ -209,7 +209,7 @@ const RoomInterior = memo(({ label, showRoom, onReady, isExiting }) => {
                         // === PORTFOLIO ROOM — cinematic showcase wall ===
                         <group position={[0, -0.5, -corridorDepth]}>
                             <Suspense fallback={null}>
-                                <ShowcaseWall showRoom={showRoom} onReady={onReady} isExiting={isExiting} />
+                                <CinemaRoom showRoom={showRoom} onReady={onReady} isExiting={isExiting} />
                             </Suspense>
                         </group>
                     ) : label === 'THE ABOUT' ? (
