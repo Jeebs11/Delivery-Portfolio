@@ -95,13 +95,16 @@ export const ABOUT_LAYERS = [
         title: 'BEYOND WORK',
         caption: 'Family, travel, sport, curiosity.',
         items: [
-            // family island up top-centre
-            { src: `${L}/l2-family.webp?v=2`, pos: [0, 3.0, 0.3], w: 3.0 },
-            // the four sports live together on one floating cluster in the centre
-            { src: `${L}/l2-sports.webp?v=2`, pos: [0, -1.8, 0], w: 7.0 },
+            // family island as the centrepiece
+            { src: `${L}/l2-family.webp?v=2`, pos: [0, 0.6, 0.3], w: 3.0 },
+            // the four sports as separate islands, well spaced around the family
+            { src: `${L}/l2-soccer.webp?v=2`, pos: [-4.7, 0.4, 0], w: 2.5 },
+            { src: `${L}/l2-football.webp?v=2`, pos: [4.5, 0.8, 0], w: 2.9 },
+            { src: `${L}/l2-basketball.webp?v=2`, pos: [-3.8, -2.6, 0], w: 2.7 },
+            { src: `${L}/l2-golf.webp?v=2`, pos: [4.3, -2.5, 0], w: 2.6 },
             // corners: cycling + travel
-            { src: `${L}/l2-cycling.webp?v=2`, pos: [-5.6, 2.6, 0], w: 2.7 },
-            { src: `${L}/l2-travel.webp?v=2`, pos: [5.6, 2.6, 0], w: 2.5 },
+            { src: `${L}/l2-cycling.webp?v=2`, pos: [-5.8, 3.1, 0], w: 2.7 },
+            { src: `${L}/l2-travel.webp?v=2`, pos: [5.8, 3.1, 0], w: 2.5 },
         ],
     },
     {
