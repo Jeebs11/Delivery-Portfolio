@@ -580,7 +580,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Flowing river in the horizon gap between rooftops and skyline.
                     Sits between the houses (z=-9) and the skyline (z=-17): the
                     rooftops mask its lower edge and the city rises above it. */}
-                <FlowingRiver position={[0, -4.0, -13]} />
+                <FlowingRiver position={[0, -2.5, -13]} />
 
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
