@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useScene } from '../../context/SceneContext';
 
 /**
  * CinemaShowcase — the Portfolio room. A DOM layer laid over a clean render of a
- * luxury screening room: a big featured project screen + a scrolling "OUR PROJECTS"
- * rail. Auto-plays through the projects, pauses when you browse the rail, and
- * features a project when you click it. Shown while currentRoom === 'studio'.
+ * luxury screening room. The featured screen + the "OUR PROJECTS" rail are warped
+ * with matrix3d onto the exact tilted corners of the screen / panel in the render,
+ * so they sit on those surfaces. Shown while currentRoom === 'studio'.
  */
 const IMG = '/textures/studio/mujeeb/';
 const PROJECTS = [
@@ -17,22 +17,38 @@ const PROJECTS = [
     { title: 'Digital Transformation', sub: 'E-commerce · Novocycle', tag: 'Stood up an online storefront and fulfilment flow.', img: IMG + 'ecommerce.webp', url: 'https://shop.novocycle.com/' },
 ];
 const N = PROJECTS.length;
+const PLATE_W = 1672, PLATE_H = 941;
+// corners measured from the plate (px in 1672x941): TL, TR, BR, BL
+const SCREEN = { tl: [793, 128], tr: [1636, 116], br: [1630, 566], bl: [793, 552] };
+const RAIL = { tl: [95, 150], tr: [268, 128], br: [266, 645], bl: [82, 668] };
+
+// --- 2D projective transform -> matrix3d (maps elt (0,0)(w,0)(0,h)(w,h) to TL,TR,BL,BR) ---
+const adj = (m) => [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]];
+const mm = (a, b) => { const c = []; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { let s = 0; for (let k = 0; k < 3; k++) s += a[3*i+k]*b[3*k+j]; c[3*i+j] = s; } return c; };
+const mv = (m, v) => [m[0]*v[0]+m[1]*v[1]+m[2]*v[2], m[3]*v[0]+m[4]*v[1]+m[5]*v[2], m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];
+const basis = (x1,y1,x2,y2,x3,y3,x4,y4) => { const m = [x1,x2,x3,y1,y2,y3,1,1,1]; const v = mv(adj(m), [x4,y4,1]); return mm(m, [v[0],0,0,0,v[1],0,0,0,v[2]]); };
+function warp(el, d) {
+    const w = el.offsetWidth, h = el.offsetHeight;
+    if (!w || !h) return;
+    const s = basis(0,0, w,0, 0,h, w,h);
+    const t = basis(d.tl[0],d.tl[1], d.tr[0],d.tr[1], d.bl[0],d.bl[1], d.br[0],d.br[1]);
+    const g = mm(t, adj(s));
+    for (let i = 0; i < 9; i++) g[i] /= g[8];
+    el.style.transform = `matrix3d(${[g[0],g[3],0,g[6], g[1],g[4],0,g[7], 0,0,1,0, g[2],g[5],0,g[8]].join(',')})`;
+}
 
 const CinemaShowcase = () => {
     const { currentRoom, requestExit } = useScene();
     const visible = currentRoom === 'studio';
 
     const [featured, setFeatured] = useState(0);
-    const featRef = useRef(0);
-    const useARef = useRef(true);
-    const pausedRef = useRef(false);
-    const scrollRef = useRef(0);
+    const featRef = useRef(0), useARef = useRef(true), pausedRef = useRef(false), scrollRef = useRef(0);
     const shotA = useRef(null), shotB = useRef(null), trackRef = useRef(null);
+    const plateRef = useRef(null), screenRef = useRef(null), railRef = useRef(null);
 
     const feature = (i) => {
         const idx = (i + N) % N;
-        featRef.current = idx;
-        setFeatured(idx);
+        featRef.current = idx; setFeatured(idx);
         const p = PROJECTS[idx];
         const inc = useARef.current ? shotB.current : shotA.current;
         const out = useARef.current ? shotA.current : shotB.current;
@@ -41,16 +57,27 @@ const CinemaShowcase = () => {
         useARef.current = !useARef.current;
     };
 
-    // run the auto-play + rail scroll only while the room is open
+    // scale the fixed-size plate to fit the viewport + warp the screen/rail onto the plate corners
+    const layout = () => {
+        if (plateRef.current) {
+            const s = Math.min(window.innerWidth / PLATE_W, window.innerHeight / PLATE_H);
+            plateRef.current.style.transform = `scale(${s})`;
+        }
+        if (screenRef.current) warp(screenRef.current, SCREEN);
+        if (railRef.current) warp(railRef.current, RAIL);
+    };
+    useLayoutEffect(() => { layout(); window.addEventListener('resize', layout); return () => window.removeEventListener('resize', layout); }, []);
+    useEffect(() => { if (visible) layout(); }, [visible]);
+
+    // auto-play + rail scroll while open
     useEffect(() => {
         if (!visible) return;
-        feature(featRef.current); // ensure the current one is painted on (re)enter
+        feature(featRef.current);
         let raf;
         const loop = () => {
             if (!pausedRef.current && trackRef.current) {
-                scrollRef.current += 0.15;
-                const h = trackRef.current.scrollHeight || 1;
-                if (scrollRef.current > h) scrollRef.current = 0;
+                scrollRef.current += 0.3;
+                if (scrollRef.current > (trackRef.current.scrollHeight || 1)) scrollRef.current = 0;
                 trackRef.current.style.transform = `translateY(${-scrollRef.current}px)`;
             }
             raf = requestAnimationFrame(loop);
@@ -66,13 +93,10 @@ const CinemaShowcase = () => {
 
     return (
         <div className={`cinema${visible ? ' show' : ''}`} aria-hidden={!visible}>
-            <button className="cin-exit" onClick={() => requestExit()} aria-label="Back to corridor">
-                <span>&larr;</span> Back
-            </button>
+            <button className="cin-exit" onClick={() => requestExit()} aria-label="Back to corridor"><span>&larr;</span> Back</button>
             <div className="cin-stage">
-                <div className="cin-plate">
-                    {/* featured screen */}
-                    <div className="cin-screen">
+                <div className="cin-plate" ref={plateRef}>
+                    <div className="cin-screen" ref={screenRef}>
                         <div className="cin-shot on" ref={shotA} />
                         <div className="cin-shot" ref={shotB} />
                         <div className="cin-veil" />
@@ -81,16 +105,13 @@ const CinemaShowcase = () => {
                             <div className="cin-kicker">{p.sub}</div>
                             <h2>{p.title}</h2>
                             <p>{p.tag}</p>
-                            <button className="cin-cta" style={{ opacity: hasUrl ? 1 : 0.4 }}
-                                onClick={() => hasUrl && window.open(p.url, '_blank', 'noopener')}>
+                            <button className="cin-cta" style={{ opacity: hasUrl ? 1 : 0.4 }} onClick={() => hasUrl && window.open(p.url, '_blank', 'noopener')}>
                                 <span>View case study</span><span className="ln" /><span>&rarr;</span>
                             </button>
                         </div>
                     </div>
-                    {/* rail */}
-                    <div className="cin-rail"
-                        onMouseEnter={() => { pausedRef.current = true; }}
-                        onMouseLeave={() => { pausedRef.current = false; }}>
+                    <div className="cin-rail" ref={railRef}
+                        onMouseEnter={() => { pausedRef.current = true; }} onMouseLeave={() => { pausedRef.current = false; }}>
                         <div className="cin-track" ref={trackRef}>
                             {PROJECTS.map((pr, i) => (
                                 <div key={pr.title} className={`cin-row${i === featured ? ' active' : ''}`} onClick={() => feature(i)}>
@@ -110,41 +131,35 @@ const CinemaShowcase = () => {
                 .cinema{position:fixed;inset:0;z-index:9994;background:#000;opacity:0;pointer-events:none;transition:opacity .8s ease;
                     --gold:#d9b779;--cream:#efe6d6;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
                 .cinema.show{opacity:1;pointer-events:auto}
-                .cin-exit{position:absolute;top:24px;left:26px;z-index:2;display:inline-flex;align-items:center;gap:.5em;
-                    font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.18em;text-transform:uppercase;
-                    color:var(--cream);background:rgba(10,10,12,.55);border:1px solid rgba(217,183,121,.35);
-                    padding:9px 16px;border-radius:30px;cursor:pointer;backdrop-filter:blur(4px);transition:color .2s,border-color .2s}
-                .cin-exit:hover{color:var(--gold);border-color:var(--gold)}
-                .cin-exit span{font-size:15px}
+                .cin-exit{position:absolute;top:24px;left:26px;z-index:3;display:inline-flex;align-items:center;gap:.5em;font-family:var(--sans);
+                    font-weight:500;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);background:rgba(10,10,12,.55);
+                    border:1px solid rgba(217,183,121,.35);padding:9px 16px;border-radius:30px;cursor:pointer;backdrop-filter:blur(4px);transition:color .2s,border-color .2s}
+                .cin-exit:hover{color:var(--gold);border-color:var(--gold)} .cin-exit span{font-size:15px}
                 .cin-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-                .cin-plate{position:relative;aspect-ratio:1672/941;width:min(100vw,calc(100vh*1.7768));height:auto;
+                .cin-plate{position:relative;width:1672px;height:941px;flex:0 0 auto;transform-origin:center;
                     background:#0a0a0a url('/textures/studio/cinema-plate.webp') center/cover}
-                /* featured screen */
-                .cin-screen{position:absolute;left:47.6%;top:11.2%;width:47.6%;height:46.6%;overflow:hidden;border-radius:2px}
+                .cin-screen{position:absolute;left:0;top:0;width:843px;height:438px;transform-origin:0 0;overflow:hidden}
                 .cin-shot{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .7s ease}
                 .cin-shot.on{opacity:1}
                 .cin-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,8,12,.92) 0%,rgba(6,8,12,.55) 18%,rgba(6,8,12,0) 40%)}
-                .cin-counter{position:absolute;top:5.5%;left:4%;font-family:var(--serif);font-size:clamp(11px,1.15vw,20px);letter-spacing:.18em;color:var(--cream);opacity:.85}
-                .cin-cap{position:absolute;left:4.5%;right:5%;bottom:5.5%;color:var(--cream)}
-                .cin-kicker{font-family:var(--sans);font-weight:500;font-size:clamp(7px,.62vw,11px);letter-spacing:.34em;color:var(--gold);text-transform:uppercase;margin-bottom:.5em}
-                .cin-cap h2{font-family:var(--serif);font-weight:500;font-size:clamp(18px,2.5vw,46px);line-height:1.02;margin-bottom:.18em}
-                .cin-cap p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(10px,1.15vw,21px);color:#d8cdb8;margin-bottom:.7em;max-width:78%}
-                .cin-cta{display:inline-flex;align-items:center;gap:.6em;font-family:var(--sans);font-weight:500;font-size:clamp(7px,.66vw,12px);letter-spacing:.24em;color:var(--cream);text-transform:uppercase;cursor:pointer;border:0;background:none}
-                .cin-cta .ln{width:clamp(20px,2vw,40px);height:1px;background:var(--gold)}
-                .cin-cta:hover{color:var(--gold)}
-                /* rail */
-                .cin-rail{position:absolute;left:5.6%;top:14.5%;width:10.3%;height:50%;overflow:hidden;
-                    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent)}
-                .cin-track{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;gap:6%}
-                .cin-row{position:relative;width:100%;aspect-ratio:16/10;border-radius:3px;overflow:hidden;cursor:pointer;outline:1px solid rgba(217,183,121,.16);transition:outline-color .25s,transform .25s}
-                .cin-thumb{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.72) saturate(.9)}
+                .cin-counter{position:absolute;top:22px;left:32px;font-family:var(--serif);font-size:22px;letter-spacing:.18em;color:var(--cream);opacity:.85}
+                .cin-cap{position:absolute;left:36px;right:44px;bottom:30px;color:var(--cream)}
+                .cin-kicker{font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:.34em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+                .cin-cap h2{font-family:var(--serif);font-weight:500;font-size:52px;line-height:1;margin-bottom:6px}
+                .cin-cap p{font-family:var(--serif);font-style:italic;font-size:23px;color:#d8cdb8;margin-bottom:14px;max-width:78%}
+                .cin-cta{display:inline-flex;align-items:center;gap:12px;font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.24em;color:var(--cream);text-transform:uppercase;cursor:pointer;border:0;background:none}
+                .cin-cta .ln{width:40px;height:1px;background:var(--gold)} .cin-cta:hover{color:var(--gold)}
+                .cin-rail{position:absolute;left:0;top:0;width:185px;height:520px;transform-origin:0 0;overflow:hidden;
+                    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent)}
+                .cin-track{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;gap:12px;padding:0 6px}
+                .cin-row{position:relative;width:100%;aspect-ratio:16/10;border-radius:4px;overflow:hidden;cursor:pointer;outline:1px solid rgba(217,183,121,.18)}
+                .cin-thumb{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.72)}
                 .cin-rg{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,6,10,.9),rgba(4,6,10,.15))}
-                .cin-num{position:absolute;top:6%;left:7%;font-family:var(--serif);font-size:clamp(9px,.8vw,15px);color:var(--gold);letter-spacing:.05em}
-                .cin-t{position:absolute;left:7%;right:6%;bottom:8%;color:var(--cream)}
-                .cin-t b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(8px,.72vw,13px);line-height:1.05}
-                .cin-t s{display:block;text-decoration:none;font-family:var(--sans);font-weight:400;font-size:clamp(5px,.44vw,8px);letter-spacing:.12em;color:#b8ab90;text-transform:uppercase;margin-top:.25em}
-                .cin-row.active{outline:1.5px solid var(--gold);transform:scale(1.015)}
-                .cin-row.active .cin-thumb{filter:brightness(.95) saturate(1)}
+                .cin-num{position:absolute;top:6px;left:9px;font-family:var(--serif);font-size:15px;color:var(--gold)}
+                .cin-t{position:absolute;left:9px;right:8px;bottom:8px;color:var(--cream)}
+                .cin-t b{display:block;font-family:var(--serif);font-weight:500;font-size:14px;line-height:1.05}
+                .cin-t s{display:block;text-decoration:none;font-family:var(--sans);font-weight:400;font-size:8px;letter-spacing:.12em;color:#b8ab90;text-transform:uppercase;margin-top:3px}
+                .cin-row.active{outline:1.5px solid var(--gold)} .cin-row.active .cin-thumb{filter:brightness(.95)}
             `}</style>
         </div>
     );
