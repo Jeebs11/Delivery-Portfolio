@@ -14,6 +14,7 @@ import GlobalOverlay from './components/ui/GlobalOverlay';
 import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
 import LandingPage from './components/ui/LandingPage';
 import ImmersiveChatBot from './components/ui/ImmersiveChatBot';
+import CinemaShowcase from './components/ui/CinemaShowcase';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
 import { loadSanityData } from './hooks/useSanityData';
@@ -208,6 +209,7 @@ function AppContent() {
               <ScreenReaderOverlay />
               <LandingPage />
               <ImmersiveChatBot />
+              <CinemaShowcase />
             </>
           )}
 
