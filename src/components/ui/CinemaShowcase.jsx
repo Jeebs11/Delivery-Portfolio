@@ -20,7 +20,7 @@ const N = PROJECTS.length;
 const PLATE_W = 1672, PLATE_H = 941;
 // corners measured from the plate (px in 1672x941): TL, TR, BR, BL
 const SCREEN = { tl: [770, 126], tr: [1626, 112], br: [1622, 566], bl: [770, 552] };
-const RAIL = { tl: [86, 115], tr: [306, 142], br: [304, 616], bl: [80, 646] };
+const RAIL = { tl: [95, 113], tr: [255, 148], br: [255, 678], bl: [95, 728] };
 
 // --- 2D projective transform -> matrix3d (maps elt (0,0)(w,0)(0,h)(w,h) to TL,TR,BL,BR) ---
 const adj = (m) => [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]];
@@ -149,7 +149,7 @@ const CinemaShowcase = () => {
                 .cin-cap p{font-family:var(--serif);font-style:italic;font-size:23px;color:#d8cdb8;margin-bottom:14px;max-width:78%}
                 .cin-cta{display:inline-flex;align-items:center;gap:12px;font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.24em;color:var(--cream);text-transform:uppercase;cursor:pointer;border:0;background:none}
                 .cin-cta .ln{width:40px;height:1px;background:var(--gold)} .cin-cta:hover{color:var(--gold)}
-                .cin-rail{position:absolute;left:0;top:0;width:196px;height:474px;transform-origin:0 0;overflow:hidden;
+                .cin-rail{position:absolute;left:0;top:0;width:170px;height:600px;transform-origin:0 0;overflow:hidden;
                     -webkit-mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent)}
                 .cin-track{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;gap:12px;padding:0 6px}
                 .cin-row{position:relative;width:100%;aspect-ratio:16/10;border-radius:4px;overflow:hidden;cursor:pointer;outline:1px solid rgba(217,183,121,.18)}
