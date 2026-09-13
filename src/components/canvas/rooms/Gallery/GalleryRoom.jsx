@@ -577,8 +577,10 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     ))}
                 </group>
 
-                {/* Flowing river below the balcony, behind the rail */}
-                <FlowingRiver position={[0, -1.8, -6.4]} rotation={[-Math.PI / 2, 0, 0]} />
+                {/* Flowing river in the horizon gap between rooftops and skyline.
+                    Sits behind the houses (z=-9) and in front of the skyline (z=-17),
+                    so the rooftops mask its base and the city rises behind it. */}
+                <FlowingRiver position={[0, 2.6, -11]} />
 
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
@@ -673,20 +675,23 @@ const RIVER_FRAG = `
     uniform float uTime;
     varying vec2 vUv;
     void main() {
-        float depth = vUv.y;                       // 0 near .. 1 far
+        float x = vUv.x;
+        float y = vUv.y;
+        // Horizontal reflection bands that drift left -> right (river flow)
         float w = 0.0;
-        w += sin((vUv.y * 18.0) - uTime * 1.6) * 0.5;
-        w += sin((vUv.y * 34.0 + vUv.x * 5.0) - uTime * 2.4) * 0.25;
-        w += sin((vUv.x * 9.0) + uTime * 0.7) * 0.15;
+        w += sin(y * 26.0 + sin(x * 3.0 - uTime * 0.5) * 1.5) * 0.5;
+        w += sin(y * 60.0 + x * 2.0 - uTime * 0.9) * 0.2;
+        w += sin(x * 8.0 - uTime * 1.4) * 0.15;
         float shimmer = 0.5 + 0.5 * w;
-        vec3 deep  = vec3(0.14, 0.40, 0.60);
-        vec3 light = vec3(0.55, 0.80, 0.92);
-        vec3 col = mix(deep, light, shimmer * (0.55 + 0.45 * depth));
-        float crest = smoothstep(0.86, 1.0, shimmer);
-        col += crest * 0.22;                       // sun glints on the crests
-        float aFar  = smoothstep(1.0, 0.7, depth); // soft waterline at the far bank
-        float aSide = smoothstep(0.0, 0.05, vUv.x) * smoothstep(1.0, 0.95, vUv.x);
-        gl_FragColor = vec4(col, aFar * aSide);
+        vec3 deep  = vec3(0.16, 0.42, 0.62);
+        vec3 light = vec3(0.62, 0.83, 0.93);
+        vec3 col = mix(deep, light, shimmer);
+        col += smoothstep(0.9, 1.0, shimmer) * 0.20;   // glints
+        // Fade the top into the sky and soften the edges
+        float aTop  = smoothstep(1.0, 0.72, y);
+        float aBot  = smoothstep(0.0, 0.12, y);
+        float aSide = smoothstep(0.0, 0.03, x) * smoothstep(1.0, 0.97, x);
+        gl_FragColor = vec4(col, aTop * aBot * aSide);
     }
 `;
 const FlowingRiver = (props) => {
@@ -705,7 +710,7 @@ const FlowingRiver = (props) => {
     });
     return (
         <mesh material={material} {...props}>
-            <planeGeometry args={[46, 5, 1, 1]} />
+            <planeGeometry args={[64, 5, 1, 1]} />
         </mesh>
     );
 };
