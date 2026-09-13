@@ -578,9 +578,9 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 </group>
 
                 {/* Flowing river in the horizon gap between rooftops and skyline.
-                    Sits behind the houses (z=-9) and in front of the skyline (z=-17),
-                    so the rooftops mask its base and the city rises behind it. */}
-                <FlowingRiver position={[0, 2.6, -11]} />
+                    Sits between the houses (z=-9) and the skyline (z=-17): the
+                    rooftops mask its lower edge and the city rises above it. */}
+                <FlowingRiver position={[0, 0, -13]} />
 
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
@@ -710,7 +710,7 @@ const FlowingRiver = (props) => {
     });
     return (
         <mesh material={material} {...props}>
-            <planeGeometry args={[64, 5, 1, 1]} />
+            <planeGeometry args={[64, 3, 1, 1]} />
         </mesh>
     );
 };
