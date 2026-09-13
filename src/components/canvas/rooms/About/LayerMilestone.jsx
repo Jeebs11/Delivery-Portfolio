@@ -80,14 +80,14 @@ export const ABOUT_LAYERS = [
         // No title — the MUJEEB wordmark above the character is the heading.
         caption: '"Turning ambiguity into deliverables."',
         items: [
-            { src: `${L}/l1-wordmark.webp`, pos: [0, 3.8, -0.6], w: 6.2 },
-            { src: `${L}/l1-character.webp`, pos: [0, -0.2, 0], w: 1.7 },
-            { src: `${L}/l1-subtitle.webp`, pos: [0, -3.1, 0.1], w: 3.6 },
-            { src: `${L}/l1-roadmap.webp`, pos: [-5.2, 2.6, 0], w: 2.7 },
-            { src: `${L}/l1-gantt.webp`, pos: [5.2, 2.6, 0], w: 2.7 },
-            { src: `${L}/l1-stakeholder.webp`, pos: [-5.7, 0.2, 0], w: 2.7 },
-            { src: `${L}/l1-workflow.webp`, pos: [5.7, 0.2, 0], w: 2.7 },
-            { src: `${L}/l1-framework.webp`, pos: [-5.0, -2.4, 0], w: 3.0 },
+            { src: `${L}/l1-wordmark.webp?v=2`, pos: [0, 3.8, -0.6], w: 6.2 },
+            { src: `${L}/l1-character.webp?v=2`, pos: [0, -0.4, 0], w: 1.9 },
+            { src: `${L}/l1-subtitle.webp?v=2`, pos: [0, -3.4, 0.1], w: 3.6 },
+            { src: `${L}/l1-roadmap.webp?v=2`, pos: [-5.2, 2.6, 0], w: 2.7 },
+            { src: `${L}/l1-gantt.webp?v=2`, pos: [5.2, 2.6, 0], w: 2.7 },
+            { src: `${L}/l1-stakeholder.webp?v=2`, pos: [-5.7, 0.2, 0], w: 2.7 },
+            { src: `${L}/l1-workflow.webp?v=2`, pos: [5.7, 0.2, 0], w: 2.7 },
+            { src: `${L}/l1-framework.webp?v=2`, pos: [-5.0, -2.4, 0], w: 3.0 },
         ],
     },
     {
@@ -95,16 +95,13 @@ export const ABOUT_LAYERS = [
         title: 'BEYOND WORK',
         caption: 'Family, travel, sport, curiosity.',
         items: [
-            // family island alone in the centre
-            { src: `${L}/l2-family.webp`, pos: [0, 0.9, 0.3], w: 2.8 },
-            // sports spread around it (separate islands, well spaced)
-            { src: `${L}/l2-soccer.webp`, pos: [-4.7, 0.4, 0], w: 2.5 },
-            { src: `${L}/l2-football.webp`, pos: [4.5, 0.8, 0], w: 2.9 },
-            { src: `${L}/l2-basketball.webp`, pos: [-3.8, -2.6, 0], w: 2.7 },
-            { src: `${L}/l2-golf.webp`, pos: [4.3, -2.5, 0], w: 2.6 },
+            // family island up top-centre
+            { src: `${L}/l2-family.webp?v=2`, pos: [0, 3.0, 0.3], w: 3.0 },
+            // the four sports live together on one floating cluster in the centre
+            { src: `${L}/l2-sports.webp?v=2`, pos: [0, -1.8, 0], w: 7.0 },
             // corners: cycling + travel
-            { src: `${L}/l2-cycling.webp`, pos: [-5.8, 3.1, 0], w: 2.7 },
-            { src: `${L}/l2-travel.webp`, pos: [5.8, 3.1, 0], w: 2.5 },
+            { src: `${L}/l2-cycling.webp?v=2`, pos: [-5.6, 2.6, 0], w: 2.7 },
+            { src: `${L}/l2-travel.webp?v=2`, pos: [5.6, 2.6, 0], w: 2.5 },
         ],
     },
     {
@@ -114,19 +111,19 @@ export const ABOUT_LAYERS = [
         caption: 'Proof of experience, capability and delivery.',
         items: [
             // cloud platform the certificates + trophy sit on
-            { src: `${L}/l3-cloud.webp`, pos: [-3.2, -1.0, -0.6], w: 7.6 },
+            { src: `${L}/l3-cloud.webp?v=2`, pos: [-3.2, -1.0, -0.6], w: 7.6 },
             // certificates fanned in an arc around the trophy, resting on the cloud
-            { src: `${L}/l3-cert-prince2.webp`, pos: [-5.5, 0.15, -0.1], w: 1.5, rot: [0, 0, 0.22] },
-            { src: `${L}/l3-cert-psm1.webp`, pos: [-4.15, 0.55, -0.05], w: 1.5, rot: [0, 0, 0.09] },
-            { src: `${L}/l3-cert-psm2.webp`, pos: [-2.55, 0.55, -0.05], w: 1.5, rot: [0, 0, -0.09] },
-            { src: `${L}/l3-cert-pmp.webp`, pos: [-1.2, 0.15, -0.1], w: 1.5, rot: [0, 0, -0.22] },
+            { src: `${L}/l3-cert-prince2.webp?v=2`, pos: [-5.5, 0.15, -0.1], w: 1.5, rot: [0, 0, 0.22] },
+            { src: `${L}/l3-cert-psm1.webp?v=2`, pos: [-4.15, 0.55, -0.05], w: 1.5, rot: [0, 0, 0.09] },
+            { src: `${L}/l3-cert-psm2.webp?v=2`, pos: [-2.55, 0.55, -0.05], w: 1.5, rot: [0, 0, -0.09] },
+            { src: `${L}/l3-cert-pmp.webp?v=2`, pos: [-1.2, 0.15, -0.1], w: 1.5, rot: [0, 0, -0.22] },
             // trophy front-and-centre on the cloud, nested inside the arc
-            { src: `${L}/l3-trophy.webp`, pos: [-3.35, -0.9, 0.2], w: 1.5 },
+            { src: `${L}/l3-trophy.webp?v=2`, pos: [-3.35, -0.9, 0.2], w: 1.5 },
             // measurable-impact stat clouds (text baked in)
-            { src: `${L}/l3-stat-years.webp`, pos: [3.0, 2.3, 0], w: 2.6 },
-            { src: `${L}/l3-stat-reporting.webp`, pos: [5.2, 1.0, 0], w: 2.7 },
-            { src: `${L}/l3-stat-portfolio.webp`, pos: [2.8, -0.4, 0], w: 2.6 },
-            { src: `${L}/l3-stat-processes.webp`, pos: [5.0, -1.9, 0], w: 2.7 },
+            { src: `${L}/l3-stat-years.webp?v=2`, pos: [3.0, 2.3, 0], w: 2.6 },
+            { src: `${L}/l3-stat-reporting.webp?v=2`, pos: [5.2, 1.0, 0], w: 2.7 },
+            { src: `${L}/l3-stat-portfolio.webp?v=2`, pos: [2.8, -0.4, 0], w: 2.6 },
+            { src: `${L}/l3-stat-processes.webp?v=2`, pos: [5.0, -1.9, 0], w: 2.7 },
         ],
     },
 ];
