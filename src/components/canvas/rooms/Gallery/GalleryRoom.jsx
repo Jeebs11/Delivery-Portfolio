@@ -577,6 +577,9 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     ))}
                 </group>
 
+                {/* Flowing river below the balcony, behind the rail */}
+                <FlowingRiver position={[0, -1.8, -6.4]} rotation={[-Math.PI / 2, 0, 0]} />
+
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
                 <mesh position={[0, -1, -9]} scale={[1, 1, 1]}>
@@ -653,6 +656,57 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 </mesh>
             </group>
         </group>
+    );
+};
+
+// Flowing river — a flat water plane below the balcony with animated,
+// scrolling ripples + crest highlights. Reads as a river you overlook
+// from the rail. Edges fade so it blends into the sky/town behind.
+const RIVER_VERT = `
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+const RIVER_FRAG = `
+    uniform float uTime;
+    varying vec2 vUv;
+    void main() {
+        float depth = vUv.y;                       // 0 near .. 1 far
+        float w = 0.0;
+        w += sin((vUv.y * 18.0) - uTime * 1.6) * 0.5;
+        w += sin((vUv.y * 34.0 + vUv.x * 5.0) - uTime * 2.4) * 0.25;
+        w += sin((vUv.x * 9.0) + uTime * 0.7) * 0.15;
+        float shimmer = 0.5 + 0.5 * w;
+        vec3 deep  = vec3(0.14, 0.40, 0.60);
+        vec3 light = vec3(0.55, 0.80, 0.92);
+        vec3 col = mix(deep, light, shimmer * (0.55 + 0.45 * depth));
+        float crest = smoothstep(0.86, 1.0, shimmer);
+        col += crest * 0.22;                       // sun glints on the crests
+        float aFar  = smoothstep(1.0, 0.7, depth); // soft waterline at the far bank
+        float aSide = smoothstep(0.0, 0.05, vUv.x) * smoothstep(1.0, 0.95, vUv.x);
+        gl_FragColor = vec4(col, aFar * aSide);
+    }
+`;
+const FlowingRiver = (props) => {
+    const matRef = useRef();
+    const material = useMemo(() => new THREE.ShaderMaterial({
+        vertexShader: RIVER_VERT,
+        fragmentShader: RIVER_FRAG,
+        uniforms: { uTime: { value: 0 } },
+        transparent: true,
+        depthWrite: false,
+        fog: false,
+        side: THREE.DoubleSide,
+    }), []);
+    useFrame((state) => {
+        material.uniforms.uTime.value = state.clock.getElapsedTime();
+    });
+    return (
+        <mesh material={material} {...props}>
+            <planeGeometry args={[46, 5, 1, 1]} />
+        </mesh>
     );
 };
 
