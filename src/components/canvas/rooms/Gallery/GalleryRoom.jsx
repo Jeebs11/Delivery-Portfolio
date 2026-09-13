@@ -452,6 +452,23 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         return shape;
     }, []);
 
+    // Realistic sky-blue gradient for the gallery backdrop (deeper blue up top,
+    // pale haze at the horizon). Built once as a canvas texture.
+    const skyTexture = useMemo(() => {
+        const c = document.createElement('canvas');
+        c.width = 8; c.height = 256;
+        const ctx = c.getContext('2d');
+        const g = ctx.createLinearGradient(0, 0, 0, 256);
+        g.addColorStop(0.0, '#3f8ed8');   // zenith
+        g.addColorStop(0.5, '#7fb9e8');
+        g.addColorStop(1.0, '#dcecf6');   // horizon haze
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, 8, 256);
+        const t = new THREE.CanvasTexture(c);
+        t.colorSpace = THREE.SRGBColorSpace;
+        return t;
+    }, []);
+
     return (
         <group ref={groupRef}>
             {!isWarmup && (
@@ -628,10 +645,11 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Clouds scattered above */}
                 <GalleryClouds count={65} seed={123} />
 
-                {/* Skybox/Environment */}
+                {/* Skybox/Environment — realistic sky-blue gradient.
+                    fog disabled so the cream scene fog doesn't wash the blue out. */}
                 <mesh position={[0, 5, -20]}>
                     <sphereGeometry args={[40, 32, 32]} />
-                    <meshBasicMaterial color="#f0f0f0" side={THREE.BackSide} transparent opacity={0.5} onBeforeCompile={onBeforeCompile} />
+                    <meshBasicMaterial map={skyTexture} side={THREE.BackSide} fog={false} />
                 </mesh>
             </group>
         </group>
