@@ -580,7 +580,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Flowing river in the horizon gap between rooftops and skyline.
                     Sits between the houses (z=-9) and the skyline (z=-17): the
                     rooftops mask its lower edge and the city rises above it. */}
-                <FlowingRiver position={[0, 0, -13]} />
+                <FlowingRiver position={[0, -1.0, -13]} />
 
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
@@ -687,9 +687,9 @@ const RIVER_FRAG = `
         vec3 light = vec3(0.62, 0.83, 0.93);
         vec3 col = mix(deep, light, shimmer);
         col += smoothstep(0.9, 1.0, shimmer) * 0.20;   // glints
-        // Fade the top into the sky and soften the edges
-        float aTop  = smoothstep(1.0, 0.72, y);
-        float aBot  = smoothstep(0.0, 0.12, y);
+        // Crisp shoreline at the top (city meets water), soft base + edges
+        float aTop  = smoothstep(1.0, 0.9, y);
+        float aBot  = smoothstep(0.0, 0.1, y);
         float aSide = smoothstep(0.0, 0.03, x) * smoothstep(1.0, 0.97, x);
         gl_FragColor = vec4(col, aTop * aBot * aSide);
     }
@@ -710,7 +710,7 @@ const FlowingRiver = (props) => {
     });
     return (
         <mesh material={material} {...props}>
-            <planeGeometry args={[64, 3, 1, 1]} />
+            <planeGeometry args={[64, 4.5, 1, 1]} />
         </mesh>
     );
 };
