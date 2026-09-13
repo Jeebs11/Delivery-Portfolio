@@ -93,7 +93,14 @@ const CinemaShowcase = () => {
 
     return (
         <div className={`cinema${visible ? ' show' : ''}`} aria-hidden={!visible}>
-            <button className="cin-exit" onClick={() => requestExit()} aria-label="Back to corridor"><span>&larr;</span> Back</button>
+            <button className="cin-exit" onClick={() => requestExit()} aria-label="Back to the corridor" title="Back to the corridor">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                <span>Exit to corridor</span>
+            </button>
             <div className="cin-stage">
                 <div className="cin-plate" ref={plateRef}>
                     <div className="cin-screen" ref={screenRef}>
@@ -134,7 +141,8 @@ const CinemaShowcase = () => {
                 .cin-exit{position:absolute;top:24px;left:26px;z-index:3;display:inline-flex;align-items:center;gap:.5em;font-family:var(--sans);
                     font-weight:500;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);background:rgba(10,10,12,.55);
                     border:1px solid rgba(217,183,121,.35);padding:9px 16px;border-radius:30px;cursor:pointer;backdrop-filter:blur(4px);transition:color .2s,border-color .2s}
-                .cin-exit:hover{color:var(--gold);border-color:var(--gold)} .cin-exit span{font-size:15px}
+                .cin-exit:hover{color:var(--gold);border-color:var(--gold)}
+                .cin-exit svg{display:block}
                 .cin-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
                 .cin-plate{position:relative;width:1672px;height:941px;flex:0 0 auto;transform-origin:center;
                     background:#0a0a0a url('/textures/studio/cinema-plate.webp') center/cover}
