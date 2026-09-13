@@ -19,8 +19,8 @@ const PROJECTS = [
 const N = PROJECTS.length;
 const PLATE_W = 1672, PLATE_H = 941;
 // corners measured from the plate (px in 1672x941): TL, TR, BR, BL
-const SCREEN = { tl: [793, 128], tr: [1636, 116], br: [1630, 566], bl: [793, 552] };
-const RAIL = { tl: [95, 150], tr: [268, 128], br: [266, 645], bl: [82, 668] };
+const SCREEN = { tl: [770, 126], tr: [1626, 112], br: [1622, 566], bl: [770, 552] };
+const RAIL = { tl: [92, 150], tr: [270, 132], br: [268, 686], bl: [84, 664] };
 
 // --- 2D projective transform -> matrix3d (maps elt (0,0)(w,0)(0,h)(w,h) to TL,TR,BL,BR) ---
 const adj = (m) => [m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4], m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5], m[3]*m[7]-m[4]*m[6], m[1]*m[6]-m[0]*m[7], m[0]*m[4]-m[1]*m[3]];
@@ -138,7 +138,7 @@ const CinemaShowcase = () => {
                 .cin-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
                 .cin-plate{position:relative;width:1672px;height:941px;flex:0 0 auto;transform-origin:center;
                     background:#0a0a0a url('/textures/studio/cinema-plate.webp') center/cover}
-                .cin-screen{position:absolute;left:0;top:0;width:843px;height:438px;transform-origin:0 0;overflow:hidden}
+                .cin-screen{position:absolute;left:0;top:0;width:852px;height:424px;transform-origin:0 0;overflow:hidden}
                 .cin-shot{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .7s ease}
                 .cin-shot.on{opacity:1}
                 .cin-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,8,12,.92) 0%,rgba(6,8,12,.55) 18%,rgba(6,8,12,0) 40%)}
@@ -149,7 +149,7 @@ const CinemaShowcase = () => {
                 .cin-cap p{font-family:var(--serif);font-style:italic;font-size:23px;color:#d8cdb8;margin-bottom:14px;max-width:78%}
                 .cin-cta{display:inline-flex;align-items:center;gap:12px;font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.24em;color:var(--cream);text-transform:uppercase;cursor:pointer;border:0;background:none}
                 .cin-cta .ln{width:40px;height:1px;background:var(--gold)} .cin-cta:hover{color:var(--gold)}
-                .cin-rail{position:absolute;left:0;top:0;width:185px;height:520px;transform-origin:0 0;overflow:hidden;
+                .cin-rail{position:absolute;left:0;top:0;width:180px;height:530px;transform-origin:0 0;overflow:hidden;
                     -webkit-mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent)}
                 .cin-track{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;gap:12px;padding:0 6px}
                 .cin-row{position:relative;width:100%;aspect-ratio:16/10;border-radius:4px;overflow:hidden;cursor:pointer;outline:1px solid rgba(217,183,121,.18)}
