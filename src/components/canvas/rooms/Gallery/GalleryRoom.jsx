@@ -628,10 +628,6 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Clouds scattered above */}
                 <GalleryClouds count={65} seed={123} />
 
-                {/* Birds gliding across the sky, wings flapping */}
-                <FlappingBird texture={birdTexture} baseY={5.4} z={-11} speed={1.9} phase={0} flapHz={4.5} />
-                <FlappingBird texture={birdTexture} baseY={6.6} z={-14} speed={1.4} phase={0.45} flapHz={4.0} />
-
                 {/* Skybox/Environment */}
                 <mesh position={[0, 5, -20]}>
                     <sphereGeometry args={[40, 32, 32]} />
@@ -639,51 +635,6 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 </mesh>
             </group>
         </group>
-    );
-};
-
-// Gliding bird with a procedural wing-flap.
-// Drifts across the sky on a gentle arc and "beats" its wings by rapidly
-// squashing the silhouette vertically (a light scale.x pulse sells the down-beat).
-// If 4 wing-position frames are ever supplied, swap this for a frame cycle.
-const FlappingBird = ({ texture, startX = -22, endX = 22, baseY = 5.2, z = -11, speed = 1.9, phase = 0, flapHz = 4.5 }) => {
-    const birdRef = useRef();
-    const span = endX - startX;
-
-    useFrame((state) => {
-        const bird = birdRef.current;
-        if (!bird) return;
-        const t = state.clock.getElapsedTime();
-
-        // Horizontal glide, looping left -> right
-        const travel = ((t * speed + phase * span) % span + span) % span;
-        bird.position.x = startX + travel;
-
-        // Gentle vertical drift so the flight path feels alive
-        const bob = Math.sin(t * 0.6 + phase * 6.28) * 0.6;
-        bird.position.y = baseY + bob;
-        bird.position.z = z;
-
-        // Wing beat: squash Y (wings sweeping) + slight X pulse on the down-stroke
-        const beat = Math.sin(t * flapHz * Math.PI * 2 + phase * 6.28);
-        const wing = 0.62 + 0.38 * (0.5 + 0.5 * beat); // 0.62 .. 1.0
-        bird.scale.set(BIRD_WIDTH * (1 + (1 - wing) * 0.12), BIRD_HEIGHT * wing, 1);
-
-        // Bank slightly with the vertical drift
-        const climb = Math.cos(t * 0.6 + phase * 6.28) * 0.6;
-        bird.rotation.z = THREE.MathUtils.clamp(climb * 0.08, -0.12, 0.12);
-    });
-
-    return (
-        <mesh ref={birdRef} position={[startX, baseY, z]} scale={[BIRD_WIDTH, BIRD_HEIGHT, 1]}>
-            <planeGeometry args={[1.5, 1.5]} />
-            <meshBasicMaterial color="#e0e0e0"
-                map={texture}
-                transparent={true}
-                alphaTest={0.1}
-                side={THREE.DoubleSide}
-            />
-        </mesh>
     );
 };
 
