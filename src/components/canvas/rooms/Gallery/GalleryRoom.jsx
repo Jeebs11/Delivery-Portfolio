@@ -374,8 +374,8 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const cityTexture = useTexture('/textures/gallery/miastotlo.webp');
     const birdTexture = useTexture('/textures/gallery/bird_gray.webp');
     const clothespinTexture = useTexture('/textures/gallery/klamerka.webp');
-    const bannerClassicTexture = useTexture('/textures/gallery/banner_classicview.webp?v=2');
-    const bannerCvTexture = useTexture('/textures/gallery/banner_downloadcv.webp?v=2');
+    const bannerClassicTexture = useTexture('/textures/gallery/banner_classicview.webp?v=3');
+    const bannerCvTexture = useTexture('/textures/gallery/banner_downloadcv.webp?v=3');
 
     useEffect(() => {
         if (floorTexture) {
@@ -386,7 +386,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         }
         if (railingTexture) {
             railingTexture.wrapS = railingTexture.wrapT = THREE.RepeatWrapping;
-            railingTexture.repeat.set(7, 1);
+            railingTexture.repeat.set(8, 1); // 8 keeps the redesigned balustrade undistorted
             railingTexture.needsUpdate = true;
         }
     }, [floorTexture, railingTexture]);
@@ -511,7 +511,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
                     onPointerOut={() => { document.body.style.cursor = 'auto'; }}
                 >
-                    <planeGeometry args={[1.3 * 0.700, 1.3]} />
+                    <planeGeometry args={[1.3 * 0.709, 1.3]} />
                     <meshBasicMaterial map={bannerClassicTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
                 <mesh
@@ -520,7 +520,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
                     onPointerOut={() => { document.body.style.cursor = 'auto'; }}
                 >
-                    <planeGeometry args={[1.3 * 0.652, 1.3]} />
+                    <planeGeometry args={[1.3 * 0.674, 1.3]} />
                     <meshBasicMaterial map={bannerCvTexture} color="#ffffff" alphaTest={0.5} side={THREE.DoubleSide} />
                 </mesh>
 
@@ -628,6 +628,10 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 {/* Clouds scattered above */}
                 <GalleryClouds count={65} seed={123} />
 
+                {/* Birds gliding across the sky, wings flapping */}
+                <FlappingBird texture={birdTexture} baseY={5.4} z={-11} speed={1.9} phase={0} flapHz={4.5} />
+                <FlappingBird texture={birdTexture} baseY={6.6} z={-14} speed={1.4} phase={0.45} flapHz={4.0} />
+
                 {/* Skybox/Environment */}
                 <mesh position={[0, 5, -20]}>
                     <sphereGeometry args={[40, 32, 32]} />
@@ -638,72 +642,40 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     );
 };
 
-// Flying bird animation component
-const FlyingBird = ({ texture }) => {
+// Gliding bird with a procedural wing-flap.
+// Drifts across the sky on a gentle arc and "beats" its wings by rapidly
+// squashing the silhouette vertically (a light scale.x pulse sells the down-beat).
+// If 4 wing-position frames are ever supplied, swap this for a frame cycle.
+const FlappingBird = ({ texture, startX = -22, endX = 22, baseY = 5.2, z = -11, speed = 1.9, phase = 0, flapHz = 4.5 }) => {
     const birdRef = useRef();
-    const startX = -25;
-    const endX = 25;
-    const speed = 2.5; // Zmniejszona prędkość lotu
+    const span = endX - startX;
 
-    // Zmienne do fizyki skoków
-    const velocityY = useRef(0);
-    const gravity = -12.0; // Zmniejszona grawitacja dla większej płynności
-    const jumpStrength = 5.5; // Delikatniejszy skok
-    const jumpInterval = useRef(0);
+    useFrame((state) => {
+        const bird = birdRef.current;
+        if (!bird) return;
+        const t = state.clock.getElapsedTime();
 
-    useFrame((state, delta) => {
-        if (!birdRef.current) return;
+        // Horizontal glide, looping left -> right
+        const travel = ((t * speed + phase * span) % span + span) % span;
+        bird.position.x = startX + travel;
 
-        // Zabezpieczenie przed zbyt dużym powiększeniem delty (przy lagach)
-        const safeDelta = Math.min(delta, 0.05);
+        // Gentle vertical drift so the flight path feels alive
+        const bob = Math.sin(t * 0.6 + phase * 6.28) * 0.6;
+        bird.position.y = baseY + bob;
+        bird.position.z = z;
 
-        // Ruch w poziomie
-        birdRef.current.position.x += speed * safeDelta;
+        // Wing beat: squash Y (wings sweeping) + slight X pulse on the down-stroke
+        const beat = Math.sin(t * flapHz * Math.PI * 2 + phase * 6.28);
+        const wing = 0.62 + 0.38 * (0.5 + 0.5 * beat); // 0.62 .. 1.0
+        bird.scale.set(BIRD_WIDTH * (1 + (1 - wing) * 0.12), BIRD_HEIGHT * wing, 1);
 
-        if (birdRef.current.position.x > endX) {
-            birdRef.current.position.x = startX;
-            birdRef.current.position.y = 4.5;
-            velocityY.current = 0;
-            jumpInterval.current = 0;
-            birdRef.current.rotation.z = 0;
-        }
-
-        // Fizyka spadania
-        velocityY.current += gravity * safeDelta;
-        birdRef.current.position.y += velocityY.current * safeDelta;
-
-        // Skakanie (płynniejsze i przewidywalne)
-        jumpInterval.current -= safeDelta;
-
-        // Skok następuje po upływie czasu przewidzianego do następnego kliknięcia
-        if (jumpInterval.current <= 0 || birdRef.current.position.y < 3.2) {
-            velocityY.current = jumpStrength;
-            // Rzadsze, bardziej rytmiczne skoki (np. co pełną sekundę)
-            jumpInterval.current = 0.9 + Math.random() * 0.3;
-        }
-
-        // Ograniczenie dolne podłogi
-        if (birdRef.current.position.y < 3.0) {
-            birdRef.current.position.y = 3.0;
-            velocityY.current = jumpStrength;
-        }
-
-        // Ograniczenie górne sufitu
-        if (birdRef.current.position.y > 6.5) {
-            birdRef.current.position.y = 6.5;
-            velocityY.current = 0;
-        }
-
-        // Rotacja ptaka
-        // W Flappy Bird ptak delikatnie opada dziobem w dół gdy spada, i kieruje wzrok do góry gdy skacze
-        const targetRotationZ = THREE.MathUtils.clamp(velocityY.current * 0.05, -Math.PI / 6, Math.PI / 8);
-
-        // Bardzo płynne obracanie (lerp)
-        birdRef.current.rotation.z = THREE.MathUtils.lerp(birdRef.current.rotation.z, targetRotationZ, safeDelta * 8);
+        // Bank slightly with the vertical drift
+        const climb = Math.cos(t * 0.6 + phase * 6.28) * 0.6;
+        bird.rotation.z = THREE.MathUtils.clamp(climb * 0.08, -0.12, 0.12);
     });
 
     return (
-        <mesh ref={birdRef} position={[startX, 4.5, -10]} scale={[BIRD_WIDTH, BIRD_HEIGHT, 1]}>
+        <mesh ref={birdRef} position={[startX, baseY, z]} scale={[BIRD_WIDTH, BIRD_HEIGHT, 1]}>
             <planeGeometry args={[1.5, 1.5]} />
             <meshBasicMaterial color="#e0e0e0"
                 map={texture}
@@ -1171,9 +1143,10 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 }
             }}
         >
-            {/* Clothespin (Top Center) - Does NOT move with paperRef */}
-            <mesh position={[0, -0.08, 0.15]} rotation={[0, 0, Math.PI]}>
-                <planeGeometry args={[0.3, 0.2]} />
+            {/* Clothespin (Top Center) - Does NOT move with paperRef.
+                Redesigned brass+wood clamp is drawn handle-up already, so no flip. */}
+            <mesh position={[0, -0.05, 0.15]}>
+                <planeGeometry args={[0.36, 0.2]} />
                 <meshBasicMaterial color="#ffffff"
                     map={clothespinTexture}
                     transparent={true}
