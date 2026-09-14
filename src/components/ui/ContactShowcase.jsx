@@ -64,13 +64,13 @@ export default function ContactShowcase() {
                     <img style={{ height: 360, width: 'auto' }} src={`${IMG}luffy.webp`} alt="" />
                 </div>
 
-                {/* message-in-a-bottle links — centred, half-submerged */}
-                <a className="cs-sprite cs-link" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ left: 360, top: 600, width: 185 }}>
+                {/* message-in-a-bottle links — small, floating out in the mid-sea */}
+                <a className="cs-sprite cs-link" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ left: 520, top: 588, width: 95 }}>
                     <span className="cs-foam" />
                     <span className="cs-bottle" style={{ '--rot': '-22deg', animation: 'cs-bob 5s ease-in-out infinite' }}><img src={`${IMG}bottle-linkedin.webp`} alt="LinkedIn" /></span>
                     <span className="cs-caption">Connect on LinkedIn</span>
                 </a>
-                <a className="cs-sprite cs-link" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ left: 1180, top: 600, width: 180 }}>
+                <a className="cs-sprite cs-link" href={GITHUB_URL} target="_blank" rel="noopener noreferrer" style={{ left: 1050, top: 588, width: 92 }}>
                     <span className="cs-foam" style={{ animationDelay: '.6s' }} />
                     <span className="cs-bottle" style={{ '--rot': '20deg', animation: 'cs-bob 5.6s ease-in-out infinite .6s' }}><img src={`${IMG}bottle-github.webp`} alt="GitHub" /></span>
                     <span className="cs-caption">Explore my GitHub</span>
@@ -102,17 +102,17 @@ const CSS = `
 .contact-scene .cs-sea2{position:absolute;left:0;top:62%;width:100%;height:26%;pointer-events:none;mix-blend-mode:soft-light;opacity:.5;
   background:radial-gradient(120% 60% at 40% 30%, rgba(255,240,200,.5), transparent 60%);animation:cs-breathe 7s ease-in-out infinite}
 @keyframes cs-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-@keyframes cs-bob{0%,100%{transform:rotate(var(--rot)) translateY(0)}50%{transform:rotate(var(--rot)) translateY(-12px)}}
+@keyframes cs-bob{0%,100%{transform:rotate(var(--rot)) translateY(0)}50%{transform:rotate(var(--rot)) translateY(-9px)}}
 .contact-scene .cs-bottle{display:block}
-.contact-scene .cs-bottle img{-webkit-mask:linear-gradient(to bottom,#000 56%,rgba(0,0,0,.12) 100%);mask:linear-gradient(to bottom,#000 56%,rgba(0,0,0,.12) 100%)}
-.contact-scene .cs-foam{position:absolute;left:-8%;width:116%;bottom:34px;height:52px;pointer-events:none;border-radius:50%;
+.contact-scene .cs-bottle img{-webkit-mask:linear-gradient(to bottom,#000 54%,rgba(0,0,0,.12) 100%);mask:linear-gradient(to bottom,#000 54%,rgba(0,0,0,.12) 100%)}
+.contact-scene .cs-foam{position:absolute;left:-8%;width:116%;bottom:12px;height:26px;pointer-events:none;border-radius:50%;
   background:radial-gradient(60% 100% at 50% 42%, rgba(255,255,255,.9), rgba(210,232,240,.35) 55%, transparent 72%);
-  filter:blur(3px);opacity:.8;animation:cs-foam 5s ease-in-out infinite}
+  filter:blur(2px);opacity:.8;animation:cs-foam 5s ease-in-out infinite}
 @keyframes cs-foam{0%,100%{transform:translateY(0) scaleX(1)}50%{transform:translateY(-10px) scaleX(1.05)}}
 .contact-scene .cs-link{cursor:pointer;text-decoration:none;pointer-events:auto;transition:transform .18s ease, filter .18s ease}
 .contact-scene .cs-link:hover{transform:scale(1.06);filter:drop-shadow(0 6px 12px rgba(0,0,0,.25))}
-.contact-scene .cs-caption{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:26px;
-  color:#2a3b44;background:rgba(255,252,244,.78);padding:2px 12px;border-radius:10px}
+.contact-scene .cs-caption{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);white-space:nowrap;font-weight:700;font-size:24px;
+  color:#2a3b44;background:rgba(255,252,244,.8);padding:1px 10px;border-radius:9px}
 .contact-scene .cs-title{left:520px;top:70px;width:560px;text-align:center;color:#20303a}
 .contact-scene .cs-title b{display:block;font-size:104px;line-height:.92;font-weight:700;text-shadow:1px 2px 0 rgba(255,255,255,.4)}
 .contact-scene .cs-title .cs-u{width:230px;height:10px;margin:6px auto 0;background:#20303a;border-radius:8px;
