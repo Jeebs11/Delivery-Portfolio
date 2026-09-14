@@ -249,9 +249,9 @@ const AboutRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
             )}
 
             {/* === PAPER AIRPLANE (follows camera maneuvers) === */}
-            <group ref={airplaneGroupRef} position={[0, -0.3, 1]}>
+            <group ref={airplaneGroupRef} position={[0, -0.7, 1]}>
                 <PaperAirplane
-                    scale={0.8}
+                    scale={0.6}
                     color="#faf8f5"
                 />
             </group>
