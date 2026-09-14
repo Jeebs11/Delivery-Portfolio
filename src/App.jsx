@@ -15,6 +15,7 @@ import ScreenReaderOverlay from './components/ui/ScreenReaderOverlay';
 import LandingPage from './components/ui/LandingPage';
 import ImmersiveChatBot from './components/ui/ImmersiveChatBot';
 import CinemaShowcase from './components/ui/CinemaShowcase';
+import AboutVehiclePicker from './components/ui/AboutVehiclePicker';
 import { useDocumentMeta } from './hooks/useDocumentMeta';
 import posthog from 'posthog-js';
 import { loadSanityData } from './hooks/useSanityData';
@@ -210,6 +211,7 @@ function AppContent() {
               <LandingPage />
               <ImmersiveChatBot />
               <CinemaShowcase />
+              <AboutVehiclePicker />
             </>
           )}
 

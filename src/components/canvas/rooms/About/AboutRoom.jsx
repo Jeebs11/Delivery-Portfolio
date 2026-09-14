@@ -3,6 +3,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Text, PositionalAudio } from '@react-three/drei';
 import * as THREE from 'three';
 import PaperAirplane from './PaperAirplane';
+import AboutVehicle from './AboutVehicle';
+import SkyBackdrop from './SkyBackdrop';
 import InfiniteSkyManager from './InfiniteSkyManager';
 import StoryMilestone from './StoryMilestone';
 import { useScene } from '../../../../context/SceneContext';
@@ -250,20 +252,15 @@ const AboutRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
 
             {/* === PAPER AIRPLANE (follows camera maneuvers) === */}
             <group ref={airplaneGroupRef} position={[0, -0.7, 1]}>
-                <PaperAirplane
-                    scale={0.6}
-                    color="#faf8f5"
-                />
+                {/* The ride the visitor flies on — glider / scout / airship (chosen in the UI) */}
+                <AboutVehicle />
             </group>
 
             {/* === INFINITE SKY WITH CLOUDS + STORY MILESTONES === */}
             <InfiniteSkyManager scrollProgressRef={scrollPosition} />
 
-            {/* === SKY BACKDROP === */}
-            <mesh position={[0, 0, -200]}>
-                <planeGeometry args={[300, 150]} />
-                <meshBasicMaterial color="#87CEEB" side={THREE.DoubleSide} />
-            </mesh>
+            {/* === SKY BACKDROP === AoT sky/walls painting with scroll parallax */}
+            <SkyBackdrop scrollProgressRef={scrollPosition} />
         </group>
     );
 };
