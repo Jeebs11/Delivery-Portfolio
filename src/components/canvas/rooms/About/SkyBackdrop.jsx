@@ -16,21 +16,24 @@ export default function SkyBackdrop({ scrollProgressRef }) {
     tex.colorSpace = THREE.SRGBColorSpace;
 
     const ref = useRef();
-    const height = 150;
-    const width = height * BG_ASPECT; // ~267
+    // Large enough to fully cover the viewport (incl. corners when the flight
+    // banks) so the cream app background never shows through. Raised on Y so the
+    // walls/horizon still sit in the lower view while the sky fills upward.
+    const height = 320;
+    const width = height * BG_ASPECT; // ~570
 
     useFrame((state) => {
         if (!ref.current) return;
         const sp = scrollProgressRef?.current || 0;
         // Horizontal parallax tied to scroll (clamped so the big plane never
         // shows an edge), plus a slow idle sway so it always feels alive.
-        const parallax = THREE.MathUtils.clamp(-sp * 0.05, -55, 55);
+        const parallax = THREE.MathUtils.clamp(-sp * 0.05, -90, 90);
         const idle = Math.sin(state.clock.elapsedTime * 0.05) * 4;
         ref.current.position.x = parallax + idle;
     });
 
     return (
-        <mesh ref={ref} position={[0, 4, -140]}>
+        <mesh ref={ref} position={[0, 40, -140]}>
             <planeGeometry args={[width, height]} />
             <meshBasicMaterial map={tex} fog={false} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
