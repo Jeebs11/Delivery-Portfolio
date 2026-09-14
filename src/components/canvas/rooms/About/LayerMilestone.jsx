@@ -77,8 +77,7 @@ const L = '/textures/about/layers';
 export const ABOUT_LAYERS = [
     {
         id: 'work',
-        // No title — the MUJEEB wordmark above the character is the heading.
-        caption: '"Turning ambiguity into deliverables."',
+        // Titles/captions are baked AoT-styled text images, added as items.
         items: [
             { src: `${L}/l1-wordmark.webp?v=2`, pos: [0, 4.0, -0.6], w: 6.2 },
             { src: `${L}/l1-character.webp?v=2`, pos: [0, 0.7, 0], w: 1.5 },
@@ -86,6 +85,7 @@ export const ABOUT_LAYERS = [
             { src: `${L}/l1-role-1.webp`, pos: [0, -1.9, 0.2], w: 2.8 },
             { src: `${L}/l1-role-2.webp`, pos: [0, -2.6, 0.2], w: 2.8 },
             { src: `${L}/l1-role-3.webp`, pos: [0, -3.3, 0.2], w: 3.0 },
+            { src: `${L}/t-l1-caption.webp`, pos: [0, -4.5, 0.2], w: 6.0 },
             { src: `${L}/l1-roadmap.webp?v=2`, pos: [-5.2, 2.6, 0], w: 2.7 },
             { src: `${L}/l1-gantt.webp?v=2`, pos: [5.2, 2.6, 0], w: 2.7 },
             { src: `${L}/l1-stakeholder.webp?v=2`, pos: [-5.7, 0.2, 0], w: 2.7 },
@@ -95,9 +95,8 @@ export const ABOUT_LAYERS = [
     },
     {
         id: 'beyond',
-        title: 'BEYOND WORK',
-        caption: 'Family, travel, sport, curiosity.',
         items: [
+            { src: `${L}/t-l2-title.webp`, pos: [0, 5.1, 0.2], w: 7.0 },
             // family island as the centrepiece
             { src: `${L}/l2-family.webp?v=2`, pos: [0, 0.6, 0.3], w: 3.0 },
             // the four sports as separate coloured islands, well spaced around the family
@@ -108,14 +107,14 @@ export const ABOUT_LAYERS = [
             // corners: cycling + travel
             { src: `${L}/l2-cycling.webp?v=2`, pos: [-5.8, 3.1, 0], w: 2.7 },
             { src: `${L}/l2-travel.webp?v=2`, pos: [5.8, 3.1, 0], w: 2.5 },
+            { src: `${L}/t-l2-caption.webp`, pos: [0, -5.0, 0.2], w: 6.5 },
         ],
     },
     {
         id: 'achievements',
-        title: 'ACHIEVEMENTS',
-        subtitle: 'Credentials and measurable impact',
-        caption: 'Proof of experience, capability and delivery.',
         items: [
+            { src: `${L}/t-l3-title.webp`, pos: [0, 5.2, 0.2], w: 7.5 },
+            { src: `${L}/t-l3-sub.webp`, pos: [0, 3.9, 0.2], w: 6.0 },
             // cloud platform the certificates + trophy sit on
             { src: `${L}/l3-cloud.webp?v=2`, pos: [-3.2, -1.0, -0.6], w: 7.6 },
             // certificates fanned in an arc around the trophy, resting on the cloud
@@ -130,6 +129,7 @@ export const ABOUT_LAYERS = [
             { src: `${L}/l3-stat-reporting.webp?v=2`, pos: [5.2, 1.0, 0], w: 2.7 },
             { src: `${L}/l3-stat-portfolio.webp?v=2`, pos: [2.8, -0.4, 0], w: 2.6 },
             { src: `${L}/l3-stat-processes.webp?v=2`, pos: [5.0, -1.9, 0], w: 2.7 },
+            { src: `${L}/t-l3-caption.webp`, pos: [0, -5.0, 0.2], w: 6.5 },
         ],
     },
 ];
