@@ -80,9 +80,10 @@ export const ABOUT_LAYERS = [
         // No title — the MUJEEB wordmark above the character is the heading.
         caption: '"Turning ambiguity into deliverables."',
         items: [
-            { src: `${L}/l1-wordmark.webp?v=2`, pos: [0, 3.8, -0.6], w: 6.2 },
-            { src: `${L}/l1-character.webp?v=2`, pos: [0, -0.4, 0], w: 1.9 },
-            { src: `${L}/l1-subtitle.webp?v=2`, pos: [0, -3.4, 0.1], w: 3.6 },
+            { src: `${L}/l1-wordmark.webp?v=2`, pos: [0, 3.9, -0.6], w: 6.2 },
+            // role title tucked just under the wordmark (was hidden behind the paper plane)
+            { src: `${L}/l1-subtitle.webp?v=2`, pos: [0, 2.4, 0.2], w: 3.0 },
+            { src: `${L}/l1-character.webp?v=2`, pos: [0, -0.9, 0], w: 1.7 },
             { src: `${L}/l1-roadmap.webp?v=2`, pos: [-5.2, 2.6, 0], w: 2.7 },
             { src: `${L}/l1-gantt.webp?v=2`, pos: [5.2, 2.6, 0], w: 2.7 },
             { src: `${L}/l1-stakeholder.webp?v=2`, pos: [-5.7, 0.2, 0], w: 2.7 },
@@ -97,11 +98,11 @@ export const ABOUT_LAYERS = [
         items: [
             // family island as the centrepiece
             { src: `${L}/l2-family.webp?v=2`, pos: [0, 0.6, 0.3], w: 3.0 },
-            // the four sports as separate islands, well spaced around the family
-            { src: `${L}/l2-soccer.webp?v=2`, pos: [-4.7, 0.4, 0], w: 2.5 },
-            { src: `${L}/l2-football.webp?v=2`, pos: [4.5, 0.8, 0], w: 2.9 },
-            { src: `${L}/l2-basketball.webp?v=2`, pos: [-3.8, -2.6, 0], w: 2.7 },
-            { src: `${L}/l2-golf.webp?v=2`, pos: [4.3, -2.5, 0], w: 2.6 },
+            // the four sports as separate coloured islands, well spaced around the family
+            { src: `${L}/l2-soccer.webp?v=3`, pos: [-4.7, 0.4, 0], w: 2.5 },
+            { src: `${L}/l2-football.webp?v=3`, pos: [4.5, 0.8, 0], w: 2.9 },
+            { src: `${L}/l2-basketball.webp?v=3`, pos: [-3.8, -2.6, 0], w: 2.7 },
+            { src: `${L}/l2-golf.webp?v=3`, pos: [4.3, -2.5, 0], w: 2.6 },
             // corners: cycling + travel
             { src: `${L}/l2-cycling.webp?v=2`, pos: [-5.8, 3.1, 0], w: 2.7 },
             { src: `${L}/l2-travel.webp?v=2`, pos: [5.8, 3.1, 0], w: 2.5 },
