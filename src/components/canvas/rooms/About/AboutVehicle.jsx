@@ -8,16 +8,19 @@ import * as THREE from 'three';
 export const ABOUT_VEHICLES = [
     { id: 'glider', label: 'Glider', src: '/textures/about/vehicle-glider.webp', aspect: 1.78, w: 3.4, y: 0.0 },
     { id: 'soldier', label: 'Scout', src: '/textures/about/vehicle-soldier.webp', aspect: 1.12, w: 2.6, y: 0.1 },
-    { id: 'airship', label: 'Airship', src: '/textures/about/vehicle-airship.webp', aspect: 0.74, w: 2.3, y: 0.2 },
+    { id: 'airship', label: 'Airship', src: '/textures/about/vehicle-airship.webp', aspect: 0.74, w: 1.15, y: 0.2 },
 ];
 
 const STORAGE_KEY = 'aboutVehicle';
+const DEFAULT_INDEX = 1; // Scout is the default ride on first entry
 
 export const readVehicleIndex = () => {
     try {
-        const v = parseInt(localStorage.getItem(STORAGE_KEY) ?? '0', 10);
-        return Number.isFinite(v) && v >= 0 && v < ABOUT_VEHICLES.length ? v : 0;
-    } catch { return 0; }
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw === null) return DEFAULT_INDEX;
+        const v = parseInt(raw, 10);
+        return Number.isFinite(v) && v >= 0 && v < ABOUT_VEHICLES.length ? v : DEFAULT_INDEX;
+    } catch { return DEFAULT_INDEX; }
 };
 
 export const setVehicleIndex = (i) => {
