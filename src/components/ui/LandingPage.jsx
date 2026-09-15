@@ -80,7 +80,7 @@ const LandingPage = () => {
                 .home-tagline {
                     position: absolute; left: 50%; top: 27.6%; transform: translate(-50%, -50%);
                     width: 82%; text-align: center; pointer-events: none;
-                    font-weight: 600; font-size: 1.95cqw; line-height: 1.22; color: #3a4650;
+                    font-weight: 600; font-size: 1.65cqw; line-height: 1.3; color: #3a4650;
                 }
                 .home-bg {
                     position: absolute; inset: 0; width: 100%; height: 100%;
