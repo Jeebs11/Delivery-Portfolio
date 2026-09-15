@@ -81,10 +81,9 @@ export const ABOUT_LAYERS = [
         items: [
             { src: `${L}/l1-wordmark.webp?v=2`, pos: [0, 4.0, -0.6], w: 6.2 },
             { src: `${L}/l1-character.webp?v=2`, pos: [0, 0.7, 0], w: 1.5 },
-            // job titles stacked directly under the man
-            { src: `${L}/l1-role-1.webp`, pos: [0, -1.9, 0.2], w: 2.8 },
-            { src: `${L}/l1-role-2.webp`, pos: [0, -2.6, 0.2], w: 2.8 },
-            { src: `${L}/l1-role-3.webp`, pos: [0, -3.3, 0.2], w: 3.0 },
+            // job titles stacked directly under the man (Transformation Lead removed)
+            { src: `${L}/l1-role-1.webp`, pos: [0, -2.1, 0.2], w: 2.8 },
+            { src: `${L}/l1-role-2.webp`, pos: [0, -2.85, 0.2], w: 2.8 },
             { src: `${L}/t-l1-caption.webp`, pos: [0, -4.5, 0.2], w: 6.0 },
             { src: `${L}/l1-roadmap.webp?v=2`, pos: [-5.2, 2.6, 0], w: 2.7 },
             { src: `${L}/l1-gantt.webp?v=2`, pos: [5.2, 2.6, 0], w: 2.7 },
