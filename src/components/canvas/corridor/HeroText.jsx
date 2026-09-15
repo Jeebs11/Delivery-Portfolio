@@ -27,7 +27,7 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
 
     const [wordmark, subtitle] = useTexture([
         '/textures/corridor/avatar_src/wordmark.png',
-        '/textures/corridor/avatar_src/subtitle.png',
+        '/textures/corridor/avatar_src/subtitle.png?v=2',
     ]);
     useEffect(() => {
         [wordmark, subtitle].forEach((t) => { if (t) t.colorSpace = THREE.SRGBColorSpace; });
