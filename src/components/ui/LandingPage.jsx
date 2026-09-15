@@ -7,7 +7,7 @@ import { useScene } from '../../context/SceneContext';
  * flying paper plane) in the open sky. Clicking the door requests the in-canvas
  * camera fly-through into the corridor.
  */
-const BG = '/textures/entrance/home_bg.webp';
+const BG = '/textures/entrance/home_bg.webp?v=2';
 const L = '/textures/entrance/landing';
 
 const LandingPage = () => {
@@ -28,7 +28,18 @@ const LandingPage = () => {
     return (
         <div className={`home-landing${leaving ? ' leaving' : ''}`}>
             <div className="home-stage">
-                <img className="home-bg" src={BG} alt="Mujeeb — Project Manager, Programme Manager, Transformation Lead" draggable="false" />
+                <img className="home-bg" src={BG} alt="Mujeeb — Project Manager & Programme Manager" draggable="false" />
+
+                {/* roles + tagline (overlaid so they stay editable) */}
+                <div className="home-roles">
+                    <span>Project Manager</span>
+                    <span className="hr-dot">•</span>
+                    <span className="hr-focus">Programme Manager</span>
+                </div>
+                <div className="home-tagline">
+                    I specialise in delivery and process optimisation<br />
+                    Insurance&nbsp;|&nbsp;Engineering&nbsp;|&nbsp;Telecoms&nbsp;|&nbsp;End-to-End SaaS Implementation.
+                </div>
 
                 {/* drifting clouds */}
                 <img className="home-cloud cloud-1" src={`${L}/cloud_lg.webp`} alt="" aria-hidden="true" />
@@ -56,6 +67,20 @@ const LandingPage = () => {
                     position: relative;
                     width: min(100vw, calc(100vh * 1.7768));
                     aspect-ratio: 1672 / 941;
+                    container-type: inline-size;
+                    font-family: 'Caveat', 'Comic Sans MS', cursive;
+                }
+                .home-roles {
+                    position: absolute; left: 50%; top: 19.4%; transform: translate(-50%, -50%);
+                    display: flex; align-items: center; gap: 0.9cqw; white-space: nowrap;
+                    font-weight: 700; font-size: 2.5cqw; color: #313f4b; pointer-events: none;
+                }
+                .home-roles .hr-dot { color: #3f7fd0; font-size: 1.7cqw; }
+                .home-roles .hr-focus { border-bottom: 0.22cqw solid #3f7fd0; padding-bottom: 0.05cqw; }
+                .home-tagline {
+                    position: absolute; left: 50%; top: 27.6%; transform: translate(-50%, -50%);
+                    width: 82%; text-align: center; pointer-events: none;
+                    font-weight: 600; font-size: 1.95cqw; line-height: 1.22; color: #3a4650;
                 }
                 .home-bg {
                     position: absolute; inset: 0; width: 100%; height: 100%;
